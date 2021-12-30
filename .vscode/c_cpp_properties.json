@@ -1,41 +1,23 @@
 {
   "configurations": [
     {
-      "name": "Linux",
+      "name": "Windows MSCV",
       "includePath": [
-        "${workspaceFolder}/engine/src",
-        "${workspaceFolder}/thirdparty/imgui",
-        "${workspaceFolder}/thirdparty/imgui/examples",
-        "${workspaceFolder}/thirdparty/vcpkg/installed/x64-linux/include"
-      ],
-      "defines": [],
-      "compilerPath": "/usr/bin/g++",
-      "cStandard": "gnu17",
-      "cppStandard": "gnu++20",
-      "intelliSenseMode": "gcc-x64",
-      "configurationProvider": "ms-vscode.cmake-tools",
-      "compilerArgs": [],
-      "browse": {
-        "path": ["${workspaceFolder}/**"],
-        "limitSymbolsToIncludedHeaders": true
-      }
-    },
-    {
-      "name": "Windows MSVC",
-      "includePath": [
-        "${workspaceFolder}/engine/src",
-        "${workspaceFolder}/thirdparty/imgui",
-        "${workspaceFolder}/thirdparty/imgui/examples",
-        "${workspaceFolder}/thirdparty/vcpkg/installed/x64-windows/include"
+        "${workspaceFolder}/game",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui/examples",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui/backends",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/imguizmo/",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/glew/include",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/magic_enum",
+        "${workspaceFolder}/thirdparty/engine/thirdparty/sdl2/x86_64-w64-mingw32/include/SDL2"
       ],
       "defines": ["UNICODE", "_UNICODE"],
       "windowsSdkVersion": "10.0.19041.0",
-      "compilerArgs": [],
-      "browse": {
-        "path": ["${workspaceFolder}/**"],
-        "limitSymbolsToIncludedHeaders": true
-      },
-      "configurationProvider": "ms-vscode.cmake-tools"
+      "compilerPath": "C:/Software/msys64/mingw64/bin/g++.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "windows-gcc-x64"
     }
   ],
   "version": 4

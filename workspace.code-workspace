@@ -5,8 +5,6 @@
     }
   ],
   "settings": {
-    "cmake.loggingLevel": "debug",
-    "cSpell.words": ["entt"],
-    "makefile.extensionOutputFolder": "./.vscode"
+    "cSpell.words": ["entt"]
   }
 }
