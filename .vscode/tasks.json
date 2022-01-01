@@ -7,7 +7,11 @@
       "label": "Build",
       "type": "shell",
       // "command": "make ${input:parallel}",
-      "command": "make -j 14",
+      "command": [
+        "thirdparty/gameengine/thirdparty/emsdk/emsdk activate latest | Out-Null;",
+        "cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE:FILEPATH=thirdparty/gameengine/thirdparty/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -Hc:/Programming/c++_game;",
+        "cmake --build build --config Debug --target game_2d -j 14 "
+      ],
       "group": {
         "kind": "build",
         "isDefault": true

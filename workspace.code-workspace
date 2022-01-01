@@ -5,6 +5,10 @@
     }
   ],
   "settings": {
-    "cSpell.words": ["entt"]
+    "cSpell.words": ["entt"],
+    "files.associations": {
+      "*.glsl": "c",
+      "algorithm": "cpp"
+    }
   }
 }

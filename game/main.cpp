@@ -15,12 +15,33 @@
 // #include <GL/glew.h>
 // #endif
 
+#include <imgui.h>
 #include <stdio.h>
 
-int
-main()
+void
+main_loop(void* arg)
 {
-  printf("Hello, world!");
+  IM_UNUSED(arg); // do nothing with it
+}
+
+int
+main(int argc, char* argv[])
+{
+  IM_UNUSED(argc);
+  IM_UNUSED(argv);
+
+#if defined(__EMSCRIPTEN__)
+  printf("Hello, Emscripten!");
+
+  // This function call won't return, and will engage in an infinite loop,
+  // processing events from the browser, and dispatching them.
+  emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
+#else
+  printf("Hello, not-emscripten!!");
+
+  while (1)
+    main_loop(nullptr);
+#endif
 
   return 0;
 }

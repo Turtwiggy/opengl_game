@@ -4,13 +4,15 @@
       "name": "Windows MSCV",
       "includePath": [
         "${workspaceFolder}/game",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui/examples",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/imgui/backends",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/imguizmo/",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/glew/include",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/magic_enum",
-        "${workspaceFolder}/thirdparty/engine/thirdparty/sdl2/x86_64-w64-mingw32/include/SDL2"
+        "${workspaceFolder}/thirdparty/entt/single_include",
+        "${workspaceFolder}/thirdparty/gameengine/engine",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui/examples",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui/backends",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/imguizmo/",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/glew/include",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/magic_enum",
+        "${workspaceFolder}/thirdparty/gameengine/thirdparty/sdl2/x86_64-w64-mingw32/include/SDL2"
       ],
       "defines": ["UNICODE", "_UNICODE"],
       "windowsSdkVersion": "10.0.19041.0",
