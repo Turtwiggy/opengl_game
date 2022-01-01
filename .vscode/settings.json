@@ -6,6 +6,5 @@
     "**/*.code-search": true,
     "**/.git": true,
     "**/thirdparty": true
-  },
-  "cmake.preferredGenerators": ["Ninja"]
+  }
 }

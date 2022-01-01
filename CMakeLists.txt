@@ -4,9 +4,10 @@ cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_VERBOSE_MAKEFILE on)
-project(game_2d VERSION 0.1.0)
 
-message("game_2d: ${CMAKE_SYSTEM_NAME} ${CMAKE_BUILD_TYPE}")
+project(game_2d VERSION 0.1.0)
+message("game_2d: ${CMAKE_SYSTEM_NAME}")
+message("game_2d: ${CMAKE_BUILD_TYPE}")
 message("game_2d: C: ${CMAKE_C_COMPILER_ID}")
 message("game_2d: CXX: ${CMAKE_CXX_COMPILER_ID}")
 
@@ -69,10 +70,10 @@ endif()
 
 
 # link libs
-foreach(library ${ENGINE_LINK_LIBS})
-  message("${PROJECT_NAME} linking library... ${library}")
-  target_link_libraries(game_2d PRIVATE ${library})
-endforeach()
+# foreach(library ${ENGINE_LINK_LIBS})
+#   message("${PROJECT_NAME} linking library... ${library}")
+#   target_link_libraries(game_2d PRIVATE ${library})
+# endforeach()
 
 # Windows things
 # IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")

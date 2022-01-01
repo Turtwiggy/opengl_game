@@ -8,9 +8,10 @@
       "type": "shell",
       // "command": "make ${input:parallel}",
       "command": [
-        "thirdparty/gameengine/thirdparty/emsdk/emsdk activate latest | Out-Null;",
-        "cmake -Bbuild -DCMAKE_TOOLCHAIN_FILE:FILEPATH=thirdparty/gameengine/thirdparty/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -Hc:/Programming/c++_game;",
-        "cmake --build build --config Debug --target game_2d -j 14 "
+        "rm -r build | Out-Null ;",
+        "thirdparty/gameengine/thirdparty/emsdk/emsdk activate latest | Out-Null ;",
+        "cmake -B${workspaceFolder}/build -DCMAKE_BUILD_TYPE:STRING=Debug -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${workspaceFolder}/thirdparty/gameengine/thirdparty/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake -H${workspaceFolder} -GNinja | Out-Null ;",
+        "cmake --build ${workspaceFolder}/build --config Debug --target game_2d -j 14 --"
       ],
       "group": {
         "kind": "build",
