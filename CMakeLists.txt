@@ -41,7 +41,7 @@ target_include_directories(game_2d PRIVATE
   ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include/entt
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     # add_definitions("-Wall")
     # add_definitions("-Wextra")
     # add_definitions("-Wpedantic")
