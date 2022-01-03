@@ -21,14 +21,14 @@
 void
 main_loop(void* arg)
 {
-  IM_UNUSED(arg); // do nothing with it
+  // IM_UNUSED(arg); // do nothing with it
 }
 
 int
 main(int argc, char* argv[])
 {
-  IM_UNUSED(argc);
-  IM_UNUSED(argv);
+  // IM_UNUSED(argc);
+  // IM_UNUSED(argv);
 
 #if defined(__EMSCRIPTEN__)
   printf("Hello, Emscripten!");
@@ -39,8 +39,8 @@ main(int argc, char* argv[])
 #else
   printf("Hello, not-emscripten!!");
 
-  while (1)
-    main_loop(nullptr);
+  // while (1)
+  //   main_loop(nullptr);
 #endif
 
   return 0;

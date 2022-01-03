@@ -1,6 +1,6 @@
-[submodule "thirdparty/entt"]
-	path = thirdparty/entt
-	url = https://github.com/skypjack/entt.git
 [submodule "thirdparty/gameengine"]
 	path = thirdparty/gameengine
 	url = https://github.com/Turtwiggy/game_engine.git
+[submodule "thirdparty/entt"]
+	path = thirdparty/entt
+	url = https://github.com/skypjack/entt.git
