@@ -2,7 +2,7 @@
 #include "systems/no_oxy_zone.hpp"
 
 // components
-#include "components/health.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"

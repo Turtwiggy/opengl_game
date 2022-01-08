@@ -2,8 +2,7 @@
 #include "systems/cursor.hpp"
 
 // components
-#include "components/cursor.hpp"
-#include "components/singleton_grid.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -19,7 +18,7 @@ void
 game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
 {
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSize>().size_xy;
+  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // dont process game events if the viewport says so
   if (!ri.viewport_process_events)
@@ -34,14 +33,43 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
 
   // Update cursor
   {
-    const auto& view = registry.view<CursorComponent, PositionIntComponent>();
-    view.each([&mouse_pos_adjusted_in_worldspace, &GRID_SIZE](const auto entity, const auto& c, auto& pos) {
+    const auto& view = registry.view<CursorComponent, PositionIntComponent, RenderSizeComponent>();
+    view.each([&mouse_pos_adjusted_in_worldspace, &GRID_SIZE](const auto entity, const auto& c, auto& pos, auto& size) {
       glm::ivec2 grid_slot = engine::grid::world_space_to_grid_space(mouse_pos_adjusted_in_worldspace, GRID_SIZE);
       // ImGui::Text("mouse grid %i %i", grid_slot.x, grid_slot.y);
 
       glm::ivec2 world_space = grid_slot * GRID_SIZE;
       pos.x = grid_slot.x * GRID_SIZE;
       pos.y = grid_slot.y * GRID_SIZE;
+
+      size.w = 1;
+      size.h = 1;
+
+      //
+      // note, all of this could probably be done via a line shader?
+      //
+
+      if (c.cursor_ltrd == 0) // left
+      {
+        size.h = GRID_SIZE;
+        pos.x -= static_cast<int>(GRID_SIZE / 2.0f);
+      }
+      if (c.cursor_ltrd == 1) // top
+      {
+        size.w = GRID_SIZE;
+        pos.y -= static_cast<int>(GRID_SIZE / 2.0f);
+      }
+      if (c.cursor_ltrd == 2) // right
+      {
+        size.h = GRID_SIZE;
+        pos.x += static_cast<int>(GRID_SIZE / 2.0f) - 1;
+      }
+      if (c.cursor_ltrd == 3) // down
+      {
+        size.w = GRID_SIZE;
+        pos.y += static_cast<int>(GRID_SIZE / 2.0f) - 1;
+      }
+
       // ImGui::Text("mouse clamped %i %i", world_space.x, world_space.y);
     });
   }

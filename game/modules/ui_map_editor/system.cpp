@@ -5,11 +5,18 @@
 #include "modules/renderer/components.hpp"
 #include "modules/ui_map_editor/components.hpp"
 
+// engine
+#include "engine/util.hpp"
+
 // helpers
 #include "modules/ui_map_editor/helpers.hpp"
 
 // other lib headers
 #include <imgui.h>
+
+// std lib
+#include <stdio.h>
+#include <string>
 
 void
 game2d::init_ui_map_editor_system(entt::registry& registry)
@@ -21,6 +28,23 @@ void
 game2d::update_ui_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
 {
   SINGLETON_MapEditorInfo& i = registry.ctx<SINGLETON_MapEditorInfo>();
+
+  // ImGui::Begin("Menu...");
+  // if (ImGui::Button("Open File")) {
+  //   printf("open file clicked...\n");
+  //   std::string filepath = engine::open_file(app.get_window(), "All\0*.*\0Text\0*.txt\0");
+  //   if (!filepath.empty()) {
+  //     printf("user wants to open file: %s \n", filepath.c_str());
+  //   }
+  // }
+  // if (ImGui::Button("Save File")) {
+  //   printf("save file clicked...\n");
+  //   std::string filepath = engine::save_file(app.get_window(), "All\0*.*\0.txt\0");
+  //   if (!filepath.empty()) {
+  //     printf("user wants to save file: %s \n", filepath.c_str());
+  //   }
+  // }
+  // ImGui::End();
 
   // temp
   std::string map_path = "assets/scenes/default.yml";

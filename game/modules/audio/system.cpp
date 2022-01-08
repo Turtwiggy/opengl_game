@@ -1,13 +1,11 @@
 #include "modules/audio/system.hpp"
 
 // components
-#include "components/singleton_resources.hpp"
+#include "game_components.hpp"
 #include "modules/audio/components.hpp"
 
-// engine
-
 // other lib headers
-#include <SDL_mixer.h>
+#include <SDL2/SDL_mixer.h>
 
 // c lib headers
 #include <iostream>

@@ -2,7 +2,7 @@
 #include "systems/velocity_in_boundingbox.hpp"
 
 // components
-#include "components/velocity_in_boundingbox.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

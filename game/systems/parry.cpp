@@ -2,9 +2,7 @@
 #include "systems/parry.hpp"
 
 // components
-#include "components/flash_colour.hpp"
-#include "components/parry.hpp"
-#include "components/player.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

@@ -2,17 +2,7 @@
 #include "game.hpp"
 
 // components
-#include "components/click_to_destroy.hpp"
-#include "components/cursor.hpp"
-#include "components/double_jump.hpp"
-#include "components/flash_colour.hpp"
-#include "components/health.hpp"
-#include "components/parry.hpp"
-#include "components/player.hpp"
-#include "components/singleton_game_paused.hpp"
-#include "components/singleton_grid.hpp"
-#include "components/singleton_resources.hpp"
-#include "components/velocity_in_boundingbox.hpp"
+#include "game_components.hpp"
 #include "modules/animation/components.hpp"
 #include "modules/audio/components.hpp"
 #include "modules/editor_camera/components.hpp"
@@ -34,7 +24,6 @@
 #include "modules/ui_gizmos/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
 #include "modules/ui_map_editor/system.hpp"
-#include "modules/ui_menu_bar/system.hpp"
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 #include "systems/click_to_destroy.hpp"
@@ -68,8 +57,8 @@ init_game_state(entt::registry& registry)
   init_physics_system(registry);
   init_ui_gizmos_system(registry);
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
-  registry.set<SINGLETON_GamePaused>(SINGLETON_GamePaused());
-  registry.set<SINGLETON_GridSize>(SINGLETON_GridSize());
+  registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
+  registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
 
   // colours
   const glm::vec4 colour_red = glm::vec4(232 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1.0f);
@@ -80,7 +69,7 @@ init_game_state(entt::registry& registry)
 
   // access singleton data
   const auto& res = registry.ctx<SINGLETON_ResourceComponent>();
-  const auto& gs = registry.ctx<SINGLETON_GridSize>();
+  const auto& gs = registry.ctx<SINGLETON_GridSizeComponent>();
   const int GRID_SIZE = gs.size_xy;
 
   // Editor Camera
@@ -91,17 +80,24 @@ init_game_state(entt::registry& registry)
     registry.emplace<CameraComponent>(r);
   }
 
-  // Add a cursor
+  // std::map<std::string, Component> component_map{
+  //   { "EditorCamera", Component() },
+  //   { "EditorCamera", Component() },
+  // };
+
+  // Add a cursor, made of 4 lines
   {
-    entt::entity r = registry.create();
-    registry.emplace<TagComponent>(r, "cursor");
-    // rendering
-    registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
-    registry.emplace<PositionIntComponent>(r);
-    registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-    registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
-    // gameplay
-    registry.emplace<CursorComponent>(r);
+    for (int i = 0; i < 4; i++) {
+      entt::entity r = registry.create();
+      registry.emplace<TagComponent>(r, std::string("cursor" + std::to_string(i)));
+      // rendering
+      registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
+      registry.emplace<PositionIntComponent>(r);
+      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+      // gameplay
+      registry.emplace<CursorComponent>(r, i);
+    }
   }
 
   // Add some blocks
@@ -225,7 +221,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 {
   Profiler& p = registry.ctx<Profiler>();
 
-  SINGLETON_GamePaused& gp = registry.ctx<SINGLETON_GamePaused>();
+  SINGLETON_GamePausedComponent& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   if (app.get_input().get_key_down(SDL_SCANCODE_P)) {
     gp.paused = !gp.paused;
     std::cout << "game paused: " << gp.paused << std::endl;
@@ -288,7 +284,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     update_ui_hierarchy_system(registry, app);
     // update_ui_gizmos_system(registry, app, dt); // update after hierarchy
     update_ui_map_editor_system(registry, app, dt);
-    update_ui_menu_bar_system(registry, app, dt);
   };
 
   // end frame

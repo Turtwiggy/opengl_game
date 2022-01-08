@@ -2,7 +2,7 @@
 #include "modules/editor_map/system.hpp"
 
 // components
-#include "components/singleton_grid.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_map_editor/components.hpp"
@@ -26,7 +26,7 @@ game2d::update_map_editor_system(entt::registry& registry, engine::Application& 
   if (!ri.viewport_process_events)
     return;
 
-  const auto& gs = registry.ctx<SINGLETON_GridSize>();
+  const auto& gs = registry.ctx<SINGLETON_GridSizeComponent>();
   const int GRID_SIZE = gs.size_xy;
 
   // urgh.. x3

@@ -1,9 +1,10 @@
 // your header
 #include "modules/renderer/system.hpp"
 
-// components/systems
-#include "components/singleton_resources.hpp"
+// helpers
 #include "helpers/spritemap.hpp"
+
+// components/systems
 #include "modules/editor_camera/helpers.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/renderer/helpers/helpers.hpp"
@@ -62,7 +63,6 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
 void
 game2d::update_render_system(entt::registry& registry, engine::Application& app)
 {
-  SINGLETON_ResourceComponent& r = registry.ctx<SINGLETON_ResourceComponent>();
   SINGLETON_RendererInfo& ri = registry.ctx<SINGLETON_RendererInfo>();
   const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
 

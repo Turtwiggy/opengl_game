@@ -2,10 +2,7 @@
 #include "systems/click_to_destroy.hpp"
 
 // components
-#include "components/click_to_destroy.hpp"
-#include "components/health.hpp"
-#include "components/singleton_grid.hpp"
-#include "components/singleton_resources.hpp"
+#include "game_components.hpp"
 #include "modules/renderer/components.hpp"
 
 // other engine headers
@@ -22,7 +19,7 @@ game2d::update_click_to_destroy_system(entt::registry& registry, engine::Applica
 {
   auto& res = registry.ctx<SINGLETON_ResourceComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSize>().size_xy;
+  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // dont process game events if the viewport says so
   if (!ri.viewport_process_events)

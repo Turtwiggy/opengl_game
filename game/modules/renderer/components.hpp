@@ -97,13 +97,13 @@ struct TagComponent
   std::string tag;
 };
 
-struct ZIndex
-{
-  int index = 0;
-  ZIndex() = default;
-  ZIndex(int index)
-    : index(index){};
-};
+// struct ZIndex
+// {
+//   int index = 0;
+//   ZIndex() = default;
+//   ZIndex(int index)
+//     : index(index){};
+// };
 
 // texture constants
 constexpr int tex_unit_kenny_nl = 0;

@@ -2,9 +2,7 @@
 #include "systems/player_input.hpp"
 
 // components
-#include "components/double_jump.hpp"
-#include "components/player.hpp"
-#include "components/singleton_grid.hpp"
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -22,7 +20,7 @@ void
 game2d::update_player_input_system(entt::registry& registry, engine::Application& app)
 {
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSize>().size_xy;
+  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // process game events if the viewport says so
   // if (!ri.viewport_process_events)
