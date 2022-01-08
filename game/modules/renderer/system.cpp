@@ -32,8 +32,8 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   ri.fbo_lighting = Framebuffer::create_fbo();
   ri.tex_id_main_scene = create_texture(screen_wh, tex_unit_main_scene, ri.fbo_main_scene);
   ri.tex_id_lighting = create_texture(screen_wh, tex_unit_lighting, ri.fbo_lighting);
-  ri.instanced = Shader("2d_game/shaders/2d_instanced.vert", "2d_game/shaders/2d_instanced.frag");
-  ri.fan = Shader("2d_game/shaders/2d_basic_with_proj.vert", "2d_game/shaders/2d_colour.frag");
+  ri.instanced = Shader("shaders/2d_instanced.vert", "shaders/2d_instanced.frag");
+  ri.fan = Shader("shaders/2d_basic_with_proj.vert", "shaders/2d_colour.frag");
   ri.viewport_size_render_at = screen_wh;
   ri.viewport_size_current = screen_wh;
 
@@ -44,7 +44,7 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   quad_renderer::QuadRenderer::init();
 
   // sprites
-  const std::string path_to_kennynl = "assets/2d_game/textures/kennynl_1bit_pack/monochrome_transparent_packed.png";
+  const std::string path_to_kennynl = "assets/textures/kennynl_1bit_pack/monochrome_transparent_packed.png";
   std::vector<std::pair<int, std::string>> textures_to_load;
   textures_to_load.emplace_back(tex_unit_kenny_nl, path_to_kennynl);
   ri.loaded_texture_ids = load_textures_threaded(textures_to_load);

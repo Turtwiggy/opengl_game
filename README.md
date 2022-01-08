@@ -8,8 +8,8 @@ git submodule update --init --recursive
 ### Install
 
 - c++ compiler (MSVC, gcc, clang)
-- cmake e.g. choco install cmake
-- ninja e.g. choco install ninja
+- cmake e.g. `choco install cmake`
+- ninja e.g. `choco install ninja`
 
 ### Building (CMake)
 

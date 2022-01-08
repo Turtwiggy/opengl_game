@@ -4,8 +4,8 @@
 #include "engine/application.hpp"
 
 // other lib headers
-#include <entt/entt.hpp>
-#include <glm/glm.hpp>
+#include "entt/entt.hpp"
+#include "glm/glm.hpp"
 
 namespace game2d {
 

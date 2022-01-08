@@ -22,15 +22,10 @@ else()
   set (CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/thirdparty/gameengine/thirdparty/vcpkg/scripts/buildsystems/vcpkg.cmake)
 endif()
 
+#if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    # add_definitions("-Wall")
-    # add_definitions("-Wextra")
-    # add_definitions("-Wpedantic")
-    # add_definitions("-Werror")
-    # add_definitions("-Wformat")
     add_definitions("-std=c++17") 
 endif()
-# elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
 project(game_2d VERSION 0.1.0)
 message("game_2d: ${CMAKE_SYSTEM_NAME}")
@@ -46,6 +41,7 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(sdl2-mixer CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h")
 
 # Add source files
@@ -63,28 +59,23 @@ add_executable(game_2d
 # includes
 target_include_directories(game_2d PRIVATE 
   ${ENGINE_INCLUDES} 
-  ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include/entt
+  ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include
   ${CMAKE_SOURCE_DIR}/game
 )
 
-# link libs
-
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+
+  # link windows libs
   target_link_libraries(game_2d PRIVATE SDL2::SDL2 SDL2::SDL2main)
   target_link_libraries(game_2d PRIVATE SDL2::SDL2_mixer)
   target_link_libraries(game_2d PRIVATE opengl32)
   target_link_libraries(game_2d PRIVATE GLEW::GLEW)
+  target_link_libraries(game_2d PRIVATE glm::glm)
   # game networking sockets libs (windows only)
   # OpenSSL::SSL OpenSSL::Crypto
   # protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite
   # GameNetworkingSockets::shared GameNetworkingSockets::static GameNetworkingSockets::GameNetworkingSockets GameNetworkingSockets::GameNetworkingSockets_s
-endif()
-# elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
-
-
-# Windows things
-IF(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   # create symlink assets for build
   set (source "${CMAKE_SOURCE_DIR}/assets")
   set (destination "${CMAKE_CURRENT_BINARY_DIR}/assets")
