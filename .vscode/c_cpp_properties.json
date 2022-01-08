@@ -6,6 +6,7 @@
         "${workspaceFolder}/game",
         "${workspaceFolder}/thirdparty/gameengine/src",
         "${workspaceFolder}/thirdparty/entt/single_include",
+        "${workspaceFolder}/thirdparty/yaml-cpp/include",
         "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui",
         "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui/examples",
         "${workspaceFolder}/thirdparty/gameengine/thirdparty/imgui/backends",

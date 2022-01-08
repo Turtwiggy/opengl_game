@@ -23,7 +23,7 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
   SINGLETON_MapEditorInfo& i = registry.ctx<SINGLETON_MapEditorInfo>();
 
   // temp
-  std::string map_path = "assets/2d_game/scenes/here.txt";
+  std::string map_path = "assets/scenes/default.yml";
 
   ImGui::Begin("Map Editor", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 

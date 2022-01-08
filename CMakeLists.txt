@@ -42,6 +42,7 @@ find_package(sdl2-mixer CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h")
 
 # Add source files
@@ -59,8 +60,9 @@ add_executable(game_2d
 # includes
 target_include_directories(game_2d PRIVATE 
   ${ENGINE_INCLUDES} 
-  ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include
   ${CMAKE_SOURCE_DIR}/game
+  ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include
+  ${CMAKE_SOURCE_DIR}/thirdparty/yaml-cpp/include
 )
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
@@ -71,6 +73,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   target_link_libraries(game_2d PRIVATE opengl32)
   target_link_libraries(game_2d PRIVATE GLEW::GLEW)
   target_link_libraries(game_2d PRIVATE glm::glm)
+  target_link_libraries(game_2d PRIVATE yaml-cpp)
   # game networking sockets libs (windows only)
   # OpenSSL::SSL OpenSSL::Crypto
   # protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite

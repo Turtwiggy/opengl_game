@@ -3,26 +3,39 @@
 // components
 #include "modules/renderer/components.hpp"
 
+// other libs
+#include <yaml-cpp/yaml.h>
+
+// std libs
+#include <fstream>
+#include <iostream>
+
 void
 game2d::serialize_to_text(entt::registry& registry, std::string path)
 {
-  std::cout << "serializing ... " << path << std::endl;
+  YAML::Emitter out;
+  out << YAML::BeginMap;
+  out << YAML::Key << "Scene" << YAML::Value << "Default Scene";
+  out << YAML::EndMap;
 
-  registry.each([&registry](auto entity) {
-    //
-    const auto& eid = entity;
-    if (eid == entt::null)
-      return;
-    // Serialize Entity
-    // TODO: dont want incrementing ids, want uuids
-    // std::cout << "serializing ... " << static_cast<int>(eid) << std::endl;
+  std::ofstream fout(path);
+  fout << out.c_str();
 
-    // Serialize TagComponent... etc
-    if (registry.all_of<TagComponent>(eid)) {
-      TagComponent& t = registry.get<TagComponent>(eid);
-      std::cout << "serializing ... " << t.tag << std::endl;
-    }
-  });
+  // registry.each([&registry](auto entity) {
+  //   //
+  //   const auto& eid = entity;
+  //   if (eid == entt::null)
+  //     return;
+  //   // Serialize Entity
+  //   // TODO: dont want incrementing ids, want uuids
+  //   // std::cout << "serializing ... " << static_cast<int>(eid) << std::endl;
+
+  //   // Serialize TagComponent... etc
+  //   if (registry.all_of<TagComponent>(eid)) {
+  //     TagComponent& t = registry.get<TagComponent>(eid);
+  //     // std::cout << "serializing ... " << t.tag << std::endl;
+  //   }
+  // });
 }
 
 void

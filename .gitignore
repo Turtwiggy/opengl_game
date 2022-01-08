@@ -3,7 +3,7 @@
 *.o
 *.log
 *.dll
-
 build/
-build-objs/
-build-web/
+
+# Configs
+imgui.ini
