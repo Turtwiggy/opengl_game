@@ -32,8 +32,7 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
   }
 
   if (ImGui::Button("Load map")) {
-    entt::registry new_registry;
-    deserialize_text_to_registry(new_registry, map_path);
+    deserialize_text_to_registry(registry, map_path);
   }
 
   ImGui::Checkbox("Place Sprite", &i.place_sprite);
