@@ -18,6 +18,11 @@ struct CursorComponent
   int cursor_ltrd = 0; // 0=l, 1=t, 2=r, 3=d
 };
 
+struct DestroyAfterTimeComponent
+{
+  float time = 0.0f;
+};
+
 struct DoubleJumpComponent
 {
   bool able_to_jump = true;

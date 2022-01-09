@@ -28,6 +28,7 @@
 #include "modules/ui_profiler/system.hpp"
 #include "systems/click_to_destroy.hpp"
 #include "systems/cursor.hpp"
+#include "systems/destroy_after_time.hpp"
 #include "systems/no_oxy_zone.hpp"
 #include "systems/parry.hpp"
 #include "systems/player_input.hpp"
@@ -264,6 +265,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       // editor stuff
       update_editor_camera_system(registry, app, dt);
       update_map_editor_system(registry, app, dt);
+      // destroy any entities
+      update_destroy_after_time_system(registry, app, dt);
     }
   };
   Uint64 end_game_tick = SDL_GetPerformanceCounter();

@@ -6,6 +6,9 @@
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
+// helpers
+#include "helpers/physics_layers.hpp"
+
 // other engine headers
 #include "engine/grid.hpp"
 
@@ -154,26 +157,48 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
           pos.y = world_space.y;
         }
 
-        // Action: spawn object with LMB
-        // if (app.get_input().get_key_down(SDL_SCANCODE_RIGHT)) {
-        // glm::vec2 world_pos = adjusted_mouse_pos - glm::vec2(pos.x, pos.y);
-        // glm::ivec2 world_pos_clamped = engine::grid::world_space_to_clamped_world_space(world_pos, GRID_SIZE);
-        // glm::vec2 vel = glm::vec2(world_pos_clamped.x, world_pos_clamped.y);
-        // if (!(vel.x == 0.0f && vel.y == 0.0f))
-        //   vel = glm::normalize(vel);
-        // float bullet_speed = 100.0f;
-        // vel *= bullet_speed;
+        //
+        // Action: spawn object with arrow keys
+        //
+        const float bullet_speed = 10.0f;
 
-        // {
-        //   entt::entity r = registry.create();
-        //   registry.emplace<VelocityComponent>(r, vel.x, vel.y);
-        //   registry.emplace<ColourComponent>(r, 1.0f, 1.0f, 1.0f, 1.0f);
-        //   registry.emplace<PositionInt>(r, pos.x, pos.y);
-        //   registry.emplace<Size>(r, GRID_SIZE, GRID_SIZE);
-        //   registry.emplace<Sprite>(r, sprite::type::EMPTY);
-        //   registry.emplace<ZIndex>(r, 0);
-        // }
-        // }
+        int arrow_vx = 0, arrow_vy = 0;
+        if (app.get_input().get_key_down(SDL_SCANCODE_RIGHT))
+          arrow_vx = 1;
+        else if (app.get_input().get_key_down(SDL_SCANCODE_LEFT))
+          arrow_vx = -1;
+        if (app.get_input().get_key_down(SDL_SCANCODE_UP))
+          arrow_vy = -1;
+        else if (app.get_input().get_key_down(SDL_SCANCODE_DOWN))
+          arrow_vy = 1;
+
+        if (arrow_vx != 0 || arrow_vy != 0) {
+
+          glm::ivec2 player_pos = { pos.x, pos.y };
+
+          glm::vec2 vel = glm::vec2(arrow_vx, arrow_vy);
+          if (!(vel.x == 0.0f && vel.y == 0.0f))
+            vel = glm::normalize(vel);
+          vel *= bullet_speed;
+
+          { // spawn projectile
+            entt::entity r = registry.create();
+            registry.emplace<TagComponent>(r, "Arrow");
+            // rendering
+            registry.emplace<ColourComponent>(r, 1.0f, 1.0f, 1.0f, 1.0f);
+            registry.emplace<PositionIntComponent>(r, pos.x, pos.y);
+            registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+            registry.emplace<SpriteComponent>(r, sprite::type::WEAPON_ARROW_1);
+            // physics
+            registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_ARROW));
+            registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+            registry.emplace<VelocityComponent>(r, vel.x, vel.y);
+            // gameplay
+            registry.emplace<DestroyAfterTimeComponent>(r, 5.0f);
+          }
+        }
+
+        // end
       });
   }
 };
