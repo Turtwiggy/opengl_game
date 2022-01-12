@@ -2,6 +2,7 @@
 #include "modules/physics/process_move_objects.hpp"
 
 // components
+#include "game_components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
@@ -20,6 +21,7 @@ void
 CALLBACK_actor_solid_collision(entt::registry& registry, const CollisionInfo2D& info)
 {
   // std::cout << "actor collided, normal: " << info.normal.x << " " << info.normal.y << std::endl;
+
   if (registry.all_of<VelocityComponent>(info.eid)) {
     auto& vel = registry.get<VelocityComponent>(info.eid);
 
@@ -32,11 +34,16 @@ CALLBACK_actor_solid_collision(entt::registry& registry, const CollisionInfo2D& 
       vel.x = 0.0f;
     }
     // std::cout << "x: " << normal.x << " y:" << normal.y << std::endl;
-  }
+  };
+
+  if (registry.all_of<DoubleJumpComponent>(info.eid)) {
+    auto& c = registry.get<DoubleJumpComponent>(info.eid);
+    c.able_to_jump = true;
+  };
 };
 
 void
-do_nothing(entt::registry& registry, const CollisionInfo2D& eid){
+CALLBACK_do_nothing(entt::registry& registry, const CollisionInfo2D& eid){
   // std::cout << "actor being squished between solids!" << std::endl;
 };
 
@@ -46,7 +53,7 @@ void
 game2d::update_move_objects_system(entt::registry& registry, engine::Application& app, float dt)
 {
   std::function<void(entt::registry&, CollisionInfo2D&)> actor_hit_solid_callback = CALLBACK_actor_solid_collision;
-  std::function<void(entt::registry&, CollisionInfo2D&)> actor_being_squish_callback = do_nothing;
+  std::function<void(entt::registry&, CollisionInfo2D&)> actor_being_squish_callback = CALLBACK_do_nothing;
 
   ImGui::Begin("Debug move objects", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 

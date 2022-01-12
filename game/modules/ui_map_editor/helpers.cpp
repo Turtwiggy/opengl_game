@@ -83,6 +83,13 @@ serialize_entity(YAML::Emitter& out, const entt::registry& registry, const entt:
   out << YAML::BeginMap;
   out << YAML::Key << "Entity" << YAML::Value << static_cast<uint32_t>(eid);
 
+  // TODO: serialise entt::registry?
+  // archive;
+  // entt::basic_snapshot snapshot(registry);
+  // snapshot.entities(archive).component<>(archive);
+  // archive.close();
+  // registry.
+
   // Serialize TagComponent..
   if (registry.all_of<TagComponent>(eid)) {
     const TagComponent& t = registry.get<TagComponent>(eid);

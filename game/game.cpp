@@ -27,12 +27,11 @@
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 #include "systems/click_to_destroy.hpp"
+#include "systems/collisions_actor_actor.hpp"
 #include "systems/cursor.hpp"
 #include "systems/destroy_after_time.hpp"
-#include "systems/no_oxy_zone.hpp"
 #include "systems/parry.hpp"
 #include "systems/player_input.hpp"
-#include "systems/process_physics.hpp"
 #include "systems/velocity_in_boundingbox.hpp"
 
 // engine headers
@@ -45,6 +44,7 @@
 #include <imgui.h>
 
 // c++ lib headers
+#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -80,11 +80,6 @@ init_game_state(entt::registry& registry)
     registry.emplace<EditorCameraComponent>(r);
     registry.emplace<CameraComponent>(r);
   }
-
-  // std::map<std::string, Component> component_map{
-  //   { "EditorCamera", Component() },
-  //   { "EditorCamera", Component() },
-  // };
 
   // Add a cursor, made of 4 lines
   {
@@ -244,6 +239,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       update_move_objects_system(registry, app, dt);
       // generate all collisions between actor-actor objects
       update_physics_system(registry, app, dt);
+      // process actor-actor collisions
+      update_actor_actor_collision_system(registry, app, dt);
     }
   }
   Uint64 end_physics = SDL_GetPerformanceCounter();
@@ -258,10 +255,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       update_player_input_system(registry, app);
       update_cursor_system(registry, app);
       update_click_to_destroy_system(registry, app);
-      update_process_physics_system(registry, app, dt);
       update_velocity_in_boundingbox_system(registry, app, dt);
       update_parry_system(registry, app, dt);
-      update_no_oxy_zone_system(registry, app, dt);
       // editor stuff
       update_editor_camera_system(registry, app, dt);
       update_map_editor_system(registry, app, dt);
