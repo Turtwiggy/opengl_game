@@ -217,7 +217,10 @@ public:
 
     // Create a pointer to the system and return it so it can be used externally
     std::shared_ptr<T> system = std::make_shared<T>();
+
+    // note: if an error here, make sure inheritance is public
     systems.insert({ type_name, system });
+
     return system;
   }
 

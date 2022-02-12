@@ -1,20 +1,20 @@
 #pragma once
 
-// game2d headers
-#include "ecs.hpp"
+// // game2d headers
+// #include "ecs.hpp"
 
-// engine headers
-#include "engine/application.hpp"
+// // engine headers
+// #include "engine/application.hpp"
 
-// other lib headers
-#include "glm/glm.hpp"
+// // other lib headers
+// #include "glm/glm.hpp"
 
-namespace game2d {
+// namespace game2d {
 
-void
-init(game2d::Coordinator& registry, engine::Application& app, glm::ivec2 screen_wh);
+// void
+// init(game2d::Coordinator& registry, engine::Application& app, glm::ivec2 screen_wh);
 
-void
-update(game2d::Coordinator& registry, engine::Application& app, float dt);
+// void
+// update(game2d::Coordinator& registry, engine::Application& app, float dt);
 
-} // namespace game2d
+// } // namespace game2d

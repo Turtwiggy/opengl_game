@@ -25,7 +25,7 @@ using namespace engine;
 // c++ lib
 #include <vector>
 
-void
+std::shared_ptr<game2d::RenderSystem>
 game2d::init_render_system(game2d::Coordinator& registry, const glm::ivec2& screen_wh)
 {
   SINGLETON_RendererInfo ri;
@@ -56,14 +56,28 @@ game2d::init_render_system(game2d::Coordinator& registry, const glm::ivec2& scre
   ri.instanced.set_mat4("projection", calculate_projection(screen_wh.x, screen_wh.y));
   ri.instanced.set_int_array("textures", textures, 3);
 
-  // https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system#context-variables
-  registry.set<SINGLETON_RendererInfo>(ri);
+  // ecs stuff
+  // .. register component
+  registry.register_component<SINGLETON_RendererInfo>();
+  // .. register system
+  auto system = registry.register_system<game2d::RenderSystem>();
+  game2d::Signature signature;
+  signature.set(registry.get_component_type<SINGLETON_RendererInfo>());
+  registry.set_system_signature<RenderSystem>(signature);
+  // .. create an entity with this component on it
+  auto e = registry.create_entity();
+  registry.add_component<SINGLETON_RendererInfo>(e, ri);
+  return system;
 };
 
 void
-game2d::update_render_system(game2d::Coordinator& registry, engine::Application& app)
+game2d::RenderSystem::update(game2d::Coordinator& registry)
 {
-  SINGLETON_RendererInfo& ri = registry.ctx<SINGLETON_RendererInfo>();
+  // should be a singleton ecs component...
+  const auto& it_entity = entities.begin();
+  const auto entity = *it_entity;
+  auto& ri = registry.get_component<SINGLETON_RendererInfo>(entity);
+
   const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
 
   // Resize
@@ -94,21 +108,20 @@ game2d::update_render_system(game2d::Coordinator& registry, engine::Application&
     quad_renderer::QuadRenderer::begin_batch();
 
     // todo: work out z-index
-    // registry.sort<ZIndex>([](const auto& lhs, const auto& rhs) { return lhs.index < rhs.index; });
 
-    quad_renderer::RenderDescriptor desc;
-    const auto& view =
-      registry
-        .view<const PositionIntComponent, const RenderSizeComponent, const ColourComponent, const SpriteComponent>();
-    view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& spr) {
-      desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
-      desc.colour = c.colour;
-      desc.size = { s.w, s.h };
-      desc.tex_slot = tex_unit_kenny_nl;
-      desc.sprite_offset = sprite::spritemap::get_sprite_offset(spr.sprite);
-      desc.angle_radians = 0.0f;
-      quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
-    });
+    // quad_renderer::RenderDescriptor desc;
+    // const auto& view =
+    //   registry
+    //     .view<const PositionIntComponent, const RenderSizeComponent, const ColourComponent, const SpriteComponent>();
+    // view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& spr) {
+    //   desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
+    //   desc.colour = c.colour;
+    //   desc.size = { s.w, s.h };
+    //   desc.tex_slot = tex_unit_kenny_nl;
+    //   desc.sprite_offset = sprite::spritemap::get_sprite_offset(spr.sprite);
+    //   desc.angle_radians = 0.0f;
+    //   quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
+    // });
 
     quad_renderer::QuadRenderer::end_batch();
     quad_renderer::QuadRenderer::flush(ri.instanced);
@@ -127,7 +140,7 @@ game2d::update_render_system(game2d::Coordinator& registry, engine::Application&
   ri.viewport_pos = glm::vec2(vi.pos.x, vi.pos.y);
   ri.viewport_size_current = { vi.size.x, vi.size.y };
   ri.viewport_process_events = vi.focused && vi.hovered;
-};
+}
 
 void
 game2d::end_frame_render_system(game2d::Coordinator& registry)

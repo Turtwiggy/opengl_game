@@ -9,13 +9,19 @@
 // other project headers
 #include <glm/glm.hpp>
 
+// std lib
+#include <memory>
+
 namespace game2d {
 
-void
-init_render_system(game2d::Coordinator& registry, const glm::ivec2& screen_wh);
+class RenderSystem : public game2d::System
+{
+public:
+  void update(game2d::Coordinator& registry);
+};
 
-void
-update_render_system(game2d::Coordinator& registry, engine::Application& app);
+std::shared_ptr<RenderSystem>
+init_render_system(game2d::Coordinator& registry, const glm::ivec2& screen_wh);
 
 void
 end_frame_render_system(game2d::Coordinator& registry);
