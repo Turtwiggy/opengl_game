@@ -2,7 +2,7 @@
 #include "systems/collisions_actor_actor.hpp"
 
 // components
-#include "modules/physics/components.hpp"
+#include "physics/components.hpp"
 
 // helpers
 #include "helpers/physics_layers.hpp"

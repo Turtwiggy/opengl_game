@@ -1,8 +1,8 @@
-#include "modules/audio/system.hpp"
+#include "audio/system.hpp"
 
 // components
+#include "audio/components.hpp"
 #include "game_components.hpp"
-#include "modules/audio/components.hpp"
 
 // other lib headers
 #include <SDL2/SDL_mixer.h>

@@ -2,7 +2,7 @@
 #include "system.hpp"
 
 // components
-#include "modules/physics/components.hpp"
+#include "physics/components.hpp"
 
 // other lib headers
 #include <imgui.h>

@@ -4,7 +4,7 @@
 #include "engine/application.hpp"
 
 // helpers
-#include "modules/renderer/helpers/renderers/batch_triangle.hpp"
+#include "renderer/helpers/renderers/batch_triangle.hpp"
 
 // other lib headers
 #include "ecs.hpp"

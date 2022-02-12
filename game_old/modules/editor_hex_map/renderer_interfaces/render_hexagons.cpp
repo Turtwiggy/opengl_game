@@ -2,7 +2,7 @@
 #include "render_hexagons.hpp"
 
 // components
-#include "modules/editor_hex_map/components.hpp"
+#include "editor_hex_map/components.hpp"
 
 // c++ lib headers
 #include <vector>

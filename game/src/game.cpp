@@ -3,15 +3,15 @@
 
 // // components
 // #include "components.hpp"
-// #include "modules/renderer/components.hpp"
-// #include "modules/ui_profiler/components.hpp"
+// #include "renderer/components.hpp"
+// #include "ui_profiler/components.hpp"
 
 // // helpers
 // #include "helpers/physics_layers.hpp"
 
 // // systems
-// #include "modules/renderer/system.hpp"
-// #include "modules/ui_profiler/system.hpp"
+// #include "renderer/system.hpp"
+// #include "ui_profiler/system.hpp"
 // // #include "systems/click_to_destroy.hpp"
 // // #include "systems/collisions_actor_actor.hpp"
 // // #include "systems/cursor.hpp"

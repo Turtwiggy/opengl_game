@@ -1,8 +1,8 @@
 #include "helpers.hpp"
 
 // components
-#include "modules/editor_camera/components.hpp"
-#include "modules/renderer/components.hpp"
+#include "editor_camera/components.hpp"
+#include "renderer/components.hpp"
 
 // other libs
 #include <yaml-cpp/yaml.h>

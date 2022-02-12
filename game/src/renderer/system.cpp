@@ -1,14 +1,14 @@
 // your header
-#include "modules/renderer/system.hpp"
+#include "renderer/system.hpp"
 
 // helpers
-#include "helpers/spritemap.hpp"
-#include "modules/editor_camera/helpers.hpp"
+#include "editor_camera/helpers.hpp"
+#include "spritemap.hpp"
 
 // components/systems
-#include "modules/renderer/components.hpp"
-#include "modules/renderer/helpers/helpers.hpp"
-#include "modules/renderer/helpers/renderers/batch_quad.hpp"
+#include "renderer/components.hpp"
+#include "renderer/helpers/helpers.hpp"
+#include "renderer/helpers/renderers/batch_quad.hpp"
 
 // engine headers
 #include "engine/opengl/framebuffer.hpp"
@@ -25,10 +25,10 @@ using namespace engine;
 // c++ lib
 #include <vector>
 
-std::shared_ptr<game2d::RenderSystem>
-game2d::init_render_system(game2d::Coordinator& registry, const glm::ivec2& screen_wh)
+game2d::RendererInfo
+game2d::init_render_system(const glm::ivec2& screen_wh)
 {
-  SINGLETON_RendererInfo ri;
+  game2d::RendererInfo ri;
   ri.fbo_main_scene = Framebuffer::create_fbo();
   ri.fbo_lighting = Framebuffer::create_fbo();
   ri.tex_id_main_scene = create_texture(screen_wh, tex_unit_main_scene, ri.fbo_main_scene);
@@ -56,28 +56,12 @@ game2d::init_render_system(game2d::Coordinator& registry, const glm::ivec2& scre
   ri.instanced.set_mat4("projection", calculate_projection(screen_wh.x, screen_wh.y));
   ri.instanced.set_int_array("textures", textures, 3);
 
-  // ecs stuff
-  // .. register component
-  registry.register_component<SINGLETON_RendererInfo>();
-  // .. register system
-  auto system = registry.register_system<game2d::RenderSystem>();
-  game2d::Signature signature;
-  signature.set(registry.get_component_type<SINGLETON_RendererInfo>());
-  registry.set_system_signature<RenderSystem>(signature);
-  // .. create an entity with this component on it
-  auto e = registry.create_entity();
-  registry.add_component<SINGLETON_RendererInfo>(e, ri);
-  return system;
+  return ri;
 };
 
 void
-game2d::RenderSystem::update(game2d::Coordinator& registry)
+game2d::prep_for_render(RendererInfo& ri)
 {
-  // should be a singleton ecs component...
-  const auto& it_entity = entities.begin();
-  const auto entity = *it_entity;
-  auto& ri = registry.get_component<SINGLETON_RendererInfo>(entity);
-
   const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
 
   // Resize
@@ -143,7 +127,7 @@ game2d::RenderSystem::update(game2d::Coordinator& registry)
 }
 
 void
-game2d::end_frame_render_system(game2d::Coordinator& registry)
+game2d::end_frame_render_system()
 {
   quad_renderer::QuadRenderer::end_frame();
 };

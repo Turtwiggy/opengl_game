@@ -1,7 +1,7 @@
 #pragma once
 
 // game2d
-#include "modules/renderer/components.hpp"
+#include "renderer/components.hpp"
 
 namespace game2d {
 

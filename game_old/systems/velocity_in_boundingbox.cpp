@@ -3,8 +3,8 @@
 
 // components
 #include "game_components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/renderer/components.hpp"
+#include "physics/components.hpp"
+#include "renderer/components.hpp"
 
 // other engine headers
 #include "engine/grid.hpp"
@@ -16,7 +16,7 @@
 void
 game2d::update_velocity_in_boundingbox_system(game2d::Coordinator& registry, engine::Application& app, float dt)
 {
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& ri = registry.ctx<RendererInfo>();
 
   glm::ivec2 boundary = ri.viewport_size_render_at;
 

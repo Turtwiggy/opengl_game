@@ -3,8 +3,8 @@
 
 // components
 #include "game_components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/renderer/components.hpp"
+#include "physics/components.hpp"
+#include "renderer/components.hpp"
 
 // other engine headers
 #include "engine/grid.hpp"
@@ -17,7 +17,7 @@
 void
 game2d::update_cursor_system(game2d::Coordinator& registry, engine::Application& app)
 {
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& ri = registry.ctx<RendererInfo>();
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // dont process game events if the viewport says so

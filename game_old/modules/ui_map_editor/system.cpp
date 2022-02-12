@@ -1,15 +1,15 @@
 // your header
-#include "modules/ui_map_editor/system.hpp"
+#include "ui_map_editor/system.hpp"
 
 // components
-#include "modules/renderer/components.hpp"
-#include "modules/ui_map_editor/components.hpp"
+#include "renderer/components.hpp"
+#include "ui_map_editor/components.hpp"
 
 // engine
 #include "engine/util.hpp"
 
 // helpers
-#include "modules/ui_map_editor/helpers.hpp"
+#include "ui_map_editor/helpers.hpp"
 
 // other lib headers
 #include <imgui.h>

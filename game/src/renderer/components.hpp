@@ -1,7 +1,7 @@
 #pragma once
 
 // game headers
-#include "helpers/spritemap.hpp"
+#include "spritemap.hpp"
 
 // engine headers
 #include "engine/opengl/shader.hpp"
@@ -111,7 +111,7 @@ constexpr int tex_unit_main_scene = 1;
 constexpr int tex_unit_lighting = 2;
 
 // Attributes only updated by renderer system, read by anything.
-struct SINGLETON_RendererInfo
+struct RendererInfo
 {
   // fbo
   unsigned int fbo_main_scene;

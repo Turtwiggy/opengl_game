@@ -1,11 +1,11 @@
 // your header
-#include "modules/physics/process_move_objects.hpp"
+#include "physics/process_move_objects.hpp"
 
 // components
 #include "game_components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/physics/helpers.hpp"
-#include "modules/renderer/components.hpp"
+#include "physics/components.hpp"
+#include "physics/helpers.hpp"
+#include "renderer/components.hpp"
 
 // other lib headers
 #include <imgui.h>

@@ -3,7 +3,7 @@
 
 // components
 #include "game_components.hpp"
-#include "modules/renderer/components.hpp"
+#include "renderer/components.hpp"
 
 // other engine headers
 #include "engine/grid.hpp"
@@ -18,7 +18,7 @@ void
 game2d::update_click_to_destroy_system(game2d::Coordinator& registry, engine::Application& app)
 {
   auto& res = registry.ctx<SINGLETON_ResourceComponent>();
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& ri = registry.ctx<RendererInfo>();
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // dont process game events if the viewport says so

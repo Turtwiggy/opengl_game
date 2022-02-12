@@ -1,7 +1,7 @@
 #pragma once
 
 // components
-#include "modules/physics/components.hpp"
+#include "physics/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>

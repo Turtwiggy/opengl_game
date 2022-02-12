@@ -1,10 +1,10 @@
-#include "modules/ui_hierarchy/system.hpp"
+#include "ui_hierarchy/system.hpp"
 
 // components
-#include "modules/editor_camera/components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/renderer/components.hpp"
-#include "modules/ui_hierarchy/components.hpp"
+#include "editor_camera/components.hpp"
+#include "physics/components.hpp"
+#include "renderer/components.hpp"
+#include "ui_hierarchy/components.hpp"
 
 // other lib headers
 #include <glm/gtc/type_ptr.hpp>

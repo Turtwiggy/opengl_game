@@ -2,9 +2,9 @@
 #include "system.hpp"
 
 // game2d
-#include "modules/physics/components.hpp"
-#include "modules/physics/helpers.hpp"
-#include "modules/renderer/components.hpp"
+#include "physics/components.hpp"
+#include "physics/helpers.hpp"
+#include "renderer/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>

@@ -1,6 +1,7 @@
 #pragma once
 
 // game2d headers
+#include "components.hpp"
 #include "ecs.hpp"
 
 // engine headers
@@ -14,16 +15,19 @@
 
 namespace game2d {
 
-class RenderSystem : public game2d::System
+class RenderSpriteSystem : public game2d::System
 {
 public:
   void update(game2d::Coordinator& registry);
 };
 
-std::shared_ptr<RenderSystem>
-init_render_system(game2d::Coordinator& registry, const glm::ivec2& screen_wh);
+RendererInfo
+init_render_system(const glm::ivec2& screen_wh);
 
 void
-end_frame_render_system(game2d::Coordinator& registry);
+prep_for_render(RendererInfo& ri);
+
+void
+end_frame_render_system();
 
 } // namespace game2d

@@ -1,9 +1,9 @@
-#include "modules/ui_gizmos/system.hpp"
+#include "ui_gizmos/system.hpp"
 
 // components
-#include "modules/renderer/components.hpp"
-#include "modules/ui_gizmos/components.hpp"
-#include "modules/ui_hierarchy/components.hpp"
+#include "renderer/components.hpp"
+#include "ui_gizmos/components.hpp"
+#include "ui_hierarchy/components.hpp"
 
 // other lib headers
 // clang-format off
@@ -27,7 +27,7 @@ game2d::update_ui_gizmos_system(game2d::Coordinator& registry, engine::Applicati
 
   auto& gizmos_component = registry.ctx<SINGLETON_GizmosComponent>();
   const auto& hierarchy_component = registry.ctx<SINGLETON_HierarchyComponent>();
-  const auto& r = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& r = registry.ctx<RendererInfo>();
 
   if (app.get_input().get_key_down(SDL_SCANCODE_Q))
     gizmos_component.gizmo_type = -1;

@@ -1,10 +1,10 @@
 #include "system.hpp"
 
 // components
-#include "modules/editor_camera/components.hpp"
+#include "editor_camera/components.hpp"
 
 // helpers
-#include "modules/editor_camera/helpers.hpp"
+#include "editor_camera/helpers.hpp"
 
 // other library headers
 #include <glm/glm.hpp>

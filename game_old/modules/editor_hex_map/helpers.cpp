@@ -1,5 +1,5 @@
 // your header
-#include "modules/editor_hex_map/helpers.hpp"
+#include "editor_hex_map/helpers.hpp"
 
 // c++ lib headers
 #include <iostream>

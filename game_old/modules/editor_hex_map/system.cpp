@@ -1,15 +1,15 @@
 // your header
-#include "modules/editor_hex_map/system.hpp"
+#include "editor_hex_map/system.hpp"
 
 // components
 #include "components/singleton_resources.hpp"
-#include "modules/editor_hex_map/components.hpp"
-#include "modules/renderer/components.hpp"
+#include "editor_hex_map/components.hpp"
+#include "renderer/components.hpp"
 
 // helpers
+#include "editor_hex_map/helpers.hpp"
 #include "helpers/spritemap.hpp"
-#include "modules/editor_hex_map/helpers.hpp"
-#include "modules/renderer/helpers/renderers/batch_triangle.hpp"
+#include "renderer/helpers/renderers/batch_triangle.hpp"
 
 // other project headers
 #include <glm/glm.hpp>

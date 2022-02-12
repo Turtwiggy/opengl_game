@@ -1,9 +1,9 @@
 // your header
-#include "modules/animation/system.hpp"
+#include "animation/system.hpp"
 
 // components
-#include "modules/animation/components.hpp"
-#include "modules/renderer/components.hpp"
+#include "animation/components.hpp"
+#include "renderer/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>

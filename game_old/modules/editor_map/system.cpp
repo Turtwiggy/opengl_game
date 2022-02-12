@@ -1,11 +1,11 @@
 // your header
-#include "modules/editor_map/system.hpp"
+#include "editor_map/system.hpp"
 
 // components
 #include "game_components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/renderer/components.hpp"
-#include "modules/ui_map_editor/components.hpp"
+#include "physics/components.hpp"
+#include "renderer/components.hpp"
+#include "ui_map_editor/components.hpp"
 
 // helpers
 #include "helpers/physics_layers.hpp"
@@ -21,7 +21,7 @@ game2d::init_map_editor_system(game2d::Coordinator& registry){
 void
 game2d::update_map_editor_system(game2d::Coordinator& registry, engine::Application& app, float dt)
 {
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& ri = registry.ctx<RendererInfo>();
   // dont process game events if the viewport says so
   if (!ri.viewport_process_events)
     return;
