@@ -1,8 +1,8 @@
 // header
-#include "renderer/helpers/helpers.hpp"
+#include "modules/renderer/helpers/helpers.hpp"
 
-// other lib
-#include <imgui.h>
+// game2d
+#include "modules/renderer/components.hpp"
 
 game2d::ViewportInfo
 game2d::render_texture_to_imgui_viewport(const int& tex_unit)

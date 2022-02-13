@@ -333,13 +333,13 @@ public:
   }
 
   template<typename T>
-  T& get_component(const Entity entity)
+  T& get_component(const Entity entity) const
   {
     return component_manager->get_component<T>(entity);
   }
 
   template<typename T>
-  ComponentType get_component_type()
+  ComponentType get_component_type() const
   {
     return component_manager->get_component_type<T>();
   }

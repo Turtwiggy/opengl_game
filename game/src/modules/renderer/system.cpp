@@ -1,14 +1,14 @@
 // your header
-#include "renderer/system.hpp"
+#include "modules/renderer/system.hpp"
 
 // helpers
-#include "editor_camera/helpers.hpp"
+#include "modules/editor_camera/helpers.hpp"
 #include "spritemap.hpp"
 
 // components/systems
-#include "renderer/components.hpp"
-#include "renderer/helpers/helpers.hpp"
-#include "renderer/helpers/renderers/batch_quad.hpp"
+#include "modules/renderer/components.hpp"
+#include "modules/renderer/helpers/helpers.hpp"
+#include "modules/renderer/helpers/renderers/batch_quad.hpp"
 
 // engine headers
 #include "engine/opengl/framebuffer.hpp"
@@ -60,10 +60,8 @@ game2d::init_render_system(const glm::ivec2& screen_wh)
 };
 
 void
-game2d::prep_for_render(RendererInfo& ri)
+game2d::RenderSpriteSystem::update(const game2d::Coordinator& registry, RendererInfo& ri)
 {
-  const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
-
   // Resize
   auto viewport_wh = ri.viewport_size_render_at;
   if (ri.viewport_size_current.x > 0.0f && ri.viewport_size_current.y > 0.0f &&
@@ -81,6 +79,7 @@ game2d::prep_for_render(RendererInfo& ri)
   }
 
   // MAIN FBO
+  const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
   Framebuffer::bind_fbo(ri.fbo_main_scene);
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
   RenderCommand::set_clear_colour(background_colour);
@@ -93,19 +92,22 @@ game2d::prep_for_render(RendererInfo& ri)
 
     // todo: work out z-index
 
-    // quad_renderer::RenderDescriptor desc;
-    // const auto& view =
-    //   registry
-    //     .view<const PositionIntComponent, const RenderSizeComponent, const ColourComponent, const SpriteComponent>();
-    // view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& spr) {
-    //   desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
-    //   desc.colour = c.colour;
-    //   desc.size = { s.w, s.h };
-    //   desc.tex_slot = tex_unit_kenny_nl;
-    //   desc.sprite_offset = sprite::spritemap::get_sprite_offset(spr.sprite);
-    //   desc.angle_radians = 0.0f;
-    //   quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
-    // });
+    quad_renderer::RenderDescriptor desc;
+    for (const auto& entity : entities) {
+      const auto& p = registry.get_component<PositionIntComponent>(entity);
+      const auto& s = registry.get_component<RenderSizeComponent>(entity);
+      const auto& c = registry.get_component<ColourComponent>(entity);
+      const auto& spr = registry.get_component<SpriteComponent>(entity);
+      // const auto& tag = registry.get_component<TagComponent>(entity);
+
+      desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
+      desc.colour = c.colour;
+      desc.size = { s.w, s.h };
+      desc.tex_slot = tex_unit_kenny_nl;
+      desc.sprite_offset = sprite::spritemap::get_sprite_offset(spr.sprite);
+      desc.angle_radians = 0.0f;
+      quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
+    }
 
     quad_renderer::QuadRenderer::end_batch();
     quad_renderer::QuadRenderer::flush(ri.instanced);

@@ -1,7 +1,6 @@
 #pragma once
 
-// game2d
-#include "renderer/components.hpp"
+#include <imgui.h>
 
 namespace game2d {
 

@@ -1,5 +1,5 @@
 // header
-#include "editor_camera/helpers.hpp"
+#include "modules/editor_camera/helpers.hpp"
 
 namespace game2d {
 

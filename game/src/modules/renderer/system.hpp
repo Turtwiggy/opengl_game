@@ -15,17 +15,14 @@
 
 namespace game2d {
 
-class RenderSpriteSystem : public game2d::System
-{
-public:
-  void update(game2d::Coordinator& registry);
-};
-
 RendererInfo
 init_render_system(const glm::ivec2& screen_wh);
 
-void
-prep_for_render(RendererInfo& ri);
+class RenderSpriteSystem : public game2d::System
+{
+public:
+  void update(const game2d::Coordinator& registry, RendererInfo& ri);
+};
 
 void
 end_frame_render_system();
