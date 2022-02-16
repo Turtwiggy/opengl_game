@@ -10,6 +10,7 @@ git submodule update --init --recursive
 - c++ compiler (MSVC, gcc, clang)
 - cmake e.g. `choco install cmake`
 - ninja e.g. `choco install ninja`
+- engine: `cd thirdparty\gameengine && thirdparty\vcpkg\vcpkg.exe install @vcpkg_x64-windows.txt && cd ../../`
 
 ### Building (CMake)
 
