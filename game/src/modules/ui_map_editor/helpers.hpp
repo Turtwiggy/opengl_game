@@ -7,7 +7,6 @@
 #include <iostream>
 
 namespace game2d {
-//
 
 void
 serialize_to_text(entt::registry& registry, std::string path);

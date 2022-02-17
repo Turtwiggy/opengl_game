@@ -19,15 +19,9 @@
 #include <string>
 
 void
-game2d::init_ui_map_editor_system(entt::registry& registry)
-{
-  registry.set<SINGLETON_MapEditorInfo>(SINGLETON_MapEditorInfo());
-};
-
-void
 game2d::update_ui_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
 {
-  SINGLETON_MapEditorInfo& i = registry.ctx<SINGLETON_MapEditorInfo>();
+  SINGLETON_MapEditorComponent& i = registry.ctx<SINGLETON_MapEditorComponent>();
 
   // ImGui::Begin("Menu...");
   // if (ImGui::Button("Open File")) {
@@ -52,7 +46,8 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
   ImGui::Begin("Map Editor", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 
   if (ImGui::Button("Save map")) {
-    serialize_to_text(registry, map_path);
+    // serialize_to_text(registry, map_path);
+    std::cout << "temporarily disabled " << std::endl;
   }
 
   if (ImGui::Button("Load map")) {

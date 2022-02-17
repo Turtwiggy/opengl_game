@@ -12,7 +12,7 @@
 
 namespace game2d {
 
-struct SINGLETON_MapEditorInfo
+struct SINGLETON_MapEditorComponent
 {
   bool place_sprite = false;
   std::optional<sprite::type> sprite_to_place = std::nullopt;
