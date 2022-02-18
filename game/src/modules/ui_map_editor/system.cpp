@@ -41,13 +41,12 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
   // ImGui::End();
 
   // temp
-  std::string map_path = "assets/scenes/default.yml";
+  std::string map_path = "assets/scenes/default.entt";
 
   ImGui::Begin("Map Editor", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 
   if (ImGui::Button("Save map")) {
-    // serialize_to_text(registry, map_path);
-    std::cout << "temporarily disabled " << std::endl;
+    serialize_to_text(registry, map_path);
   }
 
   if (ImGui::Button("Load map")) {

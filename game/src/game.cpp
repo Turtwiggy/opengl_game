@@ -71,6 +71,119 @@ init_game_state(entt::registry& registry)
   const glm::vec4 colour_dblue = glm::vec4(49 / 255.0f, 99 / 255.0f, 188 / 255.0f, 1.0f);
   const glm::vec4 colour_white = glm::vec4(1.0f);
   const glm::vec4 colour_green = glm::vec4(100 / 255.0f, 188 / 255.0f, 49 / 255.0f, 1.0f);
+
+  const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+
+  // Add a cursor, made of 4 lines
+  {
+    for (int i = 0; i < 4; i++) {
+      entt::entity r = registry.create();
+      registry.emplace<TagComponent>(r, std::string("cursor" + std::to_string(i)));
+      // rendering
+      registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
+      registry.emplace<PositionIntComponent>(r);
+      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+      // gameplay
+      registry.emplace<CursorComponent>(r, i);
+    }
+  }
+
+  // Add some blocks
+  {
+    for (int i = 1; i < 30; i++) {
+      entt::entity r = registry.create();
+      registry.emplace<TagComponent>(r, std::string("a-blocks" + std::to_string(i)));
+      // rendering
+      registry.emplace<ColourComponent>(r, colour_dblue);
+      registry.emplace<PositionIntComponent>(r, (22 + i) * GRID_SIZE, 35 * GRID_SIZE);
+      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+      // physics
+      registry.emplace<CollidableComponent>(
+        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
+      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      // gameplay
+      FlashColourComponent f;
+      f.start_colour = colour_dblue;
+      f.flash_colour = colour_green;
+      registry.emplace<FlashColourComponent>(r, f);
+      registry.emplace<HealthComponent>(r, 3.0f);
+      registry.emplace<ClickToDestroyComponent>(r);
+      // registry.emplace<ParryComponent>(r);
+    }
+  }
+
+  // Add some blocks
+  {
+    for (int i = 1; i < 10; i++) {
+      entt::entity r = registry.create();
+      registry.emplace<TagComponent>(r, std::string("b-blocks" + std::to_string(i)));
+      // rendering
+      registry.emplace<ColourComponent>(r, colour_green);
+      registry.emplace<PositionIntComponent>(r, (10 + i) * GRID_SIZE, 30 * GRID_SIZE);
+      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+      // physics
+      registry.emplace<CollidableComponent>(
+        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
+      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      // gameplay
+      FlashColourComponent f;
+      f.start_colour = colour_dblue;
+      f.flash_colour = colour_green;
+      registry.emplace<FlashColourComponent>(r, f);
+      registry.emplace<HealthComponent>(r, 3.0f);
+      registry.emplace<ClickToDestroyComponent>(r);
+      // registry.emplace<ParryComponent>(r);
+    }
+  }
+
+  // Add some blocks
+  {
+    for (int i = 1; i < 25; i++) {
+
+      entt::entity r = registry.create();
+      registry.emplace<TagComponent>(r, std::string("c-blocks" + std::to_string(i)));
+      // rendering
+      registry.emplace<ColourComponent>(r, colour_cyan);
+      registry.emplace<PositionIntComponent>(r, (24 + i) * GRID_SIZE, 24 * GRID_SIZE);
+      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+      // physics
+      registry.emplace<CollidableComponent>(
+        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
+      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+      // gameplay
+      FlashColourComponent f;
+      f.start_colour = colour_dblue;
+      f.flash_colour = colour_green;
+      registry.emplace<FlashColourComponent>(r, f);
+      registry.emplace<HealthComponent>(r, 3.0f);
+      registry.emplace<ClickToDestroyComponent>(r);
+      // registry.emplace<ParryComponent>(r);
+    }
+  }
+
+  // Add a player
+  {
+    entt::entity r = registry.create();
+    registry.emplace<TagComponent>(r, "player0");
+    // rendering
+    registry.emplace<ColourComponent>(r, colour_cyan);
+    registry.emplace<PositionIntComponent>(r, 25 * GRID_SIZE, 25 * GRID_SIZE);
+    registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+    registry.emplace<SpriteComponent>(r, sprite::type::PERSON_0);
+    // physics
+    registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
+    registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+    registry.emplace<VelocityComponent>(r, 0.0f, 0.0f);
+    // gameplay
+    registry.emplace<AnimationBounce>(r);
+    registry.emplace<Player>(r);
+    registry.emplace<HealthComponent>(r);
+    registry.emplace<DoubleJumpComponent>(r);
+  }
 };
 
 } // namespace game2d
