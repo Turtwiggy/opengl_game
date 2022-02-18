@@ -9,9 +9,6 @@
 namespace game2d {
 
 void
-init_map_editor_system(entt::registry& registry);
-
-void
-update_map_editor_system(entt::registry& registry, engine::Application& app, float dt);
+update_ui_map_editor_system(entt::registry& registry, engine::Application& app, float dt);
 
 }; // namespace game2d

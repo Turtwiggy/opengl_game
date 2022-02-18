@@ -9,6 +9,10 @@
 // c++ lib headers
 #include <vector>
 
+// other
+#include <glm/glm.hpp>
+#include <nlohmann/json.hpp>
+
 namespace game2d {
 
 struct ColourComponent
@@ -37,6 +41,8 @@ struct ColourComponent
     colour.z = c.z;
     colour.a = c.a;
   };
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColourComponent, colour.x, colour.y, colour.z, colour.a)
 };
 
 struct PositionIntComponent
@@ -50,6 +56,8 @@ struct PositionIntComponent
   PositionIntComponent(int x, int y)
     : x(x)
     , y(y){};
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(PositionIntComponent, x, y, dx, dy)
 };
 
 struct PositionFloat
@@ -61,6 +69,8 @@ struct PositionFloat
   PositionFloat(float x, float y)
     : x(x)
     , y(y){};
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(PositionFloat, x, y)
 };
 
 struct RenderSizeComponent
@@ -74,6 +84,8 @@ struct RenderSizeComponent
   RenderSizeComponent(int w, int h)
     : w(w)
     , h(h){};
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderSizeComponent, w, h, dw, dh)
 };
 
 struct SpriteComponent
@@ -83,6 +95,8 @@ struct SpriteComponent
   SpriteComponent() = default;
   SpriteComponent(sprite::type sprite)
     : sprite(sprite){};
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(SpriteComponent, sprite)
 };
 
 // struct CircleComponent
@@ -95,6 +109,8 @@ struct SpriteComponent
 struct TagComponent
 {
   std::string tag;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
 };
 
 // struct ZIndex

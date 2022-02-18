@@ -9,9 +9,6 @@
 namespace game2d {
 
 void
-init_ui_hierarchy_system(entt::registry& registry);
-
-void
 update_ui_hierarchy_system(entt::registry& registry, engine::Application& app);
 
 } // namespace game2d

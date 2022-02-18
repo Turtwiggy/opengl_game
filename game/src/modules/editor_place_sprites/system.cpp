@@ -1,5 +1,5 @@
 // your header
-#include "modules/editor_map/system.hpp"
+#include "modules/editor_place_sprites/system.hpp"
 
 // components
 #include "game_components.hpp"
@@ -12,11 +12,6 @@
 
 // other engine headers
 #include "engine/grid.hpp"
-
-void
-game2d::init_map_editor_system(entt::registry& registry){
-  //
-};
 
 void
 game2d::update_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
@@ -38,7 +33,7 @@ game2d::update_map_editor_system(entt::registry& registry, engine::Application& 
   mouse_pos_adjusted_in_worldspace.x += GRID_SIZE / 2.0f;
   mouse_pos_adjusted_in_worldspace.y += GRID_SIZE / 2.0f;
 
-  const auto& map_editor_info = registry.ctx<SINGLETON_MapEditorInfo>();
+  const auto& map_editor_info = registry.ctx<SINGLETON_MapEditorComponent>();
   if (map_editor_info.place_sprite && app.get_input().get_mouse_lmb_down()) {
     glm::ivec2 grid_slot = engine::grid::world_space_to_grid_space(mouse_pos_adjusted_in_worldspace, GRID_SIZE);
     glm::ivec2 world_space = grid_slot * GRID_SIZE;

@@ -15,12 +15,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 void
-game2d::init_ui_gizmos_system(entt::registry& registry)
-{
-  registry.set<SINGLETON_GizmosComponent>(SINGLETON_GizmosComponent());
-}
-
-void
 game2d::update_ui_gizmos_system(entt::registry& registry, engine::Application& app, float dt)
 {
   ImGuizmo::BeginFrame();

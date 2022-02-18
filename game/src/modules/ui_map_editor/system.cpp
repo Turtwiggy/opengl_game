@@ -19,15 +19,9 @@
 #include <string>
 
 void
-game2d::init_ui_map_editor_system(entt::registry& registry)
-{
-  registry.set<SINGLETON_MapEditorInfo>(SINGLETON_MapEditorInfo());
-};
-
-void
 game2d::update_ui_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
 {
-  SINGLETON_MapEditorInfo& i = registry.ctx<SINGLETON_MapEditorInfo>();
+  SINGLETON_MapEditorComponent& i = registry.ctx<SINGLETON_MapEditorComponent>();
 
   // ImGui::Begin("Menu...");
   // if (ImGui::Button("Open File")) {
@@ -47,7 +41,7 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
   // ImGui::End();
 
   // temp
-  std::string map_path = "assets/scenes/default.yml";
+  std::string map_path = "assets/scenes/default.entt";
 
   ImGui::Begin("Map Editor", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 

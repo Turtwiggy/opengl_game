@@ -11,12 +11,6 @@
 #include <imgui.h>
 
 void
-game2d::init_ui_hierarchy_system(entt::registry& registry)
-{
-  registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
-}
-
-void
 game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application& app)
 {
   auto& d = registry.ctx<SINGLETON_HierarchyComponent>();
