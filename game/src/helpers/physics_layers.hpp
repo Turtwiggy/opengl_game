@@ -6,11 +6,8 @@ namespace game2d {
 enum class GameCollisionLayer
 {
   ACTOR_PLAYER = 1,
-  ACTOR_GOAL = 2,
-  ACTOR_BALL = 3,
-  ACTOR_NO_OXY_ZONE = 4,
-  ACTOR_ARROW = 5,
-  SOLID_WALL = 6,
+  ACTOR_PROJECTILE = 2,
+  SOLID_WALL = 3,
 };
 
 } // namespace game2d

@@ -6,6 +6,7 @@
 #include "modules/animation/components.hpp"
 #include "modules/audio/components.hpp"
 #include "modules/editor_camera/components.hpp"
+#include "modules/map/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_gizmos/components.hpp"
@@ -20,7 +21,7 @@
 #include "modules/animation/system.hpp"
 #include "modules/audio/system.hpp"
 #include "modules/editor_camera/system.hpp"
-#include "modules/editor_place_sprites/system.hpp"
+#include "modules/map/system.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/physics/system.hpp"
 #include "modules/renderer/system.hpp"
@@ -62,6 +63,7 @@ init_game_state(entt::registry& registry)
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
+  init_map_system(registry);
 
   // colours
   const glm::vec4 colour_red = glm::vec4(232 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1.0f);
@@ -174,10 +176,10 @@ init_game_state(entt::registry& registry)
     registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<VelocityComponent>(r, 0.0f, 0.0f);
     // gameplay
+    registry.emplace<Player>(r, 0);
     registry.emplace<AnimationBounce>(r);
-    registry.emplace<Player>(r);
     registry.emplace<HealthComponent>(r);
-    registry.emplace<DoubleJumpComponent>(r);
+    registry.emplace<ClickToDestroyComponent>(r);
   }
 };
 
@@ -245,7 +247,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         update_cursor_system(registry, app);
         // editor stuff
         update_editor_camera_system(registry, app, dt);
-        update_map_editor_system(registry, app, dt);
       }
 
       // ... now systems that only update if viewport is focused
@@ -253,7 +254,9 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
           update_click_to_destroy_system(registry, app);
-          // destroy any entities
+          update_map_system(registry, app, dt);
+
+          // last thing to do for gametick: destroy any entities
           update_destroy_after_time_system(registry, app, dt);
         }
       }

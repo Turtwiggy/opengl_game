@@ -20,10 +20,6 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
-  // dont process game events if the viewport says so
-  if (!ri.viewport_process_events)
-    return;
-
   glm::ivec2 imgui_mouse_pos = app.get_input().get_mouse_pos();
   glm::vec2 imgui_viewport_tl = ri.viewport_pos;
   glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);

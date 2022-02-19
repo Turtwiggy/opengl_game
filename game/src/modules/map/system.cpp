@@ -1,8 +1,9 @@
 // your header
-#include "modules/editor_place_sprites/system.hpp"
+#include "modules/map/system.hpp"
 
 // components
 #include "game_components.hpp"
+#include "modules/map/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_map_editor/components.hpp"
@@ -14,14 +15,20 @@
 #include "engine/grid.hpp"
 
 void
-game2d::update_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
+game2d::init_map_system(entt::registry& registry)
 {
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  // dont process game events if the viewport says so
-  if (!ri.viewport_process_events)
-    return;
+  auto map = SINGLETON_MapComponent();
 
+  // do fun map things
+
+  registry.set<SINGLETON_MapComponent>(map);
+};
+
+void
+game2d::update_map_system(entt::registry& registry, engine::Application& app, float dt)
+{
   const auto& gs = registry.ctx<SINGLETON_GridSizeComponent>();
+  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
   const int GRID_SIZE = gs.size_xy;
 
   // urgh.. x3
@@ -39,6 +46,8 @@ game2d::update_map_editor_system(entt::registry& registry, engine::Application& 
     glm::ivec2 world_space = grid_slot * GRID_SIZE;
 
     // The entity to spawn!
+    // Note: this shouldn't be here
+
     entt::entity r = registry.create();
     registry.emplace<TagComponent>(r, "entity");
     registry.emplace<ColourComponent>(r, 1.0f, 1.0f, 1.0f, 1.0f);

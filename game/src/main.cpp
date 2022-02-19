@@ -1,20 +1,4 @@
 
-#if defined(__EMSCRIPTEN__)
-#include <SDL.h>
-#include <SDL_opengles2.h>
-#include <emscripten.h>
-#else  // end emscripten
-// #include <SDL.h>
-// #define IMGUI_IMPL_OPENGL_LOADER_GLEW 1
-#endif // end windows
-
-#include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_sdl.h>
-#include <imgui_internal.h>
-#if defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
-#include <GL/glew.h>
-#endif
-
 // game headers
 #include "game.hpp"
 using namespace game2d;
@@ -26,7 +10,6 @@ using namespace engine;
 
 // other libs
 #include "entt/entt.hpp"
-#include "glm/glm.hpp"
 #include "imgui.h"
 
 // std lib

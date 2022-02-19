@@ -46,7 +46,7 @@ struct ParryComponent
 
 struct Player
 {
-  bool placeholder = false;
+  int player = 0;
 };
 
 struct VelocityInBoundingboxComponent

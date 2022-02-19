@@ -25,73 +25,12 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
-  // process game events if the viewport says so
-  // if (!ri.viewport_process_events)
-  //   return;
-
-  // temp
-  const auto& controllers = app.get_input().controllers;
-  if (controllers.size() > 0) {
-    SDL_GameController* controller_0 = controllers[0];
-
-    bool start_button =
-      app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START);
-    bool a_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A);
-    bool b_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B);
-    bool x_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X);
-    bool y_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y);
-
-    if (start_button)
-      printf("start pressed... \n");
-    if (a_pressed)
-      printf("a pressed... \n");
-    if (b_pressed)
-      printf("b pressed... \n");
-    if (x_pressed)
-      printf("x pressed... \n");
-    if (y_pressed)
-      printf("y pressed... \n");
-
-    bool dpad_up =
-      app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP);
-    bool dpad_down =
-      app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN);
-    bool dpad_left =
-      app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT);
-    bool dpad_right =
-      app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
-    if (dpad_up)
-      printf("dpad_up pressed... \n");
-    if (dpad_down)
-      printf("dpad_down pressed... \n");
-    if (dpad_left)
-      printf("dpad_left pressed... \n");
-    if (dpad_right)
-      printf("dpad_right pressed... \n");
-  }
-
   glm::ivec2 imgui_mouse_pos = app.get_input().get_mouse_pos();
   glm::vec2 imgui_viewport_tl = ri.viewport_pos;
   glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
   glm::vec2 mouse_pos_adjusted_in_worldspace = mouse_pos;
   mouse_pos_adjusted_in_worldspace.x += GRID_SIZE / 2.0f;
   mouse_pos_adjusted_in_worldspace.y += GRID_SIZE / 2.0f;
-
-  // {
-  //   const auto& view = registry.view<Player, VelocityComponent, DoubleJumpComponent>();
-  //   view.each([&app](const auto& player, auto& vel, auto& dd) {
-  //     if (dd.able_to_jump) {
-  //       // Jump simple
-  //       // const auto UP = glm::vec2(0.0f, -1.0f);
-  //       // const auto JUMP_VEL = 150.0f;
-  //       // bool jump_pressed = app.get_input().get_key_down(SDL_SCANCODE_SPACE);
-  //       // if (jump_pressed) {
-  //       //   dd.able_to_jump = false;
-  //       //   vel.y = (UP * JUMP_VEL).y;
-  //       // }
-  //     }
-  //   });
-  // }
 
   {
     const auto& view = registry.view<Player, PositionIntComponent, VelocityComponent>();
@@ -109,11 +48,10 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
         else if (app.get_input().get_key_held(SDL_SCANCODE_D))
           vx = 1;
 
-        // Move left and right
+        // Move left and right (non-grid)
         int x_speed = 50;
         vel.x = vx * x_speed;
-
-        // Move up and down
+        // Move up and down (non-grid)
         int y_speed = 50;
         vel.y = vy * y_speed;
 
@@ -155,6 +93,9 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
             vel = glm::normalize(vel);
           vel *= bullet_speed;
 
+          // Note: this shouldn't be here
+          // but im not sure where it should be yet
+
           { // spawn projectile
             entt::entity r = registry.create();
             registry.emplace<TagComponent>(r, "Arrow");
@@ -164,7 +105,7 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
             registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
             registry.emplace<SpriteComponent>(r, sprite::type::WEAPON_ARROW_1);
             // physics
-            registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_ARROW));
+            registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PROJECTILE));
             registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
             registry.emplace<VelocityComponent>(r, vel.x, vel.y);
             // gameplay
@@ -176,3 +117,60 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
       });
   }
 };
+
+// // temp
+// const auto& controllers = app.get_input().controllers;
+// if (controllers.size() > 0) {
+//   SDL_GameController* controller_0 = controllers[0];
+
+//   bool start_button =
+//     app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START);
+//   bool a_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A);
+//   bool b_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B);
+//   bool x_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X);
+//   bool y_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y);
+
+//   if (start_button)
+//     printf("start pressed... \n");
+//   if (a_pressed)
+//     printf("a pressed... \n");
+//   if (b_pressed)
+//     printf("b pressed... \n");
+//   if (x_pressed)
+//     printf("x pressed... \n");
+//   if (y_pressed)
+//     printf("y pressed... \n");
+
+//   bool dpad_up =
+//     app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP);
+//   bool dpad_down =
+//     app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN);
+//   bool dpad_left =
+//     app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT);
+//   bool dpad_right =
+//     app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
+//   if (dpad_up)
+//     printf("dpad_up pressed... \n");
+//   if (dpad_down)
+//     printf("dpad_down pressed... \n");
+//   if (dpad_left)
+//     printf("dpad_left pressed... \n");
+//   if (dpad_right)
+//     printf("dpad_right pressed... \n");
+// }
+
+// {
+//   const auto& view = registry.view<Player, VelocityComponent, DoubleJumpComponent>();
+//   view.each([&app](const auto& player, auto& vel, auto& dd) {
+//     if (dd.able_to_jump) {
+//       // Jump simple
+//       // const auto UP = glm::vec2(0.0f, -1.0f);
+//       // const auto JUMP_VEL = 150.0f;
+//       // bool jump_pressed = app.get_input().get_key_down(SDL_SCANCODE_SPACE);
+//       // if (jump_pressed) {
+//       //   dd.able_to_jump = false;
+//       //   vel.y = (UP * JUMP_VEL).y;
+//       // }
+//     }
+//   });
+// }

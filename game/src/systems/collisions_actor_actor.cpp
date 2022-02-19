@@ -28,30 +28,12 @@ game2d::update_actor_actor_collision_system(entt::registry& registry, engine::Ap
     auto min_id = static_cast<GameCollisionLayer>(std::min(e0_layer_id, e1_layer_id));
     auto max_id = static_cast<GameCollisionLayer>(std::max(e0_layer_id, e1_layer_id));
 
-    // if (min_id == GameCollisionLayer::ACTOR_PLAYER && max_id == GameCollisionLayer::SOLID_WALL) {
-    //   std::cout << "PLAYER-WALL collision..." << std::endl;
-    // }
-    // else if (min_id == GameCollisionLayer::SOLID_WALL && max_id == GameCollisionLayer::SOLID_WALL) {
-    //   std::cout << "WALL-WALL collision..." << std::endl;
-    // } else
-    // } else if (min_id == GameCollisionLayer::ACTOR_GOAL && max_id == GameCollisionLayer::SOLID_WALL) {
-    //   std::cout << "GOAL-WALL collision..." << std::endl;
-    // else if (min_id == GameCollisionLayer::SOLID_WALL && max_id == GameCollisionLayer::ACTOR_BALL) {
-    //   std::cout << "WALL-BALL collision..." << std::endl; }
+    // Note: actor-solid collisons should not happen here
 
     if (min_id == GameCollisionLayer::ACTOR_PLAYER && max_id == GameCollisionLayer::ACTOR_PLAYER) {
       std::cout << "PLAYER-PLAYER collision..." << std::endl;
-    } else if (min_id == GameCollisionLayer::ACTOR_PLAYER && max_id == GameCollisionLayer::ACTOR_GOAL) {
-      std::cout << "PLAYER-GOAL collision..." << std::endl;
-    } else if (min_id == GameCollisionLayer::ACTOR_PLAYER && max_id == GameCollisionLayer::ACTOR_BALL) {
-      std::cout << "PLAYER-BALL collision..." << std::endl;
-    } else if (min_id == GameCollisionLayer::ACTOR_GOAL && max_id == GameCollisionLayer::ACTOR_GOAL) {
-      std::cout << "GOAL-GOAL collision..." << std::endl;
-    } else if (min_id == GameCollisionLayer::ACTOR_GOAL && max_id == GameCollisionLayer::ACTOR_BALL) {
-      std::cout << "GOAL-BALL collision..." << std::endl;
-      std::cout << "You win a cookie!" << std::endl;
-    } else if (min_id == GameCollisionLayer::ACTOR_BALL && max_id == GameCollisionLayer::ACTOR_BALL) {
-      std::cout << "BALL-BALL collision..." << std::endl;
+    } else if (min_id == GameCollisionLayer::ACTOR_PLAYER && max_id == GameCollisionLayer::ACTOR_PROJECTILE) {
+      std::cout << "PLAYER-PROJECTILE collision..." << std::endl;
     }
   }
 }
