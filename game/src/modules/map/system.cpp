@@ -23,6 +23,7 @@ game2d::init_map_system(entt::registry& registry, const engine::Application& app
 {
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
   const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  const auto ri = registry.ctx<SINGLETON_RendererInfo>();
   auto res = registry.ctx<SINGLETON_ResourceComponent>();
 
   // obtain a seed from the timer
@@ -33,8 +34,9 @@ game2d::init_map_system(entt::registry& registry, const engine::Application& app
   auto map = SINGLETON_MapComponent();
 
   // do fun map things
-  map.size_x = 50;
-  map.size_y = 50;
+  const auto viewport_size = ri.viewport_size_current;
+  map.size_x = viewport_size.x / GRID_SIZE;
+  map.size_y = viewport_size.y / GRID_SIZE;
   map.entities.resize(map.size_x * map.size_y);
 
   for (int y = 0; y < map.size_y; y++) {
