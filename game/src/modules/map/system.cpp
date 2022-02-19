@@ -3,6 +3,7 @@
 
 // components
 #include "game_components.hpp"
+#include "modules/animation/components.hpp"
 #include "modules/map/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
@@ -14,12 +15,56 @@
 // other engine headers
 #include "engine/grid.hpp"
 
+// std lib
+#include <chrono>
+
 void
-game2d::init_map_system(entt::registry& registry)
+game2d::init_map_system(entt::registry& registry, const engine::Application& app)
 {
+  const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
+  const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  auto res = registry.ctx<SINGLETON_ResourceComponent>();
+
+  // obtain a seed from the timer
+  const auto now = std::chrono::high_resolution_clock::now();
+  const auto d = now - app.app_start;
+  res.rnd.rng.seed(d.count());
+
   auto map = SINGLETON_MapComponent();
 
   // do fun map things
+  map.size_x = 50;
+  map.size_y = 50;
+  map.entities.resize(map.size_x * map.size_y);
+
+  for (int y = 0; y < map.size_y; y++) {
+    for (int x = 0; x < map.size_x; x++) {
+      int random = static_cast<int>(engine::rand_det_s(res.rnd.rng, 0.0f, 100.0f));
+
+      if (random < 5) // 5%
+      {
+        // add a block
+        entt::entity r = registry.create();
+        registry.emplace<TagComponent>(r, std::string("blocks"));
+        // rendering
+        registry.emplace<ColourComponent>(r, colours.green);
+        registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
+        registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+        registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+        // physics
+        registry.emplace<CollidableComponent>(
+          r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
+        registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+        // gameplay
+        FlashColourComponent f;
+        f.start_colour = colours.dblue;
+        f.flash_colour = colours.green;
+        registry.emplace<FlashColourComponent>(r, f);
+        registry.emplace<HealthComponent>(r, 3.0f);
+        registry.emplace<ClickToDestroyComponent>(r);
+      }
+    }
+  }
 
   registry.set<SINGLETON_MapComponent>(map);
 };
@@ -29,6 +74,7 @@ game2d::update_map_system(entt::registry& registry, engine::Application& app, fl
 {
   const auto& gs = registry.ctx<SINGLETON_GridSizeComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& map = registry.ctx<SINGLETON_MapComponent>();
   const int GRID_SIZE = gs.size_xy;
 
   // urgh.. x3

@@ -42,7 +42,7 @@ game2d::update_physics_system(entt::registry& registry, engine::Application& app
   generate_filtered_broadphase_collisions(collidable, p.frame_collisions);
 
   {
-    // There's basically 3 states needed to capture:
+    // There's 3 states needed to capture:
     // OnCollisionEnter
     // OnCollisionStay
     // OnCollisionExit

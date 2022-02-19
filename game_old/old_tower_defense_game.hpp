@@ -477,95 +477,9 @@ namespace enemy_spawner {
 // spawn safe radius
 const float game_safe_radius_around_player = 8000.0f;
 // a wave
-static std::map<int, float> wave_toughness{
-  // clang-format off
-  // 0-10 waves
-  { 0, 0.5f },    
-  { 1, 1.0f },    
-  { 2, 1.15f },   
-  { 3, 1.25f },   
-  { 4, 1.35f },   
-  { 5, 1.45f },   
-  { 6, 1.55f },   
-  { 7, 1.65f },   
-  { 8, 1.8f  },   
-  { 9, 2.0f },    
-  // 10-20 waves
-  { 10, 2.3f },
-  { 11, 2.7f },
-  { 12, 3.2f },
-  { 13, 3.7f },
-  { 14, 4.3f },
-  { 15, 5.0f },
-  { 16, 5.8f },
-  { 17, 6.7f },
-  { 18, 7.8f },
-  { 19, 9.0f },
-  // 20-27 waves  
-  { 20, 10.4f },
-  { 21, 12.0f },
-  { 22, 13.8f },
-  { 23, 15.9f },
-  { 24, 18.3f },
-  { 25, 21.0f },
-  { 26, 24.3f },
-  // clang-format on
-};
-static std::map<int, float> wave_damage{
-  // clang-format off
-  // 0-10 waves
-  { 0, 0.5f },
-  { 1, 1.0f },
-  { 2, 1.1f },
-  { 3, 1.2f },
-  { 4, 1.3f },
-  { 5, 1.4f },
-  { 6, 1.5f },
-  { 7, 1.6f },
-  { 8, 1.7f },
-  { 9, 1.8f },
-  // 10-20 waves
-  { 10, 2.1f },
-  { 11, 2.5f },
-  { 12, 2.9f },
-  { 13, 3.4f },
-  { 14, 4.0f },
-  { 15, 4.6f },
-  { 16, 5.3f },
-  { 17, 6.1f },
-  { 18, 7.1f },
-  { 19, 8.2f },
-  // 20-27 waves
-  { 20, 9.5f },
-  { 21, 11.0f },
-  { 22, 12.7f },
-  { 23, 14.7f },
-  { 24, 17.0f },
-  { 25, 19.6f },
-  { 26, 22.6f },
-  // clang-format on
-};
-static std::map<int, float> wave_speed{
-  // clang-format off
-  // 0-10 waves
-  { 0, 0.8f },
-  { 1, 1.0f },
-  { 2, 1.2f },
-  { 3, 1.35f },
-  { 4, 1.45f },
-  { 5, 1.55f },
-  { 6, 1.65f },
-  { 7, 1.75f },
-  { 8, 1.85f },
-  { 9, 2.0f },
-  // 10-14 waves
-  { 10, 2.0f },
-  { 11, 2.3f },
-  { 12, 2.7f },
-  { 13, 3.2f },
-  { 14, 3.5f }, // 3.5 is cap
-  // clang-format on
-};
+static std::map<int, float> wave_toughness{};
+static std::map<int, float> wave_damage{};
+static std::map<int, float> wave_speed{};
 
 } // namespace enemy_spawner
 

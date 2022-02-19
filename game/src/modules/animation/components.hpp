@@ -3,7 +3,7 @@
 namespace game2d {
 //
 
-struct AnimationBounce
+struct AnimationBounceComponent
 {
   float time = 0.0f;
 };

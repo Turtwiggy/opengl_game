@@ -55,7 +55,7 @@
 namespace game2d {
 
 void
-init_game_state(entt::registry& registry)
+init_game_state(entt::registry& registry, engine::Application& app)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
@@ -63,15 +63,9 @@ init_game_state(entt::registry& registry)
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
-  init_map_system(registry);
+  registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
 
-  // colours
-  const glm::vec4 colour_red = glm::vec4(232 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1.0f);
-  const glm::vec4 colour_cyan = glm::vec4(8 / 255.0f, 177 / 255.0f, 190 / 255.0f, 1.0f);
-  const glm::vec4 colour_dblue = glm::vec4(49 / 255.0f, 99 / 255.0f, 188 / 255.0f, 1.0f);
-  const glm::vec4 colour_white = glm::vec4(1.0f);
-  const glm::vec4 colour_green = glm::vec4(100 / 255.0f, 188 / 255.0f, 49 / 255.0f, 1.0f);
-
+  const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
   const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
   // Add a cursor, made of 4 lines
@@ -89,98 +83,58 @@ init_game_state(entt::registry& registry)
     }
   }
 
-  // Add some blocks
-  {
-    for (int i = 1; i < 30; i++) {
-      entt::entity r = registry.create();
-      registry.emplace<TagComponent>(r, std::string("a-blocks" + std::to_string(i)));
-      // rendering
-      registry.emplace<ColourComponent>(r, colour_dblue);
-      registry.emplace<PositionIntComponent>(r, (22 + i) * GRID_SIZE, 35 * GRID_SIZE);
-      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
-      // physics
-      registry.emplace<CollidableComponent>(
-        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
-      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      // gameplay
-      FlashColourComponent f;
-      f.start_colour = colour_dblue;
-      f.flash_colour = colour_green;
-      registry.emplace<FlashColourComponent>(r, f);
-      registry.emplace<HealthComponent>(r, 3.0f);
-      registry.emplace<ClickToDestroyComponent>(r);
-    }
-  }
-
-  // Add some blocks
-  {
-    for (int i = 1; i < 10; i++) {
-      entt::entity r = registry.create();
-      registry.emplace<TagComponent>(r, std::string("b-blocks" + std::to_string(i)));
-      // rendering
-      registry.emplace<ColourComponent>(r, colour_green);
-      registry.emplace<PositionIntComponent>(r, (10 + i) * GRID_SIZE, 30 * GRID_SIZE);
-      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
-      // physics
-      registry.emplace<CollidableComponent>(
-        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
-      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      // gameplay
-      FlashColourComponent f;
-      f.start_colour = colour_dblue;
-      f.flash_colour = colour_green;
-      registry.emplace<FlashColourComponent>(r, f);
-      registry.emplace<HealthComponent>(r, 3.0f);
-      registry.emplace<ClickToDestroyComponent>(r);
-    }
-  }
-
-  // Add some blocks
-  {
-    for (int i = 1; i < 25; i++) {
-
-      entt::entity r = registry.create();
-      registry.emplace<TagComponent>(r, std::string("c-blocks" + std::to_string(i)));
-      // rendering
-      registry.emplace<ColourComponent>(r, colour_cyan);
-      registry.emplace<PositionIntComponent>(r, (24 + i) * GRID_SIZE, 24 * GRID_SIZE);
-      registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
-      // physics
-      registry.emplace<CollidableComponent>(
-        r, static_cast<uint32_t>(GameCollisionLayer::SOLID_WALL), PhysicsType::SOLID);
-      registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-      // gameplay
-      FlashColourComponent f;
-      f.start_colour = colour_dblue;
-      f.flash_colour = colour_green;
-      registry.emplace<FlashColourComponent>(r, f);
-      registry.emplace<HealthComponent>(r, 3.0f);
-      registry.emplace<ClickToDestroyComponent>(r);
-    }
-  }
-
   // Add a player
   {
     entt::entity r = registry.create();
     registry.emplace<TagComponent>(r, "player0");
+
     // rendering
-    registry.emplace<ColourComponent>(r, colour_cyan);
-    registry.emplace<PositionIntComponent>(r, 25 * GRID_SIZE, 25 * GRID_SIZE);
+    registry.emplace<ColourComponent>(r, colours.cyan);
+    registry.emplace<PositionIntComponent>(r, 40 * GRID_SIZE, 25 * GRID_SIZE);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-    registry.emplace<SpriteComponent>(r, sprite::type::PERSON_0);
+    registry.emplace<SpriteComponent>(r, sprite::type::PERSON_6);
     // physics
     registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
     registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<VelocityComponent>(r, 0.0f, 0.0f);
+    // input
+    registry.emplace<PlayerComponent>(r, 0);
+    PlayerInputComponent pic;
+    pic.use_keyboard = true;
+    registry.emplace<PlayerInputComponent>(r, pic);
     // gameplay
-    registry.emplace<Player>(r, 0);
-    registry.emplace<AnimationBounce>(r);
+    registry.emplace<AnimationBounceComponent>(r);
     registry.emplace<HealthComponent>(r);
     registry.emplace<ClickToDestroyComponent>(r);
+    registry.emplace<DoubleJumpComponent>(r);
   }
+
+  // Add a second player
+  {
+    entt::entity r = registry.create();
+    registry.emplace<TagComponent>(r, "player1");
+    // rendering
+    registry.emplace<ColourComponent>(r, colours.red);
+    registry.emplace<PositionIntComponent>(r, 10 * GRID_SIZE, 25 * GRID_SIZE);
+    registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+    registry.emplace<SpriteComponent>(r, sprite::type::PERSON_4);
+    // physics
+    registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
+    registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+    registry.emplace<VelocityComponent>(r, 0.0f, 0.0f);
+    // input
+    registry.emplace<PlayerComponent>(r, 1);
+    PlayerInputComponent pic;
+    pic.use_controller = true;
+    registry.emplace<PlayerInputComponent>(r, pic);
+    // gameplay
+    registry.emplace<AnimationBounceComponent>(r);
+    registry.emplace<HealthComponent>(r);
+    registry.emplace<ClickToDestroyComponent>(r);
+    registry.emplace<DoubleJumpComponent>(r);
+  }
+
+  init_map_system(registry, app);
 };
 
 } // namespace game2d
@@ -196,7 +150,7 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
   registry.set<SINGLETON_MapEditorComponent>(SINGLETON_MapEditorComponent());
 
   // could be deleted and re-init at any time
-  init_game_state(registry);
+  init_game_state(registry, app);
 
   // temp
   app.get_input().open_controllers();
@@ -213,7 +167,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     std::cout << "game paused: " << gp.paused << std::endl;
   }
   if (app.get_input().get_key_down(SDL_SCANCODE_R)) {
-    init_game_state(registry);
+    init_game_state(registry, app);
   }
   if (app.get_input().get_key_down(SDL_SCANCODE_ESCAPE)) {
     app.shutdown();
@@ -241,9 +195,9 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
       // ... systems that always update
       {
+        update_player_input_system(registry, app);
         update_animation_system(registry, app, dt);
         // update_audio_system(registry, app, dt);
-        update_player_input_system(registry, app);
         update_cursor_system(registry, app);
         // editor stuff
         update_editor_camera_system(registry, app, dt);

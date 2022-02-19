@@ -26,7 +26,7 @@ easeInOutQuad(float x)
 void
 game2d::update_animation_system(entt::registry& registry, engine::Application& app, float dt)
 {
-  const auto& view = registry.view<AnimationBounce, RenderSizeComponent>();
+  const auto& view = registry.view<AnimationBounceComponent, RenderSizeComponent>();
   view.each([&dt](auto& anim, auto& size) {
     anim.time += dt;
 
