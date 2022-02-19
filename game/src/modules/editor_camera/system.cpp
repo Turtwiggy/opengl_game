@@ -14,11 +14,6 @@
 #include <glm/gtx/transform.hpp>
 
 void
-game2d::init_editor_camera_system(entt::registry& registry){
-  //
-};
-
-void
 game2d::update_editor_camera_system(entt::registry& registry, engine::Application& app, float dt)
 {
   const auto& view = registry.view<CameraComponent>();

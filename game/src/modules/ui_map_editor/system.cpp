@@ -22,6 +22,7 @@ void
 game2d::update_ui_map_editor_system(entt::registry& registry, engine::Application& app, float dt)
 {
   SINGLETON_MapEditorComponent& i = registry.ctx<SINGLETON_MapEditorComponent>();
+  SINGLETON_RendererInfo& ri = registry.ctx<SINGLETON_RendererInfo>();
 
   // ImGui::Begin("Menu...");
   // if (ImGui::Button("Open File")) {
@@ -62,6 +63,21 @@ game2d::update_ui_map_editor_system(entt::registry& registry, engine::Applicatio
     ImGui::DragInt("Sprite", &sprite_int, 1.0f, 0, sprite_max);
     i.sprite_to_place = static_cast<sprite::type>(sprite_int);
   }
+
+  // auto uv = convert_sprite_to_uv(icon);
+  ImGui::Image((ImTextureID)ri.loaded_texture_ids[0], ImVec2(768, 352));
+  // ImGui::Image((ImTextureID)kenny_texture_id, { shop_icon_size.x, shop_icon_size.y }, uv[0], uv[1]);
+
+  ImVec2 vmin = ImGui::GetWindowContentRegionMin();
+  ImVec2 vmax = ImGui::GetWindowContentRegionMax();
+  vmin.x += ImGui::GetWindowPos().x;
+  vmin.y += ImGui::GetWindowPos().y;
+  vmax.x += ImGui::GetWindowPos().x;
+  vmax.y += ImGui::GetWindowPos().y;
+  ImGui::GetForegroundDrawList()->AddRect(vmin, vmax, IM_COL32(255, 255, 0, 255));
+
+  ImGui::Text("vmin: %f %f", vmin.x, vmin.y);
+  ImGui::Text("vmax: %f %f", vmax.x, vmax.y);
 
   ImGui::End();
 }

@@ -21,10 +21,6 @@ game2d::update_click_to_destroy_system(entt::registry& registry, engine::Applica
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
 
-  // dont process game events if the viewport says so
-  if (!ri.viewport_process_events)
-    return;
-
   // std::cout << "set seed to 0" << std::endl;
   // std::string seed = std::string("0");
   // res.rnd.rng.seed(std::seed_seq(seed.begin(), seed.end()));

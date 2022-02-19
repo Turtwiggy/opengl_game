@@ -33,9 +33,7 @@
 #include "systems/collisions_actor_actor.hpp"
 #include "systems/cursor.hpp"
 #include "systems/destroy_after_time.hpp"
-#include "systems/parry.hpp"
 #include "systems/player_input.hpp"
-#include "systems/velocity_in_boundingbox.hpp"
 
 // engine headers
 #include "engine/maths.hpp"
@@ -110,7 +108,6 @@ init_game_state(entt::registry& registry)
       registry.emplace<FlashColourComponent>(r, f);
       registry.emplace<HealthComponent>(r, 3.0f);
       registry.emplace<ClickToDestroyComponent>(r);
-      // registry.emplace<ParryComponent>(r);
     }
   }
 
@@ -135,7 +132,6 @@ init_game_state(entt::registry& registry)
       registry.emplace<FlashColourComponent>(r, f);
       registry.emplace<HealthComponent>(r, 3.0f);
       registry.emplace<ClickToDestroyComponent>(r);
-      // registry.emplace<ParryComponent>(r);
     }
   }
 
@@ -161,7 +157,6 @@ init_game_state(entt::registry& registry)
       registry.emplace<FlashColourComponent>(r, f);
       registry.emplace<HealthComponent>(r, 3.0f);
       registry.emplace<ClickToDestroyComponent>(r);
-      // registry.emplace<ParryComponent>(r);
     }
   }
 
@@ -241,18 +236,27 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
-      update_animation_system(registry, app, dt);
-      // update_audio_system(registry, app, dt);
-      update_player_input_system(registry, app);
-      update_cursor_system(registry, app);
-      update_click_to_destroy_system(registry, app);
-      update_velocity_in_boundingbox_system(registry, app, dt);
-      update_parry_system(registry, app, dt);
-      // editor stuff
-      update_editor_camera_system(registry, app, dt);
-      update_map_editor_system(registry, app, dt);
-      // destroy any entities
-      update_destroy_after_time_system(registry, app, dt);
+
+      // ... systems that always update
+      {
+        update_animation_system(registry, app, dt);
+        // update_audio_system(registry, app, dt);
+        update_player_input_system(registry, app);
+        update_cursor_system(registry, app);
+        // editor stuff
+        update_editor_camera_system(registry, app, dt);
+        update_map_editor_system(registry, app, dt);
+      }
+
+      // ... now systems that only update if viewport is focused
+      {
+        const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+        if (ri.viewport_process_events) {
+          update_click_to_destroy_system(registry, app);
+          // destroy any entities
+          update_destroy_after_time_system(registry, app, dt);
+        }
+      }
     }
   };
   Uint64 end_game_tick = SDL_GetPerformanceCounter();

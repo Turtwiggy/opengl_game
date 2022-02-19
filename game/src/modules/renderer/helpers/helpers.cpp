@@ -7,11 +7,13 @@
 game2d::ViewportInfo
 game2d::render_texture_to_imgui_viewport(const int& tex_unit)
 {
+
   static bool dockspace_open = true;
   static bool opt_fullscreen = true;
   static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
-  ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+  ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
+
   if (opt_fullscreen) {
     const ImGuiViewport* viewport = ImGui::GetMainViewport();
     ImGui::SetNextWindowPos(viewport->WorkPos);

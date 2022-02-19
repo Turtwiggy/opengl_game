@@ -34,23 +34,6 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
   if (controllers.size() > 0) {
     SDL_GameController* controller_0 = controllers[0];
 
-    // axis
-    // float l_analogue_x = app.get_input().get_axis_dir(controller_0,
-    // SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTX); float l_analogue_y =
-    // app.get_input().get_axis_dir(controller_0, SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTY); float r_analogue_x
-    // = app.get_input().get_axis_dir(controller_0, SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTX); float
-    // r_analogue_y = app.get_input().get_axis_dir(controller_0, SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTY);
-    // float l_trigger =
-    //   app.get_input().get_axis_dir(controller_0, SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERLEFT);
-    // float r_trigger =
-    //   app.get_input().get_axis_dir(controller_0, SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERRIGHT);
-    // ImGui::Text("L Analogue X %f", l_analogue_x);
-    // ImGui::Text("L Analogue Y %f", l_analogue_y);
-    // ImGui::Text("R Analogue X %f", r_analogue_x);
-    // ImGui::Text("R Analogue Y %f", r_analogue_y);
-    // ImGui::Text("L Trigger %f", l_trigger);
-    // ImGui::Text("R Trigger %f", r_trigger);
-
     bool start_button =
       app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START);
     bool a_pressed = app.get_input().get_button_down(controller_0, SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A);
@@ -94,34 +77,21 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
   mouse_pos_adjusted_in_worldspace.x += GRID_SIZE / 2.0f;
   mouse_pos_adjusted_in_worldspace.y += GRID_SIZE / 2.0f;
 
-  {
-    const auto& view = registry.view<Player, VelocityComponent, DoubleJumpComponent>();
-    view.each([&app](const auto& player, auto& vel, auto& dd) {
-      if (dd.able_to_jump) {
-
-        // Jump simple
-        const auto UP = glm::vec2(0.0f, -1.0f);
-        const auto JUMP_VEL = 150.0f;
-        bool jump_pressed = app.get_input().get_key_down(SDL_SCANCODE_SPACE);
-        if (jump_pressed) {
-          dd.able_to_jump = false;
-          vel.y = (UP * JUMP_VEL).y;
-        }
-
-        // Jump slightly better control
-        // float fall_multiplier = 2.5f;
-        // float low_jump_multiplier = 2.0f;
-        // // if (vel.y > 0.0f) {
-        // //   vel_dt = up * glm::vec2(0.0f, gravity) * glm::vec2(fall_multiplier - 1.0f);
-        // // } else
-        // if (vel.y < 0.0f && !jump_pressed) {
-        //   glm::vec2 vel_dt = (up * gravity) * glm::vec2(low_jump_multiplier - 1.0f);
-        //   vel.x += vel_dt.x;
-        //   vel.y += vel_dt.y;
-        // }
-      }
-    });
-  }
+  // {
+  //   const auto& view = registry.view<Player, VelocityComponent, DoubleJumpComponent>();
+  //   view.each([&app](const auto& player, auto& vel, auto& dd) {
+  //     if (dd.able_to_jump) {
+  //       // Jump simple
+  //       // const auto UP = glm::vec2(0.0f, -1.0f);
+  //       // const auto JUMP_VEL = 150.0f;
+  //       // bool jump_pressed = app.get_input().get_key_down(SDL_SCANCODE_SPACE);
+  //       // if (jump_pressed) {
+  //       //   dd.able_to_jump = false;
+  //       //   vel.y = (UP * JUMP_VEL).y;
+  //       // }
+  //     }
+  //   });
+  // }
 
   {
     const auto& view = registry.view<Player, PositionIntComponent, VelocityComponent>();
@@ -143,9 +113,13 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
         int x_speed = 50;
         vel.x = vx * x_speed;
 
+        // Move up and down
+        int y_speed = 50;
+        vel.y = vy * y_speed;
+
         // apply gravity
-        float gravity = 1.0f;
-        vel.y += gravity;
+        // float gravity = 1.0f;
+        // vel.y += gravity;
 
         // Action: Update player position with RMB
         // ImGui::Text("player grid %i %i", grid_slot.x, grid_slot.y);

@@ -124,6 +124,7 @@ struct MeleeWeaponStats : WeaponStats
   glm::vec2 weapon_target_pos = { 0.0f, 0.0f };
   float weapon_current_angle = 0.0f;
 };
+
 struct RangedWeaponStats : WeaponStats
 {
   int radius_offset_from_player = 14;
@@ -131,6 +132,7 @@ struct RangedWeaponStats : WeaponStats
   float fire_rate_seconds_limit = 1.0f;
   int current_ammo = 20;
 };
+
 void
 shop::update_shop(int& p0_currency,
                   int kenny_texture_id,
