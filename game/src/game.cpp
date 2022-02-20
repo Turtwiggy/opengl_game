@@ -6,12 +6,11 @@
 #include "modules/animation/components.hpp"
 #include "modules/audio/components.hpp"
 #include "modules/editor_camera/components.hpp"
-#include "modules/map/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_gizmos/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
-#include "modules/ui_map_editor/components.hpp"
+#include "modules/ui_map/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
 // helpers
@@ -21,13 +20,12 @@
 #include "modules/animation/system.hpp"
 #include "modules/audio/system.hpp"
 #include "modules/editor_camera/system.hpp"
-#include "modules/map/system.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/physics/system.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/ui_gizmos/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
-#include "modules/ui_map_editor/system.hpp"
+#include "modules/ui_map/system.hpp"
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 #include "systems/click_to_destroy.hpp"
@@ -134,7 +132,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
     registry.emplace<DoubleJumpComponent>(r);
   }
 
-  init_map_system(registry, app);
+  init_ui_map_system(registry, app);
 };
 
 } // namespace game2d
@@ -147,13 +145,10 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());
   registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
-  registry.set<SINGLETON_MapEditorComponent>(SINGLETON_MapEditorComponent());
+  app.get_input().open_controllers(); // enable controllers
 
   // could be deleted and re-init at any time
   init_game_state(registry, app);
-
-  // temp
-  app.get_input().open_controllers();
 };
 
 void
@@ -208,8 +203,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
           update_click_to_destroy_system(registry, app);
-          update_map_system(registry, app, dt);
-
           // last thing to do for gametick: destroy any entities
           update_destroy_after_time_system(registry, app, dt);
         }
@@ -230,10 +223,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // ui
   {
     update_ui_profiler_system(registry, app);
+    update_ui_map_system(registry, app, dt);
     update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
     // update_ui_gizmos_system(registry, app, dt); // update after hierarchy
-    update_ui_map_editor_system(registry, app, dt);
   };
 
   // end frame

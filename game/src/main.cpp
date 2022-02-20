@@ -48,6 +48,10 @@ main(int argc, char* argv[])
   std::cout << "Running main()" << std::endl;
   const auto app_start = std::chrono::high_resolution_clock::now();
 
+  // configure application
+  app.limit_fps = true;
+  app.fps_if_limited = 60.0f;
+
   game2d::init(registry, app, start_screen_wh);
 
   bool hide_windows_console = false;

@@ -39,7 +39,7 @@ file(GLOB_RECURSE SRC_FILES
 add_executable(game_2d
   ${SRC_FILES}
   # add icon to executable
-  # ${CMAKE_CURRENT_BINARY_DIR}/assets/2d_game/textures/resource.rc
+  ${CMAKE_CURRENT_BINARY_DIR}/assets/textures/resource.rc
 )
 
 # includes

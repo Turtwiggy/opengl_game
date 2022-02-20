@@ -17,6 +17,9 @@
 
 namespace game2d {
 
+// TODO: these are game-specific callbacks,
+// so don't belong in this file!
+
 void
 CALLBACK_actor_solid_collision(entt::registry& registry, const CollisionInfo2D& info)
 {
