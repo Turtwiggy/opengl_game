@@ -190,7 +190,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
       // ... systems that always update
       {
-        update_player_input_system(registry, app);
+        update_player_input_system(registry, app, dt);
         update_animation_system(registry, app, dt);
         // update_audio_system(registry, app, dt);
         update_cursor_system(registry, app);

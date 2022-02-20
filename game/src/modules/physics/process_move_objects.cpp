@@ -94,8 +94,8 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
 
     if (registry.all_of<VelocityComponent>(actor_eid)) {
       const auto& vel = registry.get<VelocityComponent>(actor_eid);
-      pos.dx += vel.x * dt;
-      pos.dy += vel.y * dt;
+      pos.dx += (vel.x * dt);
+      pos.dy += (vel.y * dt);
     }
 
     move_actors_dir(registry, COLLISION_AXIS::X, pos.x, pos.dx, actor_aabb, solids_aabb, actor_hit_solid_callback);

@@ -21,6 +21,25 @@ static glm::ivec2 start_screen_wh = { 1366, 720 };
 static Application app("2D Game [0.0.8]", start_screen_wh.x, start_screen_wh.y, vsync);
 static entt::registry registry;
 
+// Game's fixed tick
+// int FIXED_TICKS_PER_SECOND = 1;
+// float SECONDS_PER_FIXED_TICK = 1.0f / FIXED_TICKS_PER_SECOND;
+// float seconds_since_last_game_tick = 0;
+
+// Physics tick
+// int PHYSICS_TICKS_PER_SECOND = 60;
+// float SECONDS_PER_PHYSICS_TICK = 1.0f / PHYSICS_TICKS_PER_SECOND;
+
+// THIS IS FOR A FIXED GAME TICK
+// -----------------------------
+// seconds_since_last_game_tick += delta_time_in_seconds;
+// while (seconds_since_last_game_tick >= SECONDS_PER_FIXED_TICK)
+//{
+//    //Fixed update
+//    fixed_tick(SECONDS_PER_FIXED_TICK);
+//    seconds_since_last_game_tick -= SECONDS_PER_FIXED_TICK;
+//}
+
 void
 main_loop(void* arg)
 {
@@ -31,7 +50,7 @@ main_loop(void* arg)
   app.frame_begin(); // input events
 
   float delta_time_s = app.get_delta_time();
-  if (delta_time_s >= 0.25f)
+  if (delta_time_s > 0.25f)
     delta_time_s = 0.25f;
 
   game2d::update(registry, app, delta_time_s);
@@ -49,8 +68,8 @@ main(int argc, char* argv[])
   const auto app_start = std::chrono::high_resolution_clock::now();
 
   // configure application
-  app.limit_fps = true;
-  app.fps_if_limited = 60.0f;
+  // app.limit_fps = true;
+  // app.fps_if_limited = 15.0f;
 
   game2d::init(registry, app, start_screen_wh);
 

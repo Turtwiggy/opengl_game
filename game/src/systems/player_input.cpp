@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 void
-game2d::update_player_input_system(entt::registry& registry, engine::Application& app)
+game2d::update_player_input_system(entt::registry& registry, engine::Application& app, float dt)
 {
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
@@ -75,7 +75,7 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
   // ... process jump
 
   const auto UP = glm::vec2(0.0f, -1.0f);
-  const auto JUMP_VEL = 150.0f;
+  const auto JUMP_VEL = 100.0f;
   {
     const auto& view = registry.view<PlayerComponent, PlayerInputComponent, VelocityComponent, DoubleJumpComponent>();
     view.each([&app, &UP, &JUMP_VEL](const auto& player, const auto& input, auto& vel, auto& dd) {
@@ -95,7 +95,7 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
 
   {
     const auto& view = registry.view<PlayerComponent, PlayerInputComponent, PositionIntComponent, VelocityComponent>();
-    view.each([&registry, &app, &mouse_pos_adjusted_in_worldspace, &GRID_SIZE](
+    view.each([&registry, &app, &mouse_pos_adjusted_in_worldspace, &GRID_SIZE, &dt](
                 const auto& player, const auto& input, auto& pos, auto& vel) {
       //
       // Action: Move, Convert WASD to input
@@ -113,13 +113,14 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
       // Move left and right (non-grid)
       int x_speed = 50;
       vel.x = vx * x_speed;
+
       // Move up and down (non-grid)
       // int y_speed = 50;
       // vel.y = vy * y_speed;
 
-      // apply gravity
-      float gravity = 1.0f;
-      vel.y += gravity;
+      // apply gravity, this is broken until a fixed timestep is used
+      // const float gravity = 100.0f;
+      // vel.y += (gravity * dt);
 
       // Action: Update player position with RMB
       // ImGui::Text("player grid %i %i", grid_slot.x, grid_slot.y);
