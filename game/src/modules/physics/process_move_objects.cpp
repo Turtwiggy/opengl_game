@@ -7,9 +7,6 @@
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
 
-// other lib headers
-#include <imgui.h>
-
 // c++ lib headers
 #include <algorithm>
 #include <iostream>
@@ -58,8 +55,6 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
   std::function<void(entt::registry&, CollisionInfo2D&)> actor_hit_solid_callback = CALLBACK_actor_solid_collision;
   std::function<void(entt::registry&, CollisionInfo2D&)> actor_being_squish_callback = CALLBACK_do_nothing;
 
-  ImGui::Begin("Debug move objects", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
-
   // actors and solids never overlap,
   // and solids dont overlap with solids
 
@@ -83,8 +78,6 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
       actors_aabb.push_back(aabb);
     }
   });
-  ImGui::Text("actors_aabb %i", actors_aabb.size());
-  ImGui::Text("solids_aabb %i", solids_aabb.size());
 
   // move actors, but stop at solids
   for (int i = 0; i < actors_aabb.size(); i++) {
@@ -101,7 +94,6 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
     move_actors_dir(registry, COLLISION_AXIS::X, pos.x, pos.dx, actor_aabb, solids_aabb, actor_hit_solid_callback);
     move_actors_dir(registry, COLLISION_AXIS::Y, pos.y, pos.dy, actor_aabb, solids_aabb, actor_hit_solid_callback);
 
-    ImGui::Text("actor: %i %i %f %f", pos.x, pos.y, pos.dx, pos.dy);
     // end actors
   }
 
@@ -218,6 +210,4 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
     // Re-enable collisions for this solid
     solid_aabb.collidable = true;
   }
-
-  ImGui::End();
 };
