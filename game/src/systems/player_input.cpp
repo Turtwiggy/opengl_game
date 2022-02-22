@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 void
-game2d::update_player_input_system(entt::registry& registry, engine::Application& app)
+game2d::update_player_input_system(entt::registry& registry, engine::Application& app, float dt)
 {
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
@@ -50,12 +50,12 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
       // convert controller inputs to movement actions for player
 
       if (input.use_controller) {
-        // auto controller = app.get_input().controllers[input.controller_index]
 
         int num_controllers = input_system.controllers.size();
         if (num_controllers == 0)
           return;
         auto controller = input_system.controllers[0]; // hmm, only supports one controller atm
+        // auto controller = app.get_input().controllers[input.controller_index]
 
         float c_left_stick_x = input_system.get_axis_dir(controller, input.c_left_stick_x);
         float c_left_stick_y = input_system.get_axis_dir(controller, input.c_left_stick_y);
@@ -64,24 +64,6 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
         input.move_left = c_left_stick_x < 0.0f;
         input.move_right = c_left_stick_x > 0.0f;
         input.jump = input_system.get_button_down(controller, input.c_a);
-      }
-    });
-  }
-
-  // now process movement actions..!
-
-  //
-  //
-  // ... process jump
-
-  const auto UP = glm::vec2(0.0f, -1.0f);
-  const auto JUMP_VEL = 150.0f;
-  {
-    const auto& view = registry.view<PlayerComponent, PlayerInputComponent, VelocityComponent, DoubleJumpComponent>();
-    view.each([&app, &UP, &JUMP_VEL](const auto& player, const auto& input, auto& vel, auto& dd) {
-      if (input.jump && dd.able_to_jump) {
-        dd.able_to_jump = false;
-        vel.y = (UP * JUMP_VEL).y;
       }
     });
   }
@@ -95,7 +77,7 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
 
   {
     const auto& view = registry.view<PlayerComponent, PlayerInputComponent, PositionIntComponent, VelocityComponent>();
-    view.each([&registry, &app, &mouse_pos_adjusted_in_worldspace, &GRID_SIZE](
+    view.each([&registry, &app, &mouse_pos_adjusted_in_worldspace, &GRID_SIZE, &dt](
                 const auto& player, const auto& input, auto& pos, auto& vel) {
       //
       // Action: Move, Convert WASD to input
@@ -113,13 +95,10 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
       // Move left and right (non-grid)
       int x_speed = 50;
       vel.x = vx * x_speed;
+
       // Move up and down (non-grid)
       // int y_speed = 50;
       // vel.y = vy * y_speed;
-
-      // apply gravity
-      float gravity = 1.0f;
-      vel.y += gravity;
 
       // Action: Update player position with RMB
       // ImGui::Text("player grid %i %i", grid_slot.x, grid_slot.y);

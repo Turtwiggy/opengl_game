@@ -13,6 +13,9 @@ void
 init(entt::registry& registry, engine::Application& app, glm::ivec2 screen_wh);
 
 void
+fixed_update(entt::registry& registry, engine::Application& app, float fixed_dt);
+
+void
 update(entt::registry& registry, engine::Application& app, float dt);
 
 } // namespace game2d
