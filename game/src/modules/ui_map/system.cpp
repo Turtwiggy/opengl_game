@@ -41,6 +41,8 @@ game2d::init_ui_map_system(entt::registry& registry, const engine::Application& 
   const auto viewport_size = ri.viewport_size_current;
   map.size_x = viewport_size.x / GRID_SIZE;
   map.size_y = viewport_size.y / GRID_SIZE;
+  // map.size_x = 10;
+  // map.size_y = 10;
   map.entities.resize(map.size_x * map.size_y);
 
   for (int y = 0; y < map.size_y; y++) {
@@ -60,8 +62,7 @@ game2d::init_ui_map_system(entt::registry& registry, const engine::Application& 
         // gameplay
         registry.emplace<GridPositionComponent>(r, x, y);
 
-        // xmax * y + x
-        map.entities[map.size_x * y + x].push_back(r);
+        add_entity_to_map(map, r, x, y);
       }
     }
   }

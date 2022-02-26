@@ -1,6 +1,9 @@
 // your header
 #include "systems/player_move_on_grid.hpp"
 
+// helpers
+#include "modules/ui_map/helpers.hpp"
+
 // engine
 #include "engine/grid.hpp"
 
@@ -31,40 +34,29 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
         vx = -1;
       else if (input.move_right)
         vx = 1;
-      if (vx == 0 && vy == 0) // no need to update entity in map if it hasn't moved
+
+      // no need to update entity in map if it hasn't moved
+      if (vx == 0 && vy == 0)
         return;
 
-      int index = map.size_x * gridpos.y + gridpos.x;
-      auto& entities = map.entities[index];
-      int neighbour_index = map.size_x * glm::max(gridpos.y - vy, 0) + glm::max(gridpos.x + vx, 0);
-      auto& neighbour_entities = map.entities[neighbour_index];
+      int old_x = gridpos.x;
+      int old_y = gridpos.y;
+      int new_x = gridpos.x + vx;
+      int new_y = gridpos.y - vy;
+      printf("%i %i\n", old_x, old_y);
 
-      if (neighbour_entities.size() > 0) {
-        printf("blocked!");
-        return; // skip -- blocked
-      }
-
-      auto it = entities.begin();
-      while (it != entities.end()) {
-        const entt::entity& e = *it;
-
-        bool removed = false;
-        if (e == entity) {
-          it = entities.erase(it); // erase old entity in old grid slot
-          removed = true;
-        } else {
-          ++it;
-        }
-
-        if (removed) {
-
-          gridpos.x += vx;
-          gridpos.y -= vy;
-
-          // put entity in new grid slot
-          neighbour_entities.push_back(entity);
+      // temp: fake collisions?
+      {
+        auto& neighbour_cell = get_entities(map, new_x, new_y);
+        if (neighbour_cell.size() > 0) {
+          printf("blocked!");
+          return; // skip -- blocked
         }
       }
+
+      move_entity_on_map(map, entity, old_x, old_y, new_x, new_y);
+      gridpos.x = new_x;
+      gridpos.y = new_y;
     });
   }
 

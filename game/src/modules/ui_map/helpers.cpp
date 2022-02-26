@@ -129,7 +129,7 @@ public:
   }
 };
 
-} // namespace game2d
+}; // namespace game2d
 
 void
 game2d::serialize_to_text(entt::registry& registry, std::string path)
@@ -174,4 +174,56 @@ game2d::deserialize_text_to_registry(entt::registry& registry, std::string path)
   entt::basic_snapshot_loader loader(registry_to_load_in_to);
   loader.entities(json_in)
     .component<TagComponent, ColourComponent, PositionIntComponent, RenderSizeComponent, SpriteComponent>(json_in);
+};
+
+namespace game2d {
+
+bool
+remove_entity_from_map(SINGLETON_MapComponent& map, const entt::entity& entity, int x, int y)
+{
+  auto& entities = get_entities(map, x, y);
+  bool removed = false;
+
+  auto it = entities.begin();
+  while (it != entities.end()) {
+    const entt::entity& e = *it;
+    if (e == entity) {
+      it = entities.erase(it); // erase old entity in old grid slot
+      removed = true;
+    } else {
+      ++it;
+    }
+  }
+
+  return removed;
+};
+
+}; // namespace game2d
+
+std::vector<entt::entity>&
+game2d::get_entities(SINGLETON_MapComponent& map, int x, int y)
+{
+  int clamped_x = glm::min(glm::max(x, 0), map.size_x - 1);
+  int clamped_y = glm::min(glm::max(y, 0), map.size_y - 1);
+  return map.entities[map.size_x * clamped_y + clamped_x];
+};
+
+void
+game2d::add_entity_to_map(SINGLETON_MapComponent& map, const entt::entity& entity, int x, int y)
+{
+  map.entities[map.size_x * y + x].push_back(entity);
+};
+
+void
+game2d::move_entity_on_map(SINGLETON_MapComponent& map,
+                           const entt::entity& entity,
+                           int old_x,
+                           int old_y,
+                           int new_x,
+                           int new_y)
+{
+  bool removed = remove_entity_from_map(map, entity, old_x, old_y);
+  if (removed) {
+    add_entity_to_map(map, entity, new_x, new_y);
+  }
 };

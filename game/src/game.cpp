@@ -15,6 +15,7 @@
 
 // helpers
 #include "helpers/physics_layers.hpp"
+#include "modules/ui_map/helpers.hpp"
 
 // systems
 #include "modules/animation/system.hpp"
@@ -87,12 +88,15 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
   // Add a player
   {
+    int x = 5;
+    int y = 10;
+
     entt::entity r = registry.create();
     registry.emplace<TagComponent>(r, "player0");
 
     // rendering
     registry.emplace<ColourComponent>(r, colours.cyan);
-    registry.emplace<PositionIntComponent>(r);
+    registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<SpriteComponent>(r, sprite::type::PERSON_6);
     // physics
@@ -107,20 +111,22 @@ init_game_state(entt::registry& registry, engine::Application& app)
     // gameplay
     registry.emplace<AnimationBounceComponent>(r);
     registry.emplace<ClickToDestroyComponent>(r);
-    registry.emplace<GridPositionComponent>(r);
+    registry.emplace<GridPositionComponent>(r, x, y);
     registry.emplace<HealthComponent>(r);
 
-    // xmax * y + x
-    map.entities[map.size_x * 0 + 0].push_back(r);
+    add_entity_to_map(map, r, x, y);
   }
 
   // Add a second player
   {
+    int x = 15;
+    int y = 10;
+
     entt::entity r = registry.create();
     registry.emplace<TagComponent>(r, "player1");
     // rendering
     registry.emplace<ColourComponent>(r, colours.red);
-    registry.emplace<PositionIntComponent>(r);
+    registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<SpriteComponent>(r, sprite::type::PERSON_4);
     // physics
@@ -135,11 +141,10 @@ init_game_state(entt::registry& registry, engine::Application& app)
     // gameplay
     registry.emplace<AnimationBounceComponent>(r);
     registry.emplace<ClickToDestroyComponent>(r);
-    registry.emplace<GridPositionComponent>(r);
+    registry.emplace<GridPositionComponent>(r, x, y);
     registry.emplace<HealthComponent>(r);
 
-    // xmax * y + x
-    map.entities[map.size_x * 0 + 0].push_back(r);
+    add_entity_to_map(map, r, x, y);
   }
 };
 

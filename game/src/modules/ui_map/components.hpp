@@ -14,10 +14,10 @@ namespace game2d {
 
 struct SINGLETON_MapComponent
 {
+  std::vector<std::vector<entt::entity>> entities;
+  int objects_on_map = 0;
   int size_x = 10;
   int size_y = 10;
-  int objects_on_map = 0;
-  std::vector<std::vector<entt::entity>> entities;
 
   // editor?
   // bool place_sprite = false;
