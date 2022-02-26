@@ -176,10 +176,24 @@ game2d::deserialize_text_to_registry(entt::registry& registry, std::string path)
     .component<TagComponent, ColourComponent, PositionIntComponent, RenderSizeComponent, SpriteComponent>(json_in);
 };
 
-namespace game2d {
+void
+game2d::remove_entity_from_map(SINGLETON_MapComponent& map, const entt::entity& entity)
+{
+  for (auto& eids : map.entities) {
+    auto it = eids.begin();
+    while (it != eids.end()) {
+      const entt::entity& e = *it;
+      if (e == entity) {
+        it = eids.erase(it);
+      } else {
+        ++it;
+      }
+    }
+  }
+};
 
 bool
-remove_entity_from_map(SINGLETON_MapComponent& map, const entt::entity& entity, int x, int y)
+game2d::remove_entity_from_map_at_location(SINGLETON_MapComponent& map, const entt::entity& entity, int x, int y)
 {
   auto& entities = get_entities(map, x, y);
   bool removed = false;
@@ -197,8 +211,6 @@ remove_entity_from_map(SINGLETON_MapComponent& map, const entt::entity& entity, 
 
   return removed;
 };
-
-}; // namespace game2d
 
 std::vector<entt::entity>&
 game2d::get_entities(SINGLETON_MapComponent& map, int x, int y)
@@ -222,7 +234,7 @@ game2d::move_entity_on_map(SINGLETON_MapComponent& map,
                            int new_x,
                            int new_y)
 {
-  bool removed = remove_entity_from_map(map, entity, old_x, old_y);
+  bool removed = remove_entity_from_map_at_location(map, entity, old_x, old_y);
   if (removed) {
     add_entity_to_map(map, entity, new_x, new_y);
   }

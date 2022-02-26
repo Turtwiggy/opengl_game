@@ -21,8 +21,9 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
 
   // Process player input to update gridpos
   {
-    const auto& view = registry.view<PlayerComponent, PlayerInputComponent, GridPositionComponent>();
-    view.each([&map](const auto& entity, const auto& player, const auto& input, auto& gridpos) {
+    const auto& view =
+      registry.view<PlayerComponent, PlayerInputComponent, PositionIntComponent, GridPositionComponent>();
+    view.each([&map, &GRID_SIZE](const auto& entity, const auto& player, const auto& input, auto& pos, auto& gridpos) {
       //
       int vx = 0;
       int vy = 0;
@@ -43,13 +44,11 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
       int old_y = gridpos.y;
       int new_x = gridpos.x + vx;
       int new_y = gridpos.y - vy;
-      printf("%i %i\n", old_x, old_y);
 
       // temp: fake collisions?
       {
         auto& neighbour_cell = get_entities(map, new_x, new_y);
         if (neighbour_cell.size() > 0) {
-          printf("blocked!");
           return; // skip -- blocked
         }
       }
@@ -57,30 +56,35 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
       move_entity_on_map(map, entity, old_x, old_y, new_x, new_y);
       gridpos.x = new_x;
       gridpos.y = new_y;
+
+      // assign pos based on grid position
+      const auto converted_pos = engine::grid::grid_space_to_world_space(glm::ivec2(gridpos.x, gridpos.y), GRID_SIZE);
+      pos.x = static_cast<int>(converted_pos.x);
+      pos.y = static_cast<int>(converted_pos.y);
     });
   }
 
-  // Process all gridpos to convert it to worldpos
+  // Check entities in entity-map are still valid
   {
-    map.objects_on_map = 0;
-
     for (const auto& eids : map.entities) {
-      for (auto eid : eids) {
-        bool has_pos = registry.all_of<PositionIntComponent>(eid);
-        bool has_grid_pos = registry.all_of<GridPositionComponent>(eid);
-
-        if (has_pos && has_grid_pos) {
-          auto& pos = registry.get<PositionIntComponent>(eid);
-          auto& gpos = registry.get<GridPositionComponent>(eid);
-
-          // assign pos based on grid position
-          const auto converted_pos = engine::grid::grid_space_to_world_space(glm::ivec2(gpos.x, gpos.y), GRID_SIZE);
-          pos.x = static_cast<int>(converted_pos.x);
-          pos.y = static_cast<int>(converted_pos.y);
-
-          map.objects_on_map++;
+      for (const auto& eid : eids) {
+        if (!registry.valid(eid)) {
+          remove_entity_from_map(map, eid);
         }
       }
     }
   }
+
+  // Process all gridpos to convert it to worldpos
+  // {
+  //   glm::ivec2 ipos;
+  //   const auto& view = registry.view<PositionIntComponent, GridPositionComponent>();
+  //   view.each([&map, &GRID_SIZE, &ipos](const auto& input, auto& pos, auto& gridpos) {
+  //     ipos.x = gridpos.x;
+  //     ipos.y = gridpos.y;
+  //     const auto converted_pos = engine::grid::grid_space_to_world_space(ipos, GRID_SIZE);
+  //     pos.x = static_cast<int>(converted_pos.x);
+  //     pos.y = static_cast<int>(converted_pos.y);
+  //   });
+  // }
 };

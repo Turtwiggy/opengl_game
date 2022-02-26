@@ -19,6 +19,12 @@ deserialize_text_to_registry(entt::registry& registry, std::string path);
 
 // entity-map manipulation
 
+void
+remove_entity_from_map(SINGLETON_MapComponent& map, const entt::entity& entity);
+
+bool
+remove_entity_from_map_at_location(SINGLETON_MapComponent& map, const entt::entity& entity, int x, int y);
+
 std::vector<entt::entity>&
 get_entities(SINGLETON_MapComponent& map, int x, int y);
 
