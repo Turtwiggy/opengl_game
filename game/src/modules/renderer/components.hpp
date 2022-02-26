@@ -99,27 +99,12 @@ struct SpriteComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(SpriteComponent, sprite)
 };
 
-// struct CircleComponent
-// {
-//   float thickness = 1.0f;
-//   CircleComponent() = default;
-//   CircleComponent(const CircleComponent&) = default;
-// };
-
 struct TagComponent
 {
   std::string tag;
 
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
 };
-
-// struct ZIndex
-// {
-//   int index = 0;
-//   ZIndex() = default;
-//   ZIndex(int index)
-//     : index(index){};
-// };
 
 // texture constants
 constexpr int tex_unit_kenny_nl = 0;

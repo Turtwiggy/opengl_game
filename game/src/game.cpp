@@ -34,6 +34,7 @@
 #include "systems/destroy_after_time.hpp"
 #include "systems/player_input.hpp"
 #include "systems/player_jump.hpp"
+#include "systems/player_move_on_grid.hpp"
 
 // engine headers
 #include "engine/maths.hpp"
@@ -63,9 +64,11 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
+  init_ui_map_system(registry, app);
 
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
   const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  auto& map = registry.ctx<SINGLETON_MapComponent>();
 
   // Add a cursor, made of 4 lines
   {
@@ -89,7 +92,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
     // rendering
     registry.emplace<ColourComponent>(r, colours.cyan);
-    registry.emplace<PositionIntComponent>(r, 40 * GRID_SIZE, 25 * GRID_SIZE);
+    registry.emplace<PositionIntComponent>(r);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<SpriteComponent>(r, sprite::type::PERSON_6);
     // physics
@@ -103,13 +106,12 @@ init_game_state(entt::registry& registry, engine::Application& app)
     registry.emplace<PlayerInputComponent>(r, pic);
     // gameplay
     registry.emplace<AnimationBounceComponent>(r);
-    registry.emplace<HealthComponent>(r);
     registry.emplace<ClickToDestroyComponent>(r);
-    registry.emplace<DoubleJumpComponent>(r);
-    FlashColourComponent c;
-    c.flash_colour = colours.green;
-    c.start_colour = colours.cyan;
-    registry.emplace<FlashColourComponent>(r, c);
+    registry.emplace<GridPositionComponent>(r);
+    registry.emplace<HealthComponent>(r);
+
+    // xmax * y + x
+    map.entities[map.size_x * 0 + 0].push_back(r);
   }
 
   // Add a second player
@@ -118,7 +120,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
     registry.emplace<TagComponent>(r, "player1");
     // rendering
     registry.emplace<ColourComponent>(r, colours.red);
-    registry.emplace<PositionIntComponent>(r, 10 * GRID_SIZE, 25 * GRID_SIZE);
+    registry.emplace<PositionIntComponent>(r);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<SpriteComponent>(r, sprite::type::PERSON_4);
     // physics
@@ -132,16 +134,13 @@ init_game_state(entt::registry& registry, engine::Application& app)
     registry.emplace<PlayerInputComponent>(r, pic);
     // gameplay
     registry.emplace<AnimationBounceComponent>(r);
-    registry.emplace<HealthComponent>(r);
     registry.emplace<ClickToDestroyComponent>(r);
-    registry.emplace<DoubleJumpComponent>(r);
-    FlashColourComponent c;
-    c.flash_colour = colours.green;
-    c.start_colour = colours.red;
-    registry.emplace<FlashColourComponent>(r, c);
-  }
+    registry.emplace<GridPositionComponent>(r);
+    registry.emplace<HealthComponent>(r);
 
-  init_ui_map_system(registry, app);
+    // xmax * y + x
+    map.entities[map.size_x * 0 + 0].push_back(r);
+  }
 };
 
 } // namespace game2d
@@ -170,22 +169,22 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
-      // move objects, checking collisions along way
-      update_move_objects_system(registry, app, fixed_dt);
-      // generate all collisions between actor-actor objects
-      update_physics_system(registry, app, fixed_dt);
-      // process actor-actor collisions
-      update_actor_actor_collision_system(registry, app, fixed_dt);
+      // // move objects, checking collisions along way
+      // update_move_objects_system(registry, app, fixed_dt);
+      // // generate all collisions between actor-actor objects
+      // update_physics_system(registry, app, fixed_dt);
+      // // process actor-actor collisions
+      // update_actor_actor_collision_system(registry, app, fixed_dt);
 
-      // temp: apply gravity
-      {
-        const auto& view = registry.view<PlayerComponent, VelocityComponent>();
-        view.each([&registry, &fixed_dt](const auto& player, auto& vel) {
-          // apply gravity
-          const float gravity = 100.0f;
-          vel.y += (gravity * fixed_dt);
-        });
-      }
+      // // temp: apply gravity
+      // {
+      //   const auto& view = registry.view<PlayerComponent, VelocityComponent>();
+      //   view.each([&registry, &fixed_dt](const auto& player, auto& vel) {
+      //     // apply gravity
+      //     const float gravity = 100.0f;
+      //     vel.y += (gravity * fixed_dt);
+      //   });
+      // }
     }
   }
   Uint64 end_physics = SDL_GetPerformanceCounter();
@@ -227,8 +226,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       {
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
-          // process player keys to update velocity
           update_player_input_system(registry, app, dt);
+          update_player_move_on_grid(registry, app, dt);
           update_player_jump_system(registry, app, dt);
 
           update_click_to_destroy_system(registry, app);
@@ -253,7 +252,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   {
     update_ui_profiler_system(registry, app);
     update_ui_map_system(registry, app, dt);
-    update_ui_physics_system(registry, app);
+    // update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
     // update_ui_gizmos_system(registry, app, dt); // update after hierarchy
   };

@@ -1,6 +1,7 @@
 #include "modules/ui_hierarchy/system.hpp"
 
 // components
+#include "game_components.hpp"
 #include "modules/editor_camera/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
@@ -156,6 +157,19 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       if (ImGui::DragInt2("##velocity", glm::value_ptr(vel), 0.5f)) {
         c.x = vel.x;
         c.y = vel.y;
+      }
+    }
+
+    // Display GridPositionComponent
+    if (registry.all_of<GridPositionComponent>(eid)) {
+      GridPositionComponent& gpc = registry.get<GridPositionComponent>(eid);
+      glm::ivec2 pos = { gpc.x, gpc.y };
+
+      ImGui::Text("Grid Pos: ");
+      ImGui::SameLine();
+      if (ImGui::DragInt2("##gridposition", glm::value_ptr(pos), 0.5f)) {
+        gpc.x = pos.x;
+        gpc.y = pos.y;
       }
     }
 

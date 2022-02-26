@@ -16,11 +16,13 @@ struct SINGLETON_MapComponent
 {
   int size_x = 10;
   int size_y = 10;
-  std::vector<entt::entity> entities;
+  int objects_on_map = 0;
+  std::vector<std::vector<entt::entity>> entities;
 
   // editor?
-  bool place_sprite = false;
-  std::optional<sprite::type> sprite_to_place = std::nullopt;
+  // bool place_sprite = false;
+  // std::optional<sprite::type> sprite_to_place = std::nullopt;
+  std::optional<entt::entity> selected_entity;
 };
 
 } // namespace game2d
