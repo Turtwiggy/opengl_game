@@ -44,14 +44,16 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
       int old_y = gridpos.y;
       int new_x = gridpos.x + vx;
       int new_y = gridpos.y - vy;
+      new_x = glm::min(glm::max(new_x, 0), map.size_x - 1);
+      new_y = glm::min(glm::max(new_y, 0), map.size_y - 1);
 
-      // temp: fake collisions?
-      {
-        auto& neighbour_cell = get_entities(map, new_x, new_y);
-        if (neighbour_cell.size() > 0) {
-          return; // skip -- blocked
-        }
-      }
+      // temp: cant collide with walls?
+      // {
+      //   auto& neighbour_cell = get_entities(map, new_x, new_y);
+      //   if (neighbour_cell.size() > 0) {
+      //     return; // skip -- blocked
+      //   }
+      // }
 
       move_entity_on_map(map, entity, old_x, old_y, new_x, new_y);
       gridpos.x = new_x;
@@ -62,17 +64,6 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
       pos.x = static_cast<int>(converted_pos.x);
       pos.y = static_cast<int>(converted_pos.y);
     });
-  }
-
-  // Check entities in entity-map are still valid
-  {
-    for (const auto& eids : map.entities) {
-      for (const auto& eid : eids) {
-        if (!registry.valid(eid)) {
-          remove_entity_from_map(map, eid);
-        }
-      }
-    }
   }
 
   // Process all gridpos to convert it to worldpos

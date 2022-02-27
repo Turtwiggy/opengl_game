@@ -1,5 +1,8 @@
 #pragma once
 
+// helpers
+#include "helpers/tile_types.hpp"
+
 // other libs
 #include <glm/glm.hpp>
 
@@ -36,6 +39,11 @@ struct FlashColourComponent
 {
   glm::vec4 start_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
   glm::vec4 flash_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+};
+
+struct GridTypeComponent
+{
+  TileType type = TileType::FLOOR;
 };
 
 struct GridPositionComponent

@@ -215,9 +215,7 @@ game2d::remove_entity_from_map_at_location(SINGLETON_MapComponent& map, const en
 std::vector<entt::entity>&
 game2d::get_entities(SINGLETON_MapComponent& map, int x, int y)
 {
-  int clamped_x = glm::min(glm::max(x, 0), map.size_x - 1);
-  int clamped_y = glm::min(glm::max(y, 0), map.size_y - 1);
-  return map.entities[map.size_x * clamped_y + clamped_x];
+  return map.entities[map.size_x * y + x];
 };
 
 void
@@ -237,5 +235,35 @@ game2d::move_entity_on_map(SINGLETON_MapComponent& map,
   bool removed = remove_entity_from_map_at_location(map, entity, old_x, old_y);
   if (removed) {
     add_entity_to_map(map, entity, new_x, new_y);
+  }
+};
+
+bool
+game2d::grid_cell_contains_tile_type(const entt::registry& registry,
+                                     SINGLETON_MapComponent& map,
+                                     const int x,
+                                     const int y,
+                                     const TileType& tile_type)
+{
+  const auto& entities = get_entities(map, x, y);
+  for (const auto& entity : entities) {
+    if (registry.any_of<GridTypeComponent>(entity)) {
+      const auto& gtc = registry.get<GridTypeComponent>(entity);
+      return gtc.type == tile_type;
+    }
+  }
+  return false;
+};
+
+void
+game2d::update_grid_entity(entt::registry& registry, entt::entity& entity, TileType& type, sprite::type& sprite_type)
+{
+  if (registry.any_of<GridTypeComponent>(entity)) {
+    auto& gtc = registry.get<GridTypeComponent>(entity);
+    gtc.type = type;
+  }
+  if (registry.any_of<SpriteComponent>(entity)) {
+    auto& s = registry.get<SpriteComponent>(entity);
+    s.sprite = sprite_type;
   }
 };

@@ -59,8 +59,9 @@ void
 init_game_state(entt::registry& registry, engine::Application& app)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
-  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
   registry.set<SINGLETON_GizmosComponent>(SINGLETON_GizmosComponent());
+  registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
+  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
@@ -154,11 +155,10 @@ void
 game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 screen_wh)
 {
   // init once only
-  // init_audio_system(registry);
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());
-  registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
   app.get_input().open_controllers(); // enable controllers
+  // init_audio_system(registry);
 
   // could be deleted and re-init at any time
   init_game_state(registry, app);
