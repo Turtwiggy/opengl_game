@@ -10,7 +10,7 @@
 void
 game2d::update_ui_physics_system(entt::registry& registry, engine::Application& app)
 {
-  SINGLETON_PhysicsComponent& p = registry.ctx<SINGLETON_PhysicsComponent>();
+  const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
 
   int solids = 0;
   int actors = 0;

@@ -12,6 +12,8 @@
 
 // std lib headers
 #include <memory>
+#include <tuple>
+#include <vector>
 
 namespace game2d {
 
@@ -131,6 +133,12 @@ struct SINGLETON_GridSizeComponent
 struct SINGLETON_ResourceComponent
 {
   engine::RandomState rnd;
+};
+
+struct SINGLETON_LightingComponent
+{
+  std::vector<glm::ivec2> lights;
+  std::vector<std::tuple<float, float, float>> intersections;
 };
 
 } // namespace game2d

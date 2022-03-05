@@ -21,6 +21,7 @@
 #include "modules/animation/system.hpp"
 #include "modules/audio/system.hpp"
 #include "modules/editor_camera/system.hpp"
+#include "modules/lighting/system.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/physics/system.hpp"
 #include "modules/renderer/system.hpp"
@@ -66,6 +67,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
+  init_lighting_system(registry, app);
   init_ui_map_system(registry, app);
 
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
@@ -217,7 +219,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
-
       // ... systems that always update
       {
         update_animation_system(registry, app, dt);
@@ -248,6 +249,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // rendering
   Uint64 start_render = SDL_GetPerformanceCounter();
   {
+    update_lighting_system(registry, app, dt);
     update_render_system(registry, app);
   };
   Uint64 end_render = SDL_GetPerformanceCounter();

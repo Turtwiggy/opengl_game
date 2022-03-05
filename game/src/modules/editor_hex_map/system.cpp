@@ -2,7 +2,7 @@
 #include "modules/editor_hex_map/system.hpp"
 
 // components
-#include "components/singleton_resources.hpp"
+#include "game_components.hpp"
 #include "modules/editor_hex_map/components.hpp"
 #include "modules/renderer/components.hpp"
 

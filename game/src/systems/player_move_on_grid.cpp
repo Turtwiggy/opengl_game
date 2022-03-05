@@ -23,7 +23,8 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
   {
     const auto& view =
       registry.view<PlayerComponent, PlayerInputComponent, PositionIntComponent, GridPositionComponent>();
-    view.each([&map, &GRID_SIZE](const auto& entity, const auto& player, const auto& input, auto& pos, auto& gridpos) {
+    view.each([&registry, &map, &GRID_SIZE](
+                const auto& entity, const auto& player, const auto& input, auto& pos, auto& gridpos) {
       //
       int vx = 0;
       int vy = 0;
@@ -48,12 +49,17 @@ game2d::update_player_move_on_grid(entt::registry& registry, engine::Application
       new_y = glm::min(glm::max(new_y, 0), map.size_y - 1);
 
       // temp: cant collide with walls?
-      // {
-      //   auto& neighbour_cell = get_entities(map, new_x, new_y);
-      //   if (neighbour_cell.size() > 0) {
-      //     return; // skip -- blocked
-      //   }
-      // }
+      {
+        auto& neighbour_cell = get_entities(map, new_x, new_y);
+        for (const auto& entity : neighbour_cell) {
+          if (registry.all_of<GridTypeComponent>(entity)) {
+            const auto& gtc = registry.get<GridTypeComponent>(entity);
+            if (gtc.type == TileType::WALL) {
+              return; // skip -- blocked
+            }
+          }
+        }
+      }
 
       move_entity_on_map(map, entity, old_x, old_y, new_x, new_y);
       gridpos.x = new_x;

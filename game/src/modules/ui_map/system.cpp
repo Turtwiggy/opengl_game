@@ -171,7 +171,7 @@ public:
 
           auto& entities = get_entities(map, x, y);
 
-          auto floor_sprite = sprite::type::BUSH_0;
+          auto floor_sprite = sprite::type::BUSH_1;
           auto floor_type = TileType::FLOOR;
           auto wall_sprite = sprite::type::EMPTY;
           auto wall_type = TileType::WALL;

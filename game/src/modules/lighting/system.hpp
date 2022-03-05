@@ -1,20 +1,15 @@
 #pragma once
 
-// c++ lib header
-#include <tuple>
-#include <vector>
-
 // engine headers
-#include "engine/opengl/shader.hpp"
+#include "engine/application.hpp"
 
-// game headers
-#include "2d_game_object.hpp"
+// other lib headers
+#include <entt/entt.hpp>
 
 namespace game2d {
 
 struct PointLight
 {
-  GameObject2D light_object;
   // distance 200
   // const float light_linear = 0.022f;
   // const float light_quadratic = 0.0019f;
@@ -52,10 +47,9 @@ struct MuzzleFlashPointLight : public PointLight
 };
 
 void
-generate_intersections(GameObject2D& camera,
-                       glm::ivec2& light_pos,
-                       const std::vector<std::reference_wrapper<GameObject2D>>& ents,
-                       const glm::ivec2& screen_wh,
-                       std::vector<std::tuple<float, float, float>>& intersections);
+init_lighting_system(entt::registry& registry, engine::Application& app);
+
+void
+update_lighting_system(entt::registry& registry, engine::Application& app, float dt);
 
 } // namespace game2d
