@@ -1,8 +1,8 @@
 // your header
-#include "systems/destroy_after_time.hpp"
+#include "destroy_after_time.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 
 #include <imgui.h>
 

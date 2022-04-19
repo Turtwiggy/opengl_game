@@ -1,8 +1,5 @@
 #pragma once
 
-// helpers
-#include "helpers/tile_types.hpp"
-
 // other libs
 #include <glm/glm.hpp>
 
@@ -11,8 +8,6 @@
 #include "engine/maths.hpp"
 
 // std lib headers
-#include <memory>
-#include <tuple>
 #include <vector>
 
 namespace game2d {
@@ -43,11 +38,6 @@ struct FlashColourComponent
   glm::vec4 flash_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 
-struct GridTypeComponent
-{
-  TileType type = TileType::FLOOR;
-};
-
 struct GridPositionComponent
 {
   int x = 0;
@@ -69,19 +59,31 @@ struct PlayerComponent
   int player = 0;
 };
 
-struct PlayerInputComponent
-{
-  bool use_keyboard = false;
-  bool use_controller = false;
+//
+// movement / input
+//
 
-  // keyboard bindings
+struct GameMovementComponent
+{
+  bool move_up = false;
+  bool move_down = false;
+  bool move_left = false;
+  bool move_right = false;
+  bool jumping = false;
+};
+
+struct PlayerKeyboardComponent
+{
   SDL_Scancode kb_start = SDL_SCANCODE_RETURN;
   SDL_Scancode kb_w = SDL_SCANCODE_W;
   SDL_Scancode kb_a = SDL_SCANCODE_A;
   SDL_Scancode kb_s = SDL_SCANCODE_S;
   SDL_Scancode kb_d = SDL_SCANCODE_D;
   SDL_Scancode kb_space = SDL_SCANCODE_SPACE;
+};
 
+struct PlayerControllerComponent
+{
   // controller bindings
   SDL_GameControllerAxis c_left_stick_x = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTX;
   SDL_GameControllerAxis c_left_stick_y = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTY;
@@ -98,13 +100,6 @@ struct PlayerInputComponent
   SDL_GameControllerButton c_dpad_down = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN;
   SDL_GameControllerButton c_dpad_left = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT;
   SDL_GameControllerButton c_dpad_right = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
-
-  // game movement state
-  bool move_up = false;
-  bool move_down = false;
-  bool move_left = false;
-  bool move_right = false;
-  bool jump = false;
 };
 
 //
@@ -133,12 +128,6 @@ struct SINGLETON_GridSizeComponent
 struct SINGLETON_ResourceComponent
 {
   engine::RandomState rnd;
-};
-
-struct SINGLETON_LightingComponent
-{
-  std::vector<glm::ivec2> lights;
-  std::vector<std::tuple<float, float, float>> intersections;
 };
 
 } // namespace game2d

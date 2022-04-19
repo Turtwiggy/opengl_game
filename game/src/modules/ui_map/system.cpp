@@ -2,14 +2,14 @@
 #include "modules/ui_map/system.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 #include "modules/animation/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_map/components.hpp"
 
 // helpers
-#include "helpers/physics_layers.hpp"
+#include "gameplay_helpers/physics_layers.hpp"
 #include "modules/ui_map/helpers.hpp"
 
 // other engine headers
@@ -47,7 +47,7 @@ create_grid_block(entt::registry& registry,
   registry.emplace<SpriteComponent>(r, sprite_type);
   // gameplay
   registry.emplace<GridPositionComponent>(r, x, y);
-  registry.emplace<GridTypeComponent>(r, tile_type);
+  // registry.emplace<GridTypeComponent>(r, tile_type);
   registry.emplace<ClickToDestroyComponent>(r);
   registry.emplace<HealthComponent>(r, 1.0f);
 
@@ -171,7 +171,7 @@ public:
 
           auto& entities = get_entities(map, x, y);
 
-          auto floor_sprite = sprite::type::BUSH_1;
+          auto floor_sprite = sprite::type::CASTLE_FLOOR;
           auto floor_type = TileType::FLOOR;
           auto wall_sprite = sprite::type::EMPTY;
           auto wall_type = TileType::WALL;

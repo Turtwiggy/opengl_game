@@ -2,7 +2,7 @@
 #include "modules/physics/process_move_objects.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"

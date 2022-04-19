@@ -1,11 +1,11 @@
 // your header
-#include "systems/collisions_actor_actor.hpp"
+#include "collisions_actor_actor.hpp"
 
 // components
 #include "modules/physics/components.hpp"
 
 // helpers
-#include "helpers/physics_layers.hpp"
+#include "gameplay_helpers/physics_layers.hpp"
 
 // c++ lib headers
 #include <algorithm>

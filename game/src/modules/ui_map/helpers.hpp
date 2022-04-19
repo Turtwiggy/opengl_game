@@ -1,7 +1,8 @@
 #pragma once
 
 // my libs
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
+#include "gameplay_helpers/tile_types.hpp"
 #include "modules/ui_map/components.hpp"
 
 // other lib headers
@@ -11,6 +12,11 @@
 #include <vector>
 
 namespace game2d {
+
+struct GridTypeComponent
+{
+  TileType type = TileType::FLOOR;
+};
 
 void
 serialize_to_text(entt::registry& registry, std::string path);

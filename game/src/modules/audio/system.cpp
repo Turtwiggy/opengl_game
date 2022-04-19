@@ -1,7 +1,6 @@
 #include "modules/audio/system.hpp"
 
 // components
-#include "game_components.hpp"
 #include "modules/audio/components.hpp"
 
 // other lib headers
@@ -51,15 +50,15 @@ void
 game2d::update_audio_system(entt::registry& registry, engine::Application& app, float dt)
 {
   auto& am = registry.ctx<SINGLETON_AudioComponent>();
-  auto& res = registry.ctx<SINGLETON_ResourceComponent>();
+  // auto& res = registry.ctx<SINGLETON_ResourceComponent>();
 
   if (app.get_input().get_key_down(SDL_SCANCODE_W) || app.get_input().get_key_down(SDL_SCANCODE_A) ||
       app.get_input().get_key_down(SDL_SCANCODE_S) || app.get_input().get_key_down(SDL_SCANCODE_D)) {
 
     // choose a random footstep
     int size = am.sfx["movement_footsteps"].size();
-    auto sfx_idx = engine::rand_det_s(res.rnd.rng, 0, size);
-    Mix_Chunk* sfx = am.sfx["movement_footsteps"][sfx_idx];
+    // auto sfx_idx = engine::rand_det_s(res.rnd.rng, 0, size);
+    Mix_Chunk* sfx = am.sfx["movement_footsteps"][0];
 
     int loops = 0;
     Mix_PlayChannel(-1, sfx, loops);

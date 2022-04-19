@@ -1,8 +1,8 @@
 // your header
-#include "systems/click_to_destroy.hpp"
+#include "click_to_destroy.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 #include "modules/renderer/components.hpp"
 
 // other engine headers

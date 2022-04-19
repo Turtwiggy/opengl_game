@@ -2,7 +2,7 @@
 #include "modules/editor_hex_map/system.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 #include "modules/editor_hex_map/components.hpp"
 #include "modules/renderer/components.hpp"
 

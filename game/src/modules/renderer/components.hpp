@@ -60,25 +60,12 @@ struct PositionIntComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(PositionIntComponent, x, y, dx, dy)
 };
 
-struct PositionFloat
-{
-  float x = 0.0f;
-  float y = 0.0f;
-
-  PositionFloat() = default;
-  PositionFloat(float x, float y)
-    : x(x)
-    , y(y){};
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(PositionFloat, x, y)
-};
-
 struct RenderSizeComponent
 {
   int w = 0;
   int h = 0;
-  float dw = 0.0f; // increase size by float?
-  float dh = 0.0f; // increase size by float?
+  float dw = 0.0f;
+  float dh = 0.0f;
 
   RenderSizeComponent() = default;
   RenderSizeComponent(int w, int h)

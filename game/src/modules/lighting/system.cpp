@@ -2,7 +2,8 @@
 #include "system.hpp"
 
 // my libs
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
+#include "modules/lighting/components.hpp"
 #include "modules/renderer/components.hpp"
 
 // std libs
@@ -80,7 +81,8 @@ game2d::update_lighting_system(entt::registry& registry, engine::Application& ap
 
   for (auto& e : edges) {
     for (int i = 0; i < 2; i++) {
-      float rdx, rdy;
+      float rdx = 0.0f;
+      float rdy = 0.0f;
       rdx = (i == 0 ? e[0].x : e[1].x) - light_world_pos.x;
       rdy = (i == 0 ? e[0].y : e[1].y) - light_world_pos.y;
 

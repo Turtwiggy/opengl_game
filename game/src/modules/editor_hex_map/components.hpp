@@ -33,7 +33,7 @@ constexpr std::array<glm::vec2, 7> hexagon_pointy_side_up = {
 struct HexText
 {};
 
-struct HexPos : public PositionFloat
+struct HexPos : public PositionIntComponent
 {};
 
 struct HexCoord

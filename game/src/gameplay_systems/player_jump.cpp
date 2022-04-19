@@ -1,13 +1,13 @@
 // your header
-#include "systems/player_jump.hpp"
+#include "player_jump.hpp"
 
 // components
-#include "game_components.hpp"
+#include "gameplay_components/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
 // helpers
-#include "helpers/physics_layers.hpp"
+#include "gameplay_helpers/physics_layers.hpp"
 
 // other engine headers
 #include "engine/grid.hpp"
@@ -28,13 +28,14 @@ game2d::update_player_jump_system(entt::registry& registry, engine::Application&
   const auto UP = glm::vec2(0.0f, -1.0f);
   const auto JUMP_VEL = 100.0f;
   {
-    const auto& view = registry.view<PlayerComponent, PlayerInputComponent, VelocityComponent, DoubleJumpComponent>();
-    view.each([&app, &UP, &JUMP_VEL](const auto& player, const auto& input, auto& vel, auto& dd) {
-      if (input.jump && dd.able_to_jump) {
-        dd.able_to_jump = false;
-        vel.y = (UP * JUMP_VEL).y;
-      }
-    });
+    // const auto& view = registry.view<PlayerComponent, PlayerInputComponent, VelocityComponent,
+    // DoubleJumpComponent>(); view.each([&app, &UP, &JUMP_VEL](const auto& player, const auto& input, auto& vel, auto&
+    // dd) {
+    //   if (input.jump && dd.able_to_jump) {
+    //     dd.able_to_jump = false;
+    //     vel.y = (UP * JUMP_VEL).y;
+    //   }
+    // });
   }
 
   //
