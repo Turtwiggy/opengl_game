@@ -1,9 +1,6 @@
 // your header
 #include "player_move_on_grid.hpp"
 
-// helpers
-#include "modules/ui_map/helpers.hpp"
-
 // engine
 #include "engine/grid.hpp"
 
@@ -11,13 +8,11 @@
 #include "gameplay_components/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
-#include "modules/ui_map/components.hpp"
 
 void
 game2d::update_player_move_on_grid(entt::registry& registry, engine::Application& app, float dt)
 {
   const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
-  auto& map = registry.ctx<SINGLETON_MapComponent>();
 
   // Process player input to update gridpos
   {

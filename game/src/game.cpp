@@ -2,23 +2,23 @@
 #include "game.hpp"
 
 // components
-#include "modules/physics/components.hpp"
+// #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
 // systems
-#include "modules/physics/process_move_objects.hpp"
-#include "modules/physics/system.hpp"
+// #include "modules/physics/process_move_objects.hpp"
+// #include "modules/physics/system.hpp"
+// #include "modules/ui_physics/system.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
-#include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
+// #include "gameplay_systems/collisions_actor_actor.hpp"
 #include "gameplay_components/components.hpp"
 #include "gameplay_helpers/create_entities.hpp"
-#include "gameplay_systems/collisions_actor_actor.hpp"
 #include "gameplay_systems/cursor.hpp"
 #include "gameplay_systems/destroy_after_time.hpp"
 #include "gameplay_systems/player_input.hpp"
@@ -26,16 +26,6 @@
 // engine headers
 #include "engine/maths.hpp"
 #include "engine/util.hpp"
-
-// other project headers
-#include <SDL2/SDL.h>
-#include <entt/entt.hpp>
-#include <glm/glm.hpp>
-#include <imgui.h>
-
-// c++ lib headers
-#include <string>
-#include <vector>
 
 namespace game2d {
 
@@ -119,6 +109,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         if (ri.viewport_process_events) {
           update_player_input_system(registry, app, dt);
 
+          if (app.get_input().get_mouse_rmb_down()) {
+            std::cout << "rmb clicked" << std::endl;
+          }
+
           // last thing to do for gametick: destroy any entities
           update_destroy_after_time_system(registry, app, dt);
         }
@@ -139,7 +133,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // ui
   {
     update_ui_profiler_system(registry, app);
-    update_ui_physics_system(registry, app);
+    // update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
   };
 

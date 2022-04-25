@@ -46,7 +46,7 @@ struct GridPositionComponent
 
 struct HealthComponent
 {
-  float hp = 5.0f;
+  int hp = 5;
 };
 
 struct ParryComponent
@@ -57,49 +57,6 @@ struct ParryComponent
 struct PlayerComponent
 {
   int player = 0;
-};
-
-//
-// movement / input
-//
-
-struct GameMovementComponent
-{
-  bool move_up = false;
-  bool move_down = false;
-  bool move_left = false;
-  bool move_right = false;
-  bool jumping = false;
-};
-
-struct PlayerKeyboardComponent
-{
-  SDL_Scancode kb_start = SDL_SCANCODE_RETURN;
-  SDL_Scancode kb_w = SDL_SCANCODE_W;
-  SDL_Scancode kb_a = SDL_SCANCODE_A;
-  SDL_Scancode kb_s = SDL_SCANCODE_S;
-  SDL_Scancode kb_d = SDL_SCANCODE_D;
-  SDL_Scancode kb_space = SDL_SCANCODE_SPACE;
-};
-
-struct PlayerControllerComponent
-{
-  // controller bindings
-  SDL_GameControllerAxis c_left_stick_x = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTX;
-  SDL_GameControllerAxis c_left_stick_y = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_LEFTY;
-  SDL_GameControllerAxis c_right_stick_x = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTX;
-  SDL_GameControllerAxis c_right_stick_y = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_RIGHTY;
-  SDL_GameControllerAxis c_left_trigger = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERLEFT;
-  SDL_GameControllerAxis c_right_trigger = SDL_GameControllerAxis::SDL_CONTROLLER_AXIS_TRIGGERRIGHT;
-  SDL_GameControllerButton c_start = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_START;
-  SDL_GameControllerButton c_a = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_A;
-  SDL_GameControllerButton c_b = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_B;
-  SDL_GameControllerButton c_x = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_X;
-  SDL_GameControllerButton c_y = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_Y;
-  SDL_GameControllerButton c_dpad_up = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_UP;
-  SDL_GameControllerButton c_dpad_down = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_DOWN;
-  SDL_GameControllerButton c_dpad_left = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_LEFT;
-  SDL_GameControllerButton c_dpad_right = SDL_GameControllerButton::SDL_CONTROLLER_BUTTON_DPAD_RIGHT;
 };
 
 //
