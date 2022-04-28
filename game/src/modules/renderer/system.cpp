@@ -1,14 +1,13 @@
 // your header
 #include "modules/renderer/system.hpp"
 
-// helpers
-#include "helpers/spritemap.hpp"
-
 // components/systems
 #include "modules/editor_camera/helpers.hpp"
 #include "modules/renderer/components.hpp"
+#include "modules/renderer/helpers/batch_quad.hpp"
 #include "modules/renderer/helpers/helpers.hpp"
-#include "modules/renderer/helpers/renderers/batch_quad.hpp"
+#include "modules/sprites/components.hpp"
+#include "modules/sprites/helpers.hpp"
 
 // engine headers
 #include "engine/opengl/framebuffer.hpp"
@@ -31,12 +30,35 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   SINGLETON_RendererInfo ri;
   ri.fbo_main_scene = Framebuffer::create_fbo();
   ri.fbo_lighting = Framebuffer::create_fbo();
-  ri.tex_id_main_scene = create_texture(screen_wh, tex_unit_main_scene, ri.fbo_main_scene);
-  ri.tex_id_lighting = create_texture(screen_wh, tex_unit_lighting, ri.fbo_lighting);
-  ri.instanced = Shader("shaders/2d_instanced.vert", "shaders/2d_instanced.frag");
-  ri.fan = Shader("shaders/2d_basic_with_proj.vert", "shaders/2d_colour.frag");
+  ri.instanced = Shader("assets/shaders/2d_instanced.vert", "assets/shaders/2d_instanced.frag");
+  ri.fan = Shader("assets/shaders/2d_basic_with_proj.vert", "assets/shaders/2d_colour.frag");
   ri.viewport_size_render_at = screen_wh;
   ri.viewport_size_current = screen_wh;
+
+  // sprites
+  // note: load order important, apparently?
+
+  ri.tex_id_main_scene = create_texture(screen_wh, tex_unit_main_scene);
+  attach_texture_to_fbo(ri.tex_id_main_scene, ri.fbo_main_scene, screen_wh);
+
+  ri.tex_id_lighting = create_texture(screen_wh, tex_unit_lighting);
+  attach_texture_to_fbo(ri.tex_id_lighting, ri.fbo_lighting, screen_wh);
+
+  // load textures
+  std::string texture_path = "assets/textures/";
+  std::string tex_0_path = texture_path + std::string("kennynl_1bit_pack/monochrome_transparent_packed.png");
+  std::string tex_1_path = texture_path + std::string("custom_spaceships.png");
+  std::vector<std::pair<int, std::string>> textures_to_load;
+  textures_to_load.emplace_back(tex_unit_kenny_nl, tex_0_path);
+  textures_to_load.emplace_back(tex_unit_custom_spaceships, tex_1_path);
+  load_textures_threaded(textures_to_load);
+
+  // load sprite configs
+  std::string config_path = "assets/config/spritemaps/";
+  std::string tex_0_sprite_config = config_path + std::string("kennynl.yml");
+  std::string tex_1_sprite_config = config_path + std::string("custom_spaceships.yml");
+  load_sprite_yml(ri.sprites, tex_0_sprite_config);
+  load_sprite_yml(ri.sprites, tex_1_sprite_config);
 
   // initialize renderers
   RenderCommand::init();
@@ -44,19 +66,14 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   print_gpu_info();
   quad_renderer::QuadRenderer::init();
 
-  // sprites
-  const std::string path_to_kennynl = "assets/textures/kennynl_1bit_pack/monochrome_transparent_packed.png";
-  std::vector<std::pair<int, std::string>> textures_to_load;
-  textures_to_load.emplace_back(tex_unit_kenny_nl, path_to_kennynl);
-  ri.loaded_texture_ids = load_textures_threaded(textures_to_load);
-
   // textures
-  int textures[3] = { tex_unit_kenny_nl, tex_unit_main_scene, tex_unit_lighting };
+  int textures[2] = { tex_unit_kenny_nl, tex_unit_main_scene };
   ri.instanced.bind();
   ri.instanced.set_mat4("projection", calculate_projection(screen_wh.x, screen_wh.y));
-  ri.instanced.set_int_array("textures", textures, 3);
+  // ri.instanced.set_int_array("textures", textures, 2);
+  ri.instanced.set_int("texture_0", tex_unit_kenny_nl);
+  ri.instanced.set_int("texture_1", tex_unit_custom_spaceships);
 
-  // https://github.com/skypjack/entt/wiki/Crash-Course:-entity-component-system#context-variables
   registry.set<SINGLETON_RendererInfo>(ri);
 };
 
@@ -65,9 +82,22 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
 {
   SINGLETON_RendererInfo& ri = registry.ctx<SINGLETON_RendererInfo>();
   const glm::vec4 background_colour = glm::vec4(12.0f / 255.0f, 15.0f / 255.0f, 22.0f / 255.0f, 1.0f);
+  auto viewport_wh = ri.viewport_size_render_at;
+
+#ifdef _DEBUG
+  CHECK_OPENGL_ERROR(0);
+
+  // DEBUG: hot reload shader
+  if (app.get_input().get_key_down(SDL_SCANCODE_T)) {
+    ri.instanced.reload();
+    ri.instanced.bind();
+    ri.instanced.set_mat4("projection", calculate_projection(viewport_wh.x, viewport_wh.y));
+    ri.instanced.set_int("texture_0", tex_unit_kenny_nl);
+    ri.instanced.set_int("texture_1", tex_unit_custom_spaceships);
+  }
+#endif
 
   // Resize
-  auto viewport_wh = ri.viewport_size_render_at;
   if (ri.viewport_size_current.x > 0.0f && ri.viewport_size_current.y > 0.0f &&
       (viewport_wh.x != ri.viewport_size_current.x || viewport_wh.y != ri.viewport_size_current.y)) {
     ri.viewport_size_render_at = ri.viewport_size_current;
@@ -97,16 +127,18 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
     // registry.sort<ZIndex>([](const auto& lhs, const auto& rhs) { return lhs.index < rhs.index; });
 
     quad_renderer::RenderDescriptor desc;
-    const auto& view =
-      registry
-        .view<const PositionIntComponent, const RenderSizeComponent, const ColourComponent, const SpriteComponent>();
-    view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& spr) {
+    const auto& view = registry.view<const PositionIntComponent,
+                                     const RenderSizeComponent,
+                                     const ColourComponent,
+                                     const SpriteComponent,
+                                     const TextureComponent>();
+    view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& sc, const auto& tex) {
       desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
       desc.colour = c.colour;
       desc.size = { s.w, s.h };
-      desc.tex_slot = tex_unit_kenny_nl;
-      desc.sprite_offset = sprite::spritemap::get_sprite_offset(spr.sprite);
-      desc.angle_radians = 0.0f;
+      desc.tex_unit = tex.tex_unit;
+      desc.sprite_offset = { sc.x, sc.y };
+      desc.angle_radians = 0.0f + sc.offset;
       quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
     });
 

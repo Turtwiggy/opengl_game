@@ -3,12 +3,14 @@
 
 // components
 #include "gameplay_components/components.hpp"
+#include "gameplay_components/grid.hpp"
 #include "gameplay_components/input.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>
+#include <imgui.h>
 
 namespace game2d {
 

@@ -3,6 +3,9 @@
 // game2d
 #include "modules/renderer/components.hpp"
 
+// other libs
+#include <imgui.h>
+
 namespace game2d {
 
 struct ViewportInfo

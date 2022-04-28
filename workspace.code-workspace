@@ -124,7 +124,8 @@
       "xtr1common": "cpp",
       "xtree": "cpp",
       "xutility": "cpp",
-      "filesystem": "cpp"
+      "filesystem": "cpp",
+      "*.frag": "c"
     }
   }
 }

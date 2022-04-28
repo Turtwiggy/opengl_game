@@ -38,12 +38,6 @@ struct FlashColourComponent
   glm::vec4 flash_colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 };
 
-struct GridPositionComponent
-{
-  int x = 0;
-  int y = 0;
-};
-
 struct HealthComponent
 {
   int hp = 5;
@@ -75,11 +69,6 @@ struct SINGLETON_ColoursComponent
 struct SINGLETON_GamePausedComponent
 {
   bool paused = false;
-};
-
-struct SINGLETON_GridSizeComponent
-{
-  const int size_xy = 16;
 };
 
 struct SINGLETON_ResourceComponent

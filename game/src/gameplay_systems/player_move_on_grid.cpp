@@ -6,6 +6,7 @@
 
 // components
 #include "gameplay_components/components.hpp"
+#include "gameplay_components/grid.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

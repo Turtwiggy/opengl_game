@@ -12,12 +12,14 @@
 // #include "modules/physics/system.hpp"
 // #include "modules/ui_physics/system.hpp"
 #include "modules/renderer/system.hpp"
+#include "modules/sprites/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
 // #include "gameplay_systems/collisions_actor_actor.hpp"
 #include "gameplay_components/components.hpp"
+#include "gameplay_components/grid.hpp"
 #include "gameplay_helpers/create_entities.hpp"
 #include "gameplay_systems/cursor.hpp"
 #include "gameplay_systems/destroy_after_time.hpp"
@@ -38,7 +40,6 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
-
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 
   create_cursor(registry); // Add a cursor, made of 4 lines
@@ -68,14 +69,14 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   // physics
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
-    if (!gp.paused) {
-      // move objects, checking collisions along way
-      // update_move_objects_system(registry, app, fixed_dt);
-      // generate all collisions between actor-actor objects
-      // update_physics_system(registry, app, fixed_dt);
-      // process actor-actor collisions
-      // update_actor_actor_collision_system(registry, app, fixed_dt);
-    }
+    // if (!gp.paused) {
+    // move objects, checking collisions along way
+    // update_move_objects_system(registry, app, fixed_dt);
+    // generate all collisions between actor-actor objects
+    // update_physics_system(registry, app, fixed_dt);
+    // process actor-actor collisions
+    // update_actor_actor_collision_system(registry, app, fixed_dt);
+    // }
   }
   Uint64 end_physics = SDL_GetPerformanceCounter();
   p.physics_elapsed_ms = (end_physics - start_physics) / float(SDL_GetPerformanceFrequency()) * 1000.0f;
@@ -91,6 +92,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     gp.paused = !gp.paused;
   if (app.get_input().get_key_down(SDL_SCANCODE_R))
     init_game_state(registry, app);
+  if (app.get_input().get_key_down(SDL_SCANCODE_F))
+    app.get_window().toggle_fullscreen();
   if (app.get_input().get_key_down(SDL_SCANCODE_ESCAPE))
     app.shutdown();
 
@@ -107,14 +110,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       {
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
-          update_player_input_system(registry, app, dt);
-
-          if (app.get_input().get_mouse_rmb_down()) {
-            std::cout << "rmb clicked" << std::endl;
-          }
+          // update_player_input_system(registry, app, dt);
 
           // last thing to do for gametick: destroy any entities
-          update_destroy_after_time_system(registry, app, dt);
+          // update_destroy_after_time_system(registry, app, dt);
         }
       }
     }
@@ -125,6 +124,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // rendering
   Uint64 start_render = SDL_GetPerformanceCounter();
   {
+    update_sprite_tag_system(registry, app);
     update_render_system(registry, app);
   };
   Uint64 end_render = SDL_GetPerformanceCounter();
@@ -132,9 +132,9 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
-    update_ui_profiler_system(registry, app);
     // update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
+    update_ui_profiler_system(registry, app);
   };
 
   // end frame

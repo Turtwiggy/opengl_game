@@ -7,7 +7,6 @@
 game2d::ViewportInfo
 game2d::render_texture_to_imgui_viewport(const int& tex_unit)
 {
-
   static bool dockspace_open = true;
   static bool opt_fullscreen = true;
   static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;

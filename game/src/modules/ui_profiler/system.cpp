@@ -6,9 +6,9 @@
 #include "modules/ui_profiler/components.hpp"
 
 // helpers
-#include "modules/renderer/helpers/renderers/batch_quad.hpp"
-#include "modules/renderer/helpers/renderers/batch_triangle.hpp"
-#include "modules/renderer/helpers/renderers/batch_triangle_fan.hpp"
+#include "modules/renderer/helpers/batch_quad.hpp"
+#include "modules/renderer/helpers/batch_triangle.hpp"
+#include "modules/renderer/helpers/batch_triangle_fan.hpp"
 
 // other lib headers
 #include <imgui.h>

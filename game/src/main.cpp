@@ -48,7 +48,7 @@ main_loop(void* arg)
   while (seconds_since_last_game_tick >= SECONDS_PER_FIXED_TICK) {
     seconds_since_last_game_tick -= SECONDS_PER_FIXED_TICK;
 
-    game2d::fixed_update(registry, app, SECONDS_PER_FIXED_TICK);
+    // game2d::fixed_update(registry, app, SECONDS_PER_FIXED_TICK);
   }
 
   // Implement this if stuttering?

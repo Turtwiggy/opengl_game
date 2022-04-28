@@ -5,6 +5,7 @@
 #include "gameplay_components/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
+#include "gameplay_components/grid.hpp"
 
 // other engine headers
 #include "engine/grid.hpp"

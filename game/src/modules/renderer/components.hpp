@@ -1,7 +1,7 @@
 #pragma once
 
-// game headers
-#include "helpers/spritemap.hpp"
+// helpers
+#include "modules/sprites/components.hpp"
 
 // engine headers
 #include "engine/opengl/shader.hpp"
@@ -14,6 +14,12 @@
 #include <nlohmann/json.hpp>
 
 namespace game2d {
+
+// texture constants
+constexpr int tex_unit_main_scene = 1;
+constexpr int tex_unit_lighting = 2;
+constexpr int tex_unit_kenny_nl = 3;
+constexpr int tex_unit_custom_spaceships = 4;
 
 struct ColourComponent
 {
@@ -75,15 +81,11 @@ struct RenderSizeComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderSizeComponent, w, h, dw, dh)
 };
 
-struct SpriteComponent
+struct TextureComponent
 {
-  sprite::type sprite = sprite::type::EMPTY;
+  int tex_unit = 100;
 
-  SpriteComponent() = default;
-  SpriteComponent(sprite::type sprite)
-    : sprite(sprite){};
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(SpriteComponent, sprite)
+  // do not serialize
 };
 
 struct TagComponent
@@ -93,14 +95,11 @@ struct TagComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
 };
 
-// texture constants
-constexpr int tex_unit_kenny_nl = 0;
-constexpr int tex_unit_main_scene = 1;
-constexpr int tex_unit_lighting = 2;
-
 // Attributes only updated by renderer system, read by anything.
 struct SINGLETON_RendererInfo
 {
+  // sprites
+  std::vector<sprite> sprites;
   // fbo
   unsigned int fbo_main_scene;
   unsigned int fbo_lighting;
@@ -110,7 +109,6 @@ struct SINGLETON_RendererInfo
   // textures
   unsigned int tex_id_main_scene = 0;
   unsigned int tex_id_lighting = 0;
-  std::vector<unsigned int> loaded_texture_ids;
   // viewport
   // note: values are updated in render
   glm::vec2 viewport_size_render_at = { 0, 0 };

@@ -2,9 +2,11 @@
 
 // my libs
 #include "gameplay_components/components.hpp"
+#include "gameplay_components/grid.hpp"
 #include "gameplay_helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
+#include "modules/sprites/components.hpp"
 
 // std libs
 #include <string>
@@ -20,10 +22,11 @@ create_cursor(entt::registry& registry)
     entt::entity r = registry.create();
     registry.emplace<TagComponent>(r, std::string("cursor" + std::to_string(i)));
     // rendering
-    registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
     registry.emplace<PositionIntComponent>(r);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-    registry.emplace<SpriteComponent>(r, sprite::type::EMPTY);
+    registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
+    registry.emplace<TextureComponent>(r, tex_unit_custom_spaceships);
+    registry.emplace<SpriteTagComponent>(r, "EMPTY");
     // gameplay
     registry.emplace<CursorComponent>(r, i);
   }
@@ -41,7 +44,8 @@ create_player(entt::registry& registry, int x, int y, const glm::vec4& colour)
   registry.emplace<ColourComponent>(r, colour);
   registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
   registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-  registry.emplace<SpriteComponent>(r, sprite::type::PERSON_4);
+  registry.emplace<TextureComponent>(r, tex_unit_custom_spaceships);
+  registry.emplace<SpriteTagComponent>(r, "SHIP_0");
   // physics
   registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
   registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);

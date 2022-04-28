@@ -28,6 +28,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 find_path(STB_INCLUDE_DIRS "stb.h")
 
 # Add source files
@@ -47,7 +48,6 @@ target_include_directories(game_2d PRIVATE
   ${ENGINE_INCLUDES} 
   ${CMAKE_SOURCE_DIR}/game/src
   ${CMAKE_SOURCE_DIR}/thirdparty/entt/single_include
-  ${CMAKE_SOURCE_DIR}/thirdparty/yaml-cpp/include
 )
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
@@ -59,6 +59,7 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   target_link_libraries(game_2d PRIVATE GLEW::GLEW)
   target_link_libraries(game_2d PRIVATE glm::glm)
   target_link_libraries(game_2d PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
+  target_link_libraries(game_2d PRIVATE yaml-cpp)
   # game networking sockets libs (windows only)
   # OpenSSL::SSL OpenSSL::Crypto
   # protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite

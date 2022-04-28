@@ -160,19 +160,6 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       }
     }
 
-    // Display GridPositionComponent
-    if (registry.all_of<GridPositionComponent>(eid)) {
-      GridPositionComponent& gpc = registry.get<GridPositionComponent>(eid);
-      glm::ivec2 pos = { gpc.x, gpc.y };
-
-      ImGui::Text("Grid Pos: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##gridposition", glm::value_ptr(pos), 0.5f)) {
-        gpc.x = pos.x;
-        gpc.y = pos.y;
-      }
-    }
-
     // Add component
     if (ImGui::Button("Add component")) {
       ImGui::OpenPopup("AddComponent");
@@ -193,10 +180,6 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       }
       if (ImGui::MenuItem("ColourComponent")) {
         registry.emplace<ColourComponent>(eid);
-        ImGui::CloseCurrentPopup();
-      }
-      if (ImGui::MenuItem("SpriteComponent")) {
-        registry.emplace<SpriteComponent>(eid);
         ImGui::CloseCurrentPopup();
       }
       ImGui::EndPopup();
