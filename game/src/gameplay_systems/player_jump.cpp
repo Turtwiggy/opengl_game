@@ -9,9 +9,7 @@
 
 // helpers
 #include "gameplay_helpers/physics_layers.hpp"
-
-// other engine headers
-#include "engine/grid.hpp"
+#include "grid.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>

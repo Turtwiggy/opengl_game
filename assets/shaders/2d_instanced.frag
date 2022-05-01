@@ -6,70 +6,57 @@ in vec4 v_colour;
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-// uniform int sample_texture = 0;
-// uniform sampler2D textures[2];
-uniform sampler2D texture_0;
-uniform sampler2D texture_1;
-uniform sampler2D texture_2;
-uniform sampler2D texture_3;
-// const int texture_id_kenny = 0;
-// const int texture_id_spaceships = 1;
+uniform sampler2D textures[4];
+const int texture_unit_kenny = 2;
+const int texture_unit_spaceships = 3;
 
-// other sprites - hard coded for kennynl spritesheet atm
-// const int kenny_num_cols = 48;
-// const int kenny_num_rows = 22;
-// const float kenny_scale_x = 1.0f / kenny_num_cols;
-// const float kenny_scale_y = 1.0f / kenny_num_cols;
-// const int spaceship_cols = 8;
-// const int spaceship_rows = 8;
-// const float spaceship_scale_x = 1.0f / spaceship_cols;
-// const float spaceship_scale_y = 1.0f / spaceship_rows;
-const int num_cols = 48;
-const int num_rows = 22;
-const float scale_x = 1.0f / num_cols;
-const float scale_y = 1.0f / num_rows;
+const int kenny_num_cols = 48;
+const int kenny_num_rows = 22;
+const float kenny_scale_x = 1.0f / kenny_num_cols;
+const float kenny_scale_y = 1.0f / kenny_num_cols;
+
+const int spaceship_cols = 8;
+const int spaceship_rows = 8;
+const float spaceship_scale_x = 1.0f / spaceship_cols;
+const float spaceship_scale_y = 1.0f / spaceship_rows;
+
 
 void
 main()
 {
-  // int index = int(v_tex_unit);
+  int index = int(v_tex_unit);
 
   if (v_sprite_pos.x == 0 && v_sprite_pos.y == 0) { // a whole texture
     out_colour = v_colour;
-    // out_colour += texture(textures[index], v_tex) * when_eq((1-sample_texture), 0);
     return;
   } 
 
-  vec2 sprite_uv = vec2(
-    v_tex.x / num_cols + v_sprite_pos.x * scale_x,
-    v_tex.y / num_rows + v_sprite_pos.y * scale_y      
-  );
+  // vec2 sprite_uv = vec2(
+  //   v_tex.x / num_cols + v_sprite_pos.x * scale_x,
+  //   v_tex.y / num_rows + v_sprite_pos.y * scale_y      
+  // );
 
-  // out_colour = vec4(1.0) * texture(texture_0, sprite_uv);
+  // // out_colour = vec4(1.0) * texture(texture_0, sprite_uv);
+  // // out_colour = texture(texture_1, v_tex);
+  
+  if(index == texture_unit_kenny){
+    vec2 sprite_uv = vec2(
+      v_tex.x / kenny_num_cols + v_sprite_pos.x * kenny_scale_x,
+      v_tex.y / kenny_num_rows + v_sprite_pos.y * kenny_scale_y      
+    );
+    out_colour = v_colour * texture(textures[index], sprite_uv);
+    return;
+  } else if(index == texture_unit_spaceships) {
+    vec2 sprite_uv = vec2(
+      v_tex.x / spaceship_cols + v_sprite_pos.x * spaceship_scale_x,
+      v_tex.y / spaceship_rows + v_sprite_pos.y * spaceship_scale_y      
+    );
+    out_colour = v_colour * texture(textures[index], sprite_uv);
+    return;
+
+  } 
+
   out_colour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
-  return;
-
-
-
-
-
-  // if(index == texture_id_kenny)
-  // {
-  //   sprite_uv = vec2(
-  //     v_tex.x / kenny_num_cols + v_sprite_pos.x * kenny_scale_x,
-  //     v_tex.y / kenny_num_rows + v_sprite_pos.y * kenny_scale_y      
-  //   );
-  // }
-  // } else if(index == texture_id_spaceships)
-  // {
-  //   sprite_uv = vec2(
-  //     v_tex.x / spaceship_cols + v_sprite_pos.x * spaceship_scale_x,
-  //     v_tex.y / spaceship_rows + v_sprite_pos.y * spaceship_scale_y      
-  //   );
-  // }
-
-  // out_colour = v_colour * texture(textures[0], sprite_uv);
-  // out_colour = vec4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 // if (do_lighting) {

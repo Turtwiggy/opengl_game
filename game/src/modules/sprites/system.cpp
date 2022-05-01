@@ -26,6 +26,7 @@ update_sprite_tag_system(entt::registry& registry, engine::Application& app)
       sc.x = sprite_info.x;
       sc.y = sprite_info.y;
       sc.offset = sprite_info.angle;
+      std::cout << "updating sprite component..." << std::endl;
     } else {
       // create a new sprite component, and delete the tag component
       SpriteComponent sc;
@@ -35,6 +36,7 @@ update_sprite_tag_system(entt::registry& registry, engine::Application& app)
       registry.emplace<SpriteComponent>(entity, sc);
     }
 
+    std::cout << "replacing sprite tag...";
     registry.erase<SpriteTagComponent>(entity);
   });
 };

@@ -4,10 +4,10 @@
 // components
 #include "gameplay_components/components.hpp"
 #include "gameplay_components/grid.hpp"
+#include "grid.hpp"
 #include "modules/renderer/components.hpp"
 
 // other engine headers
-#include "engine/grid.hpp"
 #include "engine/maths.hpp"
 
 // other lib headers

@@ -15,12 +15,6 @@
 
 namespace game2d {
 
-// texture constants
-constexpr int tex_unit_main_scene = 1;
-constexpr int tex_unit_lighting = 2;
-constexpr int tex_unit_kenny_nl = 3;
-constexpr int tex_unit_custom_spaceships = 4;
-
 struct ColourComponent
 {
   glm::vec4 colour = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -95,20 +89,28 @@ struct TagComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
 };
 
+// texture constants
+const int tex_unit_main_scene = 0;
+const int tex_unit_lighting = 1;
+const int tex_unit_kenny_nl = 2;
+const int tex_unit_custom_spaceships = 3;
+
 // Attributes only updated by renderer system, read by anything.
 struct SINGLETON_RendererInfo
 {
   // sprites
   std::vector<sprite> sprites;
   // fbo
-  unsigned int fbo_main_scene;
-  unsigned int fbo_lighting;
+  unsigned int fbo_main_scene = 0;
+  unsigned int fbo_lighting = 0;
   // shaders
   engine::Shader instanced;
   engine::Shader fan;
   // textures
   unsigned int tex_id_main_scene = 0;
   unsigned int tex_id_lighting = 0;
+  unsigned int tex_id_kenny = 0;
+  unsigned int tex_id_custom = 0;
   // viewport
   // note: values are updated in render
   glm::vec2 viewport_size_render_at = { 0, 0 };

@@ -160,6 +160,29 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       }
     }
 
+    // Display SpriteComponent
+    if (registry.all_of<SpriteComponent>(eid)) {
+      SpriteComponent& c = registry.get<SpriteComponent>(eid);
+
+      glm::ivec2 pos = { c.x, c.y };
+
+      ImGui::Text("Sprite: ");
+      ImGui::SameLine();
+      if (ImGui::DragInt2("##sprite", glm::value_ptr(pos), 0.5f)) {
+        c.x = pos.x;
+        c.y = pos.y;
+      }
+    }
+
+    // Display SpriteTagComponent
+    if (registry.all_of<SpriteTagComponent>(eid)) {
+      SpriteTagComponent& c = registry.get<SpriteTagComponent>(eid);
+
+      ImGui::Text("SpriteTag: ");
+      ImGui::SameLine();
+      ImGui::Text("%s", c.tag);
+    }
+
     // Add component
     if (ImGui::Button("Add component")) {
       ImGui::OpenPopup("AddComponent");

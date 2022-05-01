@@ -25,8 +25,8 @@ create_cursor(entt::registry& registry)
     registry.emplace<PositionIntComponent>(r);
     registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
     registry.emplace<ColourComponent>(r, 1.0f, 0.0f, 0.0f, 0.5f);
-    registry.emplace<TextureComponent>(r, tex_unit_custom_spaceships);
     registry.emplace<SpriteTagComponent>(r, "EMPTY");
+    registry.emplace<TextureComponent>(r, tex_unit_kenny_nl);
     // gameplay
     registry.emplace<CursorComponent>(r, i);
   }
@@ -44,8 +44,8 @@ create_player(entt::registry& registry, int x, int y, const glm::vec4& colour)
   registry.emplace<ColourComponent>(r, colour);
   registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
   registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
+  registry.emplace<SpriteTagComponent>(r, "SHIP_1");
   registry.emplace<TextureComponent>(r, tex_unit_custom_spaceships);
-  registry.emplace<SpriteTagComponent>(r, "SHIP_0");
   // physics
   registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
   registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);

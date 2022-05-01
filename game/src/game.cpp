@@ -22,6 +22,7 @@
 #include "gameplay_components/grid.hpp"
 #include "gameplay_helpers/create_entities.hpp"
 #include "gameplay_systems/cursor.hpp"
+#include "gameplay_systems/cycle_sprite.hpp"
 #include "gameplay_systems/destroy_after_time.hpp"
 #include "gameplay_systems/player_input.hpp"
 
@@ -43,7 +44,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 
   create_cursor(registry); // Add a cursor, made of 4 lines
-  create_player(registry, 5, 10, colours.red);
+  // create_player(registry, 5, 10, colours.red);
   create_player(registry, 15, 10, colours.cyan);
 };
 
@@ -111,6 +112,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
           // update_player_input_system(registry, app, dt);
+          update_cycle_sprite_system(registry, app);
 
           // last thing to do for gametick: destroy any entities
           // update_destroy_after_time_system(registry, app, dt);
