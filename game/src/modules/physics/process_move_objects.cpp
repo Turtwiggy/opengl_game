@@ -2,7 +2,6 @@
 #include "modules/physics/process_move_objects.hpp"
 
 // components
-#include "components/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
@@ -13,9 +12,6 @@
 #include <vector>
 
 namespace game2d {
-
-// TODO: these are game-specific callbacks,
-// so don't belong in this file!
 
 void
 CALLBACK_actor_solid_collision(entt::registry& registry, const CollisionInfo2D& info)
@@ -36,10 +32,10 @@ CALLBACK_actor_solid_collision(entt::registry& registry, const CollisionInfo2D& 
     // std::cout << "x: " << normal.x << " y:" << normal.y << std::endl;
   };
 
-  if (registry.all_of<DoubleJumpComponent>(info.eid)) {
-    auto& c = registry.get<DoubleJumpComponent>(info.eid);
-    c.able_to_jump = true;
-  };
+  // if (registry.all_of<DoubleJumpComponent>(info.eid)) {
+  //   auto& c = registry.get<DoubleJumpComponent>(info.eid);
+  //   c.able_to_jump = true;
+  // };
 };
 
 void
@@ -52,7 +48,7 @@ CALLBACK_do_nothing(entt::registry& registry, const CollisionInfo2D& eid){
 void
 game2d::update_move_objects_system(entt::registry& registry, engine::Application& app, float dt)
 {
-  std::function<void(entt::registry&, CollisionInfo2D&)> actor_hit_solid_callback = CALLBACK_actor_solid_collision;
+  std::function<void(entt::registry&, CollisionInfo2D&)> actor_hit_solid_callback = CALLBACK_do_nothing;
   std::function<void(entt::registry&, CollisionInfo2D&)> actor_being_squish_callback = CALLBACK_do_nothing;
 
   // actors and solids never overlap,

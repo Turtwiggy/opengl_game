@@ -1,8 +1,10 @@
 #include "create_entities.hpp"
 
 // my libs
-#include "components/components.hpp"
+#include "components/cursor.hpp"
 #include "components/grid.hpp"
+#include "components/health.hpp"
+#include "components/player.hpp"
 #include "helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"

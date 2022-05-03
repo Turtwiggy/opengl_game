@@ -2,7 +2,7 @@
 #include "cursor.hpp"
 
 // components
-#include "components/components.hpp"
+#include "components/cursor.hpp"
 #include "components/grid.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"

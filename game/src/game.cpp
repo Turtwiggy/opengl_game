@@ -17,13 +17,14 @@
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
-// #include "systems/collisions_actor_actor.hpp"
-#include "components/components.hpp"
+#include "components/app.hpp"
 #include "components/grid.hpp"
 #include "helpers/create_entities.hpp"
 #include "systems/cursor.hpp"
-#include "systems/destroy_after_time.hpp"
-#include "systems/player_input.hpp"
+// #include "systems/collisions_actor_actor.hpp"
+// #include "components/components.hpp"
+// #include "systems/destroy_after_time.hpp"
+// #include "systems/player_input.hpp"
 
 // engine headers
 #include "engine/app/io.hpp"

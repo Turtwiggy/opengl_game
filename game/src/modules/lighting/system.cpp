@@ -2,7 +2,6 @@
 #include "system.hpp"
 
 // my libs
-#include "components/components.hpp"
 #include "modules/lighting/components.hpp"
 #include "modules/renderer/components.hpp"
 
