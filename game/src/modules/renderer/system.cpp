@@ -2,7 +2,6 @@
 #include "modules/renderer/system.hpp"
 
 // components/systems
-#include "modules/editor_camera/helpers.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/renderer/helpers/batch_quad.hpp"
 #include "modules/renderer/helpers/helpers.hpp"
@@ -10,12 +9,12 @@
 #include "modules/sprites/helpers.hpp"
 
 // engine headers
+#include "engine/app/io.hpp"
 #include "engine/opengl/framebuffer.hpp"
 #include "engine/opengl/render_command.hpp"
 #include "engine/opengl/shader.hpp"
 #include "engine/opengl/texture.hpp"
 #include "engine/opengl/util.hpp"
-#include "engine/util.hpp"
 using namespace engine;
 
 // other lib
@@ -26,6 +25,12 @@ using namespace engine;
 #include <vector>
 
 namespace game2d {
+
+glm::mat4
+calculate_projection(int x, int y)
+{
+  return glm::ortho(0.0f, static_cast<float>(x), static_cast<float>(y), 0.0f, -1.0f, 1.0f);
+};
 
 void
 rebind(engine::Shader& shader, const glm::ivec2& wh, const SINGLETON_RendererInfo& ri)

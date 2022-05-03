@@ -1,7 +1,7 @@
 #pragma once
 
 // engine headers
-#include "engine/application.hpp"
+#include "engine/app/application.hpp"
 
 // other lib headers
 #include "entt/entt.hpp"

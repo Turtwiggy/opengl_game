@@ -9,6 +9,6 @@
 namespace game2d {
 
 void
-update_physics_system(entt::registry& registry, engine::Application& app, float dt);
+update_player_move_on_grid(entt::registry& registry, engine::Application& app, float dt);
 
-}; // namespace game2d
+} // namespace game2d

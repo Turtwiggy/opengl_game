@@ -2,7 +2,7 @@
 #include "system.hpp"
 
 // my libs
-#include "gameplay_components/components.hpp"
+#include "components/components.hpp"
 #include "modules/lighting/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -17,7 +17,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // engine libs
-#include "engine/maths.hpp"
+#include "engine/maths/maths.hpp"
 #include "engine/opengl/util.hpp"
 
 void

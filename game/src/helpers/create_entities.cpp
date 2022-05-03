@@ -1,9 +1,9 @@
 #include "create_entities.hpp"
 
 // my libs
-#include "gameplay_components/components.hpp"
-#include "gameplay_components/grid.hpp"
-#include "gameplay_helpers/physics_layers.hpp"
+#include "components/components.hpp"
+#include "components/grid.hpp"
+#include "helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"

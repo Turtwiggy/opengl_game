@@ -2,7 +2,7 @@
 #include "cycle_sprite.hpp"
 
 // components
-#include "gameplay_components/components.hpp"
+#include "components/components.hpp"
 #include "modules/renderer/components.hpp"
 
 #include <string>
@@ -22,7 +22,7 @@ game2d::update_cycle_sprite_system(entt::registry& registry, engine::Application
     view.each([&registry, &temp, &input](auto entity, const auto& player) {
       if (input.get_key_down(SDL_SCANCODE_RETURN)) {
         temp += 1;
-        temp %= 5;
+        temp %= 7;
 
         std::string sprite = "SHIP_EXPLOSION_" + std::to_string(temp);
         std::cout << "cycling... " << sprite << std::endl;

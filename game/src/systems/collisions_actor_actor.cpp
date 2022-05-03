@@ -5,7 +5,7 @@
 #include "modules/physics/components.hpp"
 
 // helpers
-#include "gameplay_helpers/physics_layers.hpp"
+#include "helpers/physics_layers.hpp"
 
 // c++ lib headers
 #include <algorithm>

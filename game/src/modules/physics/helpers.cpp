@@ -2,7 +2,7 @@
 #include "helpers.hpp"
 
 // engine headers
-#include "engine/maths.hpp"
+#include "engine/maths/maths.hpp"
 
 // c++ lib headers
 #include <algorithm>

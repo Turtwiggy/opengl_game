@@ -1,7 +1,7 @@
 #pragma once
 
 // engine headers
-#include "engine/application.hpp"
+#include "engine/app/application.hpp"
 
 // other lib headers
 #include <entt/entt.hpp>
@@ -9,6 +9,6 @@
 namespace game2d {
 
 void
-update_click_to_destroy_system(entt::registry& registry, engine::Application& app);
+update_cycle_sprite_system(entt::registry& registry, engine::Application& app);
 
 } // namespace game2d

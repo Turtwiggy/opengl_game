@@ -2,13 +2,13 @@
 #include "click_to_destroy.hpp"
 
 // components
-#include "gameplay_components/components.hpp"
-#include "gameplay_components/grid.hpp"
-#include "grid.hpp"
+#include "components/components.hpp"
+#include "components/grid.hpp"
 #include "modules/renderer/components.hpp"
 
 // other engine headers
-#include "engine/maths.hpp"
+#include "engine/maths/grid.hpp"
+#include "engine/maths/maths.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>

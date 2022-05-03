@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 
 // engine headers
-#include "engine/input.hpp"
-#include "engine/maths.hpp"
+#include "engine/app/input.hpp"
+#include "engine/maths/maths.hpp"
 
 // std lib headers
 #include <vector>

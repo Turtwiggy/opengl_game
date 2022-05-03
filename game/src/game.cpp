@@ -17,18 +17,17 @@
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
-// #include "gameplay_systems/collisions_actor_actor.hpp"
-#include "gameplay_components/components.hpp"
-#include "gameplay_components/grid.hpp"
-#include "gameplay_helpers/create_entities.hpp"
-#include "gameplay_systems/cursor.hpp"
-#include "gameplay_systems/cycle_sprite.hpp"
-#include "gameplay_systems/destroy_after_time.hpp"
-#include "gameplay_systems/player_input.hpp"
+// #include "systems/collisions_actor_actor.hpp"
+#include "components/components.hpp"
+#include "components/grid.hpp"
+#include "helpers/create_entities.hpp"
+#include "systems/cursor.hpp"
+#include "systems/destroy_after_time.hpp"
+#include "systems/player_input.hpp"
 
 // engine headers
-#include "engine/maths.hpp"
-#include "engine/util.hpp"
+#include "engine/app/io.hpp"
+#include "engine/maths/maths.hpp"
 
 namespace game2d {
 
@@ -112,7 +111,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
           // update_player_input_system(registry, app, dt);
-          update_cycle_sprite_system(registry, app);
 
           // last thing to do for gametick: destroy any entities
           // update_destroy_after_time_system(registry, app, dt);

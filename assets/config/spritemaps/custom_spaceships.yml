@@ -31,3 +31,9 @@ sprites:
   - name: SHIP_EXPLOSION_4
     x: 4
     y: 1
+  - name: SHIP_EXPLOSION_5
+    x: 5
+    y: 1
+  - name: SHIP_EXPLOSION_6
+    x: 6
+    y: 1

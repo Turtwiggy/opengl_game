@@ -4,13 +4,13 @@
 using namespace game2d;
 
 // engine headers
-#include "engine/application.hpp"
-#include "engine/util.hpp"
+#include "engine/app/application.hpp"
+#include "engine/app/io.hpp"
 using namespace engine;
 
 // other libs
-#include "entt/entt.hpp"
-#include "imgui.h"
+#include <entt/entt.hpp>
+#include <imgui.h>
 
 // std lib
 #include <chrono>

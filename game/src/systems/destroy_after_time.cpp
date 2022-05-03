@@ -2,7 +2,7 @@
 #include "destroy_after_time.hpp"
 
 // components
-#include "gameplay_components/components.hpp"
+#include "components/components.hpp"
 
 #include <imgui.h>
 
