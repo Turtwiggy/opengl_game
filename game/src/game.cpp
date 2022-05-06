@@ -45,7 +45,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
   create_cursor(registry); // Add a cursor, made of 4 lines
   // create_player(registry, 5, 10, colours.red);
-  create_player(registry, 15, 10, colours.cyan);
+  create_player(registry, 40, 15, colours.cyan);
 };
 
 } // namespace game2d

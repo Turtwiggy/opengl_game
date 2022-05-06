@@ -2,9 +2,6 @@
 
 // my libs
 #include "components/cursor.hpp"
-#include "components/grid.hpp"
-#include "components/health.hpp"
-#include "components/player.hpp"
 #include "helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
@@ -18,7 +15,7 @@ namespace game2d {
 void
 create_cursor(entt::registry& registry)
 {
-  const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  const int GRID_SIZE = 16;
 
   for (int i = 0; i < 4; i++) {
     entt::entity r = registry.create();
@@ -37,7 +34,7 @@ create_cursor(entt::registry& registry)
 void
 create_player(entt::registry& registry, int x, int y, const glm::vec4& colour)
 {
-  const int GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  const int GRID_SIZE = 16;
 
   entt::entity r = registry.create();
   registry.emplace<TagComponent>(r, "player");
@@ -46,20 +43,17 @@ create_player(entt::registry& registry, int x, int y, const glm::vec4& colour)
   registry.emplace<ColourComponent>(r, colour);
   registry.emplace<PositionIntComponent>(r, x * GRID_SIZE, y * GRID_SIZE);
   registry.emplace<RenderSizeComponent>(r, GRID_SIZE, GRID_SIZE);
-  registry.emplace<SpriteTagComponent>(r, "SHIP_1");
+  registry.emplace<SpriteTagComponent>(r, "EMPTY");
   registry.emplace<TextureComponent>(r, tex_unit_custom_spaceships);
   // physics
   registry.emplace<CollidableComponent>(r, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
   registry.emplace<PhysicsSizeComponent>(r, GRID_SIZE, GRID_SIZE);
   registry.emplace<VelocityComponent>(r, 0.0f, 0.0f);
   // input
-  registry.emplace<PlayerComponent>(r, 0);
   // PlayerInputComponent pic;
   // pic.use_keyboard = true;
   // registry.emplace<PlayerInputComponent>(r, pic);
   // gameplay
-  registry.emplace<GridPositionComponent>(r, x, y);
-  registry.emplace<HealthComponent>(r);
 };
 
 } // namespace game2d
