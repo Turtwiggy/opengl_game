@@ -7,7 +7,7 @@ spritesheet:
   nx: 8
   ny: 8
 sprites:
-  - name: SHIP_0
+  - name: EMPTY
     x: 0
     y: 0
   - name: SHIP_1

@@ -21,6 +21,8 @@
 #include "components/grid.hpp"
 #include "helpers/create_entities.hpp"
 #include "systems/cursor.hpp"
+#include "systems/select_objects.hpp"
+#include "systems/select_objects_highlight.hpp"
 // #include "systems/collisions_actor_actor.hpp"
 // #include "components/components.hpp"
 // #include "systems/destroy_after_time.hpp"
@@ -29,6 +31,8 @@
 // engine headers
 #include "engine/app/io.hpp"
 #include "engine/maths/maths.hpp"
+
+#include <string>
 
 namespace game2d {
 
@@ -44,8 +48,8 @@ init_game_state(entt::registry& registry, engine::Application& app)
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 
   create_cursor(registry); // Add a cursor, made of 4 lines
-  // create_player(registry, 5, 10, colours.red);
-  create_player(registry, 40, 15, colours.cyan);
+  create_player(registry, 40, 15, std::string("SHIP_1"), colours.cyan, colours.dblue);
+  create_player(registry, 42, 10, std::string("EMPTY"), colours.cyan, colours.dblue);
 };
 
 } // namespace game2d
@@ -105,6 +109,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       // ... systems that always update
       {
         update_cursor_system(registry, app);
+        update_select_objects_system(registry, app);
+        update_select_objects_highlight_system(registry, app);
       }
 
       // ... now systems that only update if viewport is focused

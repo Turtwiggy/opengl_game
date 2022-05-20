@@ -38,12 +38,12 @@ struct Collision2D
 // A physics object needs an entity id, and size info
 struct PhysicsObject
 {
-  uint32_t ent_id;
+  uint32_t ent_id = 0;
   // aabb
-  int x_tl;
-  int y_tl;
-  int w;
-  int h;
+  int x_tl = 0;
+  int y_tl = 0;
+  int w = 0;
+  int h = 0;
   // state
   bool collidable = true;
 };

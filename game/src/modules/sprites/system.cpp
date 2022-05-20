@@ -36,7 +36,7 @@ update_sprite_tag_system(entt::registry& registry, engine::Application& app)
       registry.emplace<SpriteComponent>(entity, sc);
     }
 
-    std::cout << "replacing sprite tag...";
+    std::cout << "spritetag: " << sprite_info.name << ", ";
     registry.erase<SpriteTagComponent>(entity);
   });
 };
