@@ -3,7 +3,6 @@
 
 // components
 #include "components/cursor.hpp"
-#include "components/grid.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -14,8 +13,6 @@
 // other lib headers
 #include <glm/glm.hpp>
 #include <imgui.h>
-
-#include <iostream> // temp
 
 namespace game2d {
 void
@@ -35,11 +32,11 @@ void
 game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
 {
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const int& GRID_SIZE = registry.ctx<SINGLETON_GridSizeComponent>().size_xy;
+  const int CURSOR_SIZE = 16;
 
   {
     const auto& view = registry.view<CursorComponent>();
-    view.each([&registry, &app, &ri, &GRID_SIZE](auto& c) {
+    view.each([&registry, &app, &ri, &CURSOR_SIZE](auto& c) {
       glm::ivec2 imgui_mouse_pos = app.get_input().get_mouse_pos();
       glm::vec2 imgui_viewport_tl = ri.viewport_pos;
       glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
@@ -98,36 +95,36 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
         }
       } else {
         // draw regular square
-        c.mouse_wh.x = GRID_SIZE;
-        c.mouse_wh.y = GRID_SIZE;
+        c.mouse_wh.x = CURSOR_SIZE;
+        c.mouse_wh.y = CURSOR_SIZE;
 
         glm::ivec2 world_pos = mouse_pos_adjusted_in_worldspace;
-        int offset = static_cast<int>(GRID_SIZE / 2.0f);
+        int offset = static_cast<int>(CURSOR_SIZE / 2.0f);
 
         { // top
           int x = world_pos.x;
           int y = world_pos.y - offset;
-          update_renderable(registry, c.line_u, x, y, GRID_SIZE, 1);
+          update_renderable(registry, c.line_u, x, y, CURSOR_SIZE, 1);
         }
         { // bottom
           int x = world_pos.x;
           int y = world_pos.y + offset;
-          update_renderable(registry, c.line_d, x, y, GRID_SIZE, 1);
+          update_renderable(registry, c.line_d, x, y, CURSOR_SIZE, 1);
         }
         { // left
           int x = world_pos.x - offset;
           int y = world_pos.y;
-          update_renderable(registry, c.line_l, x, y, 1, GRID_SIZE);
+          update_renderable(registry, c.line_l, x, y, 1, CURSOR_SIZE);
         }
         { // right
           int x = world_pos.x + offset;
           int y = world_pos.y;
-          update_renderable(registry, c.line_r, x, y, 1, GRID_SIZE);
+          update_renderable(registry, c.line_r, x, y, 1, CURSOR_SIZE);
         }
         { // backdrop
           int x = world_pos.x;
           int y = world_pos.y;
-          update_renderable(registry, c.backdrop, x, y, GRID_SIZE, GRID_SIZE);
+          update_renderable(registry, c.backdrop, x, y, CURSOR_SIZE, CURSOR_SIZE);
         }
       }
     });

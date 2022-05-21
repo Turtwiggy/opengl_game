@@ -3,7 +3,7 @@
 // my libs
 #include "components/app.hpp"
 #include "components/cursor.hpp"
-#include "components/grid.hpp"
+#include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
 #include "helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
@@ -15,16 +15,16 @@
 
 namespace game2d {
 
+const int SPRITE_SIZE = 64;
+
 entt::entity
 create_renderable(entt::registry& r, const std::string& name, const glm::vec4& colour)
 {
-  const auto& GRID_SIZE = r.ctx<SINGLETON_GridSizeComponent>().size_xy;
-
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
   // rendering
   r.emplace<PositionIntComponent>(e);
-  r.emplace<RenderSizeComponent>(e, GRID_SIZE, GRID_SIZE);
+  r.emplace<RenderSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
   r.emplace<ColourComponent>(e, colour);
   r.emplace<SpriteTagComponent>(e, "EMPTY");
   r.emplace<TextureComponent>(e, tex_unit_kenny_nl);
@@ -56,24 +56,24 @@ create_player(entt::registry& r,
               const glm::vec4& start_colour,
               const glm::vec4& highlight_colour)
 {
-  const auto& GRID_SIZE = r.ctx<SINGLETON_GridSizeComponent>().size_xy;
-
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, "player");
 
   // rendering
   r.emplace<ColourComponent>(e, start_colour);
-  r.emplace<PositionIntComponent>(e, x * GRID_SIZE, y * GRID_SIZE);
-  r.emplace<RenderSizeComponent>(e, GRID_SIZE, GRID_SIZE);
+  r.emplace<PositionIntComponent>(e, x * SPRITE_SIZE, y * SPRITE_SIZE);
+  r.emplace<RenderSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
   r.emplace<SpriteTagComponent>(e, sprite);
   r.emplace<TextureComponent>(e, tex_unit_custom_spaceships);
   // physics
   r.emplace<CollidableComponent>(e, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
-  r.emplace<PhysicsSizeComponent>(e, GRID_SIZE, GRID_SIZE);
+  r.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
   r.emplace<VelocityComponent>(e, 0.0f, 0.0f);
   // gameplay
   r.emplace<SelectableComponent>(e, false);
   r.emplace<HighlightComponent>(e, start_colour, highlight_colour);
+  r.emplace<DestinationComponent>(e);
+
   // input
   // PlayerInputComponent pic;
   // pic.use_keyboard = true;

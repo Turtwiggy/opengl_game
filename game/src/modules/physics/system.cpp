@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 
 void
-game2d::update_physics_system(entt::registry& registry, engine::Application& app, float dt)
+game2d::update_physics_system(entt::registry& registry, engine::Application& app)
 {
   // 1. get all the actors
   // 2. generate all possible collisions

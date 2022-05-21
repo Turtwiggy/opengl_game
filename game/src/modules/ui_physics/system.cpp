@@ -10,7 +10,7 @@
 void
 game2d::update_ui_physics_system(entt::registry& registry, engine::Application& app)
 {
-  // const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
+  const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
 
   int solids = 0;
   int actors = 0;
@@ -26,5 +26,8 @@ game2d::update_ui_physics_system(entt::registry& registry, engine::Application& 
   ImGui::Begin("Physics", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   ImGui::Text("Solids %i", solids);
   ImGui::Text("Actors %i", actors);
+  ImGui::Text("collision_enter %i", p.collision_enter.size());
+  ImGui::Text("collision_stay %i", p.collision_stay.size());
+  ImGui::Text("collision_exit %i", p.collision_exit.size());
   ImGui::End();
 };

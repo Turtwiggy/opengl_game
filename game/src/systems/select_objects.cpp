@@ -3,7 +3,6 @@
 
 // components
 #include "components/cursor.hpp"
-#include "components/grid.hpp"
 #include "components/selectable.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"

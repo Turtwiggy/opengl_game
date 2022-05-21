@@ -37,7 +37,7 @@ find_sprite(const std::vector<sprite>& sprites, const std::string name)
     return *s;
   else {
     std::cerr << "sprite not found: " << name << std::endl;
-    exit(1);
+    exit(1); // explode!
   }
 }
 

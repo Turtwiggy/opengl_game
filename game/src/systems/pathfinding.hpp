@@ -9,6 +9,6 @@
 namespace game2d {
 
 void
-update_click_to_destroy_system(entt::registry& registry, engine::Application& app);
+update_pathfinding_system(entt::registry& registry, engine::Application& app);
 
 } // namespace game2d
