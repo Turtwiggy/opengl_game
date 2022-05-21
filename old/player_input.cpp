@@ -37,13 +37,6 @@ game2d::update_player_input_system(entt::registry& registry, engine::Application
     const auto& view = registry.view<PlayerComponent, PlayerKeyboardComponent>();
     view.each([&app, &input](const auto& player, auto& input) {
       //
-
-      ImGui::Begin("Player Input");
-      {
-        ImGui::Text("honk");
-      }
-      ImGui::End();
-
       // input.move_up = false;
       // input.move_down = false;
       // input.move_left = false;

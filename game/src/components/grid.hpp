@@ -10,7 +10,7 @@ struct GridPositionComponent
 
 struct SINGLETON_GridSizeComponent
 {
-  const int size_xy = 16;
+  const int size_xy = 64;
 };
 
 } // namespace game2d

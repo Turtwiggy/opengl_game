@@ -16,24 +16,36 @@ sprites:
   - name: SHIP_2
     x: 2
     y: 0
-  - name: SHIP_EXPLOSION_0
-    x: 0
-    y: 1
-  - name: SHIP_EXPLOSION_1
-    x: 1
-    y: 1
-  - name: SHIP_EXPLOSION_2
-    x: 2
-    y: 1
-  - name: SHIP_EXPLOSION_3
+  - name: SHIP_3
     x: 3
-    y: 1
-  - name: SHIP_EXPLOSION_4
+    y: 0
+  - name: SHIP_4
     x: 4
-    y: 1
-  - name: SHIP_EXPLOSION_5
+    y: 0
+  - name: SHIP_5
     x: 5
-    y: 1
-  - name: SHIP_EXPLOSION_6
+    y: 0
+  - name: SHIP_6
     x: 6
-    y: 1
+    y: 0
+  - name: SHIP_7
+    x: 7
+    y: 0
+  - name: DUDE_1
+    x: 0
+    y: 5
+  - name: FLAG_0
+    x: 1
+    y: 5
+  - name: DUDE_2
+    x: 2
+    y: 5
+  - name: PET_0
+    x: 0
+    y: 7
+  - name: PET_1
+    x: 1
+    y: 7
+  - name: PET_2
+    x: 2
+    y: 7

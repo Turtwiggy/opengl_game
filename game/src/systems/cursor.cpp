@@ -29,7 +29,7 @@ update_renderable(entt::registry& r, const entt::entity& e, const int x, const i
   size.h = h;
 };
 
-}
+} // namespace game2d
 
 void
 game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
@@ -45,20 +45,26 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
       glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
       glm::vec2 mouse_pos_adjusted_in_worldspace = mouse_pos;
 
+      c.click = false;
       if (app.get_input().get_mouse_lmb_press()) {
         c.mouse_click = mouse_pos_adjusted_in_worldspace;
+        c.click = true;
       }
+
+      c.held = false;
       if (app.get_input().get_mouse_lmb_held()) {
         c.mouse_held = mouse_pos_adjusted_in_worldspace;
+        c.held = true;
       }
+
+      c.release = false;
       if (app.get_input().get_mouse_lmb_release()) {
         c.mouse_click = glm::ivec2(0);
         c.mouse_held = glm::ivec2(0);
+        c.release = true;
       }
 
-      const glm::ivec2 zero = glm::ivec2(0);
-
-      if (c.mouse_click != zero && c.mouse_held != zero) {
+      if (c.click || c.held || c.release) {
         // draw expanding square
         int width = c.mouse_held.x - c.mouse_click.x;
         int height = c.mouse_held.y - c.mouse_click.y;

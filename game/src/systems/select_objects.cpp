@@ -27,8 +27,6 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
   {
     const auto& view = registry.view<PositionIntComponent, PhysicsSizeComponent, SelectableComponent>();
     view.each([&selectable](auto entity, const auto& pos, const auto& size, auto& s) {
-      s.is_selected = false;
-
       PhysicsObject po;
       po.ent_id = static_cast<uint32_t>(entity);
       po.x_tl = static_cast<int>(pos.x - size.w / 2.0f);
@@ -45,8 +43,7 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
     view.each([&registry, &selectable](auto entity, auto& c) {
       //... for each cursor...
 
-      const glm::ivec2 zero = glm::ivec2(0);
-      if (c.mouse_click == zero || c.mouse_held == zero) {
+      if (!c.click && !c.held && !c.release) {
         // user is not holding...
         return;
       }
@@ -58,19 +55,22 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
       cursor.w = glm::abs(c.mouse_wh.x);
       cursor.h = glm::abs(c.mouse_wh.y);
 
-      std::vector<entt::entity> selected;
-
       // generate collisions
       // could be better in the physics system... somehow
-      for (const auto s : selectable)
-        if (collide(s, cursor))
-          selected.push_back(static_cast<entt::entity>(s.ent_id));
+      for (const auto spo : selectable) {
 
-      // dont need second for loop... but eh
-      // if need the performance, remove it
-      for (const auto entity : selected) {
-        auto& s = registry.get<SelectableComponent>(entity);
-        s.is_selected = true;
+        auto ent = static_cast<entt::entity>(spo.ent_id);
+        auto& sc = registry.get<SelectableComponent>(ent);
+
+        if (c.click) {
+          // user clicked... remove all the old selected
+          // (i.e. keep persistent until new click)
+          sc.is_selected = false;
+        }
+
+        if (collide(spo, cursor)) {
+          sc.is_selected = true;
+        }
       }
     });
   }

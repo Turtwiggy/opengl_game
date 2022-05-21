@@ -8,21 +8,23 @@
 #include "modules/ui_profiler/components.hpp"
 
 // systems
-// #include "modules/physics/process_move_objects.hpp"
 // #include "modules/physics/system.hpp"
-// #include "modules/ui_physics/system.hpp"
+#include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
+#include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
 #include "components/app.hpp"
 #include "components/grid.hpp"
+#include "components/selectable.hpp"
 #include "helpers/create_entities.hpp"
 #include "systems/cursor.hpp"
 #include "systems/select_objects.hpp"
 #include "systems/select_objects_highlight.hpp"
+#include "systems/select_objects_move.hpp"
 // #include "systems/collisions_actor_actor.hpp"
 // #include "components/components.hpp"
 // #include "systems/destroy_after_time.hpp"
@@ -43,13 +45,21 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
+  // gameplay
   registry.set<SINGLETON_GridSizeComponent>(SINGLETON_GridSizeComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 
-  create_cursor(registry); // Add a cursor, made of 4 lines
-  create_player(registry, 40, 15, std::string("SHIP_1"), colours.cyan, colours.dblue);
-  create_player(registry, 42, 10, std::string("EMPTY"), colours.cyan, colours.dblue);
+  create_cursor(registry);
+  create_player(registry, 1, 2, std::string("DUDE_1"), colours.cyan, colours.dblue);
+  create_player(registry, 2, 2, std::string("DUDE_2"), colours.cyan, colours.dblue);
+  create_player(registry, 3, 2, std::string("FLAG_0"), colours.cyan, colours.dblue);
+  create_player(registry, 4, 5, std::string("PET_0"), colours.cyan, colours.dblue);
+  create_player(registry, 6, 5, std::string("PET_1"), colours.cyan, colours.dblue);
+  create_player(registry, 5, 5, std::string("PET_2"), colours.cyan, colours.dblue);
+  create_player(registry, 7, 7, std::string("SHIP_1"), colours.cyan, colours.dblue);
+  create_player(registry, 8, 7, std::string("SHIP_5"), colours.cyan, colours.dblue);
+  create_player(registry, 9, 7, std::string("EMPTY"), colours.cyan, colours.dblue);
 };
 
 } // namespace game2d
@@ -74,14 +84,14 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   // physics
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
-    // if (!gp.paused) {
-    // move objects, checking collisions along way
-    // update_move_objects_system(registry, app, fixed_dt);
-    // generate all collisions between actor-actor objects
-    // update_physics_system(registry, app, fixed_dt);
-    // process actor-actor collisions
-    // update_actor_actor_collision_system(registry, app, fixed_dt);
-    // }
+    if (!gp.paused) {
+      // move objects, checking collisions along way
+      update_move_objects_system(registry, app, fixed_dt);
+      // generate all collisions between actor-actor objects
+      // update_physics_system(registry, app, fixed_dt);
+      // process actor-actor collisions
+      // update_actor_actor_collision_system(registry, app, fixed_dt);
+    }
   }
   Uint64 end_physics = SDL_GetPerformanceCounter();
   p.physics_elapsed_ms = (end_physics - start_physics) / float(SDL_GetPerformanceFrequency()) * 1000.0f;
@@ -111,6 +121,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         update_cursor_system(registry, app);
         update_select_objects_system(registry, app);
         update_select_objects_highlight_system(registry, app);
+        update_select_objects_move_system(registry, app, dt);
       }
 
       // ... now systems that only update if viewport is focused
@@ -139,7 +150,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
-    // update_ui_physics_system(registry, app);
+    update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
     update_ui_profiler_system(registry, app);
   };
