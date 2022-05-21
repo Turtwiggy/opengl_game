@@ -116,6 +116,20 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       }
     }
 
+    // Display RenderAngleComponent
+    if (registry.all_of<RenderAngleComponent>(eid)) {
+      RenderAngleComponent& ra = registry.get<RenderAngleComponent>(eid);
+
+      // Able to change the value of PositionInt component
+      float angle = ra.angle_radians;
+
+      ImGui::Text("Render Angle: ");
+      ImGui::SameLine();
+      if (ImGui::DragFloat("##renderangle", &angle, 0.5f)) {
+        ra.angle_radians = angle;
+      }
+    }
+
     // Display PhysicsSizeComponent
     if (registry.all_of<PhysicsSizeComponent>(eid)) {
       PhysicsSizeComponent& psc = registry.get<PhysicsSizeComponent>(eid);
@@ -179,29 +193,29 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
     }
 
     // Add component
-    if (ImGui::Button("Add component")) {
-      ImGui::OpenPopup("AddComponent");
-    }
+    // if (ImGui::Button("Add component")) {
+    //   ImGui::OpenPopup("AddComponent");
+    // }
 
-    if (ImGui::BeginPopup("AddComponent")) {
-      if (ImGui::MenuItem("PositionIntComponent")) {
-        registry.emplace<PositionIntComponent>(eid);
-        ImGui::CloseCurrentPopup();
-      }
-      if (ImGui::MenuItem("RenderSizeComponent")) {
-        registry.emplace<RenderSizeComponent>(eid);
-        ImGui::CloseCurrentPopup();
-      }
-      if (ImGui::MenuItem("PhysicsSizeComponent")) {
-        registry.emplace<PhysicsSizeComponent>(eid);
-        ImGui::CloseCurrentPopup();
-      }
-      if (ImGui::MenuItem("ColourComponent")) {
-        registry.emplace<ColourComponent>(eid);
-        ImGui::CloseCurrentPopup();
-      }
-      ImGui::EndPopup();
-    }
+    // if (ImGui::BeginPopup("AddComponent")) {
+    //   if (ImGui::MenuItem("PositionIntComponent")) {
+    //     registry.emplace<PositionIntComponent>(eid);
+    //     ImGui::CloseCurrentPopup();
+    //   }
+    //   if (ImGui::MenuItem("RenderSizeComponent")) {
+    //     registry.emplace<RenderSizeComponent>(eid);
+    //     ImGui::CloseCurrentPopup();
+    //   }
+    //   if (ImGui::MenuItem("PhysicsSizeComponent")) {
+    //     registry.emplace<PhysicsSizeComponent>(eid);
+    //     ImGui::CloseCurrentPopup();
+    //   }
+    //   if (ImGui::MenuItem("ColourComponent")) {
+    //     registry.emplace<ColourComponent>(eid);
+    //     ImGui::CloseCurrentPopup();
+    //   }
+    //   ImGui::EndPopup();
+    // }
   }
   ImGui::End();
 };

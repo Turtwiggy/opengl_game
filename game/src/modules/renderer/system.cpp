@@ -162,15 +162,19 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
                                      const ColourComponent,
                                      const SpriteComponent,
                                      const TextureComponent>();
-    view.each([&ri, &desc](const auto& p, const auto& s, const auto& c, const auto& sc, const auto& tex) {
-      desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
-      desc.colour = c.colour;
-      desc.size = { s.w, s.h };
-      desc.tex_unit = tex.tex_unit;
-      desc.sprite_offset = { sc.x, sc.y };
-      desc.angle_radians = 0.0f + sc.offset;
-      quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
-    });
+    view.each(
+      [&registry, &ri, &desc](auto eid, const auto& p, const auto& s, const auto& c, const auto& sc, const auto& tex) {
+        float angle_radians = sc.offset;
+        if (registry.all_of<RenderAngleComponent>(eid))
+          angle_radians += registry.get<RenderAngleComponent>(eid).angle_radians;
+        desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
+        desc.colour = c.colour;
+        desc.size = { s.w, s.h };
+        desc.tex_unit = tex.tex_unit;
+        desc.sprite_offset = { sc.x, sc.y };
+        desc.angle_radians = angle_radians;
+        quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
+      });
 
     quad_renderer::QuadRenderer::end_batch();
     quad_renderer::QuadRenderer::flush(ri.instanced);

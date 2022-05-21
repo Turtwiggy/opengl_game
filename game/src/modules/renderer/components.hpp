@@ -75,6 +75,13 @@ struct RenderSizeComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderSizeComponent, w, h, dw, dh)
 };
 
+struct RenderAngleComponent
+{
+  float angle_radians = 0.0f;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderAngleComponent, angle_radians)
+};
+
 struct TextureComponent
 {
   int tex_unit = 100;

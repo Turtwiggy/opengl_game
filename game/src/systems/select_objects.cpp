@@ -40,9 +40,9 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
   {
     const auto& view = registry.view<CursorComponent>();
     view.each([&registry, &selectable](auto entity, auto& c) {
-      //... for each cursor...
+      //... for each cursor ...
 
-      if (!c.click && !c.held && !c.release) {
+      if (!c.click && !c.held) {
         // user is not holding...
         return;
       }
@@ -55,7 +55,7 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
       cursor.h = glm::abs(c.mouse_wh.y);
 
       // generate collisions
-      // could be better in the physics system... somehow
+      // could be better in the physics system...
       for (const auto spo : selectable) {
 
         auto ent = static_cast<entt::entity>(spo.ent_id);
@@ -67,9 +67,15 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
           sc.is_selected = false;
         }
 
-        if (collide(spo, cursor)) {
+        bool currently_colliding = collide(spo, cursor);
+
+        // selected now outside cursor bounds
+        if (sc.is_selected && !currently_colliding)
+          sc.is_selected = false;
+
+        // colliding
+        if (currently_colliding)
           sc.is_selected = true;
-        }
       }
     });
   }
