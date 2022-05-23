@@ -15,7 +15,7 @@
 
 namespace game2d {
 
-const int SPRITE_SIZE = 64;
+const int SPRITE_SIZE = 32;
 
 entt::entity
 create_renderable(entt::registry& r, const std::string& name, const glm::vec4& colour)
