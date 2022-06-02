@@ -31,10 +31,11 @@ game2d::update_select_objects_move_system(entt::registry& registry, engine::Appl
       if (app.get_input().get_mouse_rmb_press()) {
 
         // Generate a random destination around mouse_pos
-        const auto random_dir_xyz = engine::rand_unit_vector(rnd.rnd);
-        int destination_x = mouse_pos.x + static_cast<int>(random_dir_xyz.x * 32.0f);
-        int destination_y = mouse_pos.y + static_cast<int>(random_dir_xyz.y * 32.0f);
-        glm::ivec2 destination = { destination_x, destination_y };
+        // const auto random_dir_xyz = engine::rand_unit_vector(rnd.rnd);
+        // int destination_x = mouse_pos.x + static_cast<int>(random_dir_xyz.x * 32.0f);
+        // int destination_y = mouse_pos.y + static_cast<int>(random_dir_xyz.y * 32.0f);
+        // glm::ivec2 destination = { destination_x, destination_y };
+        glm::ivec2 destination = { mouse_pos.x, mouse_pos.y };
 
         // set velocity to get to destination
         glm::vec2 dir = destination - glm::ivec2(pos.x, pos.y);
@@ -61,6 +62,9 @@ game2d::update_select_objects_move_system(entt::registry& registry, engine::Appl
         registry.emplace<ColourComponent>(e, colours.red);
         registry.emplace<SpriteTagComponent>(e, "EMPTY");
         registry.emplace<TextureComponent>(e, tex_unit_custom_spaceships);
+
+        // TODO: if collided with another actor...
+        // TODO: move destination point earlier along line
       }
     });
 };

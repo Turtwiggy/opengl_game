@@ -1,45 +1,27 @@
 // your header
-#include "system.hpp"
+#include "process_actor_actor.hpp"
 
 // game2d
 #include "modules/physics/components.hpp"
-#include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>
 
 void
-game2d::update_physics_system(entt::registry& registry, engine::Application& app)
+game2d::update_actor_actor_system(entt::registry& registry, engine::Application& app)
 {
   // 1. get all the actors
   // 2. generate all possible collisions
   // 3. generate collision enter, exit, stay
 
   SINGLETON_PhysicsComponent& p = registry.ctx<SINGLETON_PhysicsComponent>();
-  std::vector<PhysicsObject> collidable;
 
-  {
-    collidable.clear();
-    PhysicsObject po;
-    const auto& view =
-      registry.view<const CollidableComponent, const PositionIntComponent, const PhysicsSizeComponent>();
-    view.each([&registry, &po, &p, &collidable](const auto entity, const auto& col, const auto& pos, const auto& size) {
-      // actors and solids never overlap,
-      // and solids dont overlap with solids
-      if (col.type == PhysicsType::SOLID)
-        return;
-      po.ent_id = static_cast<uint32_t>(entity);
-      po.x_tl = static_cast<int>(pos.x - size.w / 2.0f);
-      po.y_tl = static_cast<int>(pos.y - size.h / 2.0f);
-      po.w = size.w;
-      po.h = size.h;
+  const auto& actors =
+    registry
+      .view<const VelocityComponent, PositionIntComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
 
-      collidable.push_back(po);
-    });
-  }
-
-  generate_filtered_broadphase_collisions(collidable, p.frame_collisions);
+  generate_filtered_broadphase_collisions(actors, p.frame_collisions);
 
   {
     // There's 3 states needed to capture:

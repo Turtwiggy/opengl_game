@@ -117,7 +117,7 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
   auto viewport_wh = ri.viewport_size_render_at;
 
 #ifdef _DEBUG
-  CHECK_OPENGL_ERROR(0);
+  // CHECK_OPENGL_ERROR(0);
 
   // DEBUG: hot reload shader
   if (app.get_input().get_key_down(SDL_SCANCODE_T)) {
@@ -153,7 +153,7 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
     quad_renderer::QuadRenderer::reset_quad_vert_count();
     quad_renderer::QuadRenderer::begin_batch();
 
-    // todo: work out z-index
+    // TODO: work out z-index
     // registry.sort<ZIndex>([](const auto& lhs, const auto& rhs) { return lhs.index < rhs.index; });
 
     quad_renderer::RenderDescriptor desc;

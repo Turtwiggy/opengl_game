@@ -29,33 +29,6 @@ collide(const PhysicsObject& one, const PhysicsObject& two)
   return collision_x && collision_y;
 };
 
-std::optional<CollisionInfo2D>
-collides(const PhysicsObject& one, const std::vector<PhysicsObject>& others)
-{
-  for (const auto& two : others) {
-    if (!two.collidable)
-      continue;
-    bool collides = collide(one, two);
-    // note, doesn't return "others" ids, stops when any collision
-    if (collides) {
-
-      CollisionInfo2D info;
-      info.eid = static_cast<entt::entity>(one.ent_id);
-      // info.point = glm::vec2(0.0f);
-
-      // calculate normal
-      // calculates from the solid to the actor
-      glm::vec2 one_center = convert_tl_to_center(one);
-      glm::vec2 two_center = convert_tl_to_center(two);
-      glm::vec2 normal = glm::normalize(one_center - two_center);
-
-      info.normal = normal;
-      return std::optional<CollisionInfo2D>{ info };
-    }
-  }
-  return std::nullopt;
-};
-
 void
 generate_broadphase_collisions(const std::vector<std::reference_wrapper<const PhysicsObject>>& sorted_aabb,
                                COLLISION_AXIS axis,
@@ -158,52 +131,6 @@ generate_filtered_broadphase_collisions(const std::vector<PhysicsObject>& unsort
     const Collision2D& c = coll.second;
     if (c.collision_x && c.collision_y) {
       collision_results[coll.first] = coll.second;
-    }
-  }
-};
-
-void
-move_actors_dir(entt::registry& registry,
-                COLLISION_AXIS axis,
-                int& pos,
-                float& dx,
-                PhysicsObject& actor_aabb,
-                std::vector<PhysicsObject>& solids,
-                std::function<void(entt::registry&, CollisionInfo2D&)>& callback)
-{
-  constexpr auto Sign = [](int x) { return x == 0 ? 0 : (x > 0 ? 1 : -1); };
-
-  int move_x = static_cast<int>(dx);
-  if (move_x != 0) {
-    dx -= move_x;
-    int sign = Sign(move_x);
-    PhysicsObject potential_aabb;
-    potential_aabb.ent_id = actor_aabb.ent_id;
-    while (move_x != 0) {
-
-      potential_aabb.x_tl = actor_aabb.x_tl;
-      if (axis == COLLISION_AXIS::X)
-        potential_aabb.x_tl += sign;
-
-      potential_aabb.y_tl = actor_aabb.y_tl;
-      if (axis == COLLISION_AXIS::Y)
-        potential_aabb.y_tl += sign;
-
-      potential_aabb.w = actor_aabb.w;
-      potential_aabb.h = actor_aabb.h;
-      auto collision_with_solid = collides(potential_aabb, solids);
-      if (collision_with_solid.has_value()) // ah! collision, maybe actor-solid callback?
-      {
-        callback(registry, collision_with_solid.value());
-        // std::cout << "actor would collide X with solid if continue" << std::endl;
-        break;
-      }
-      actor_aabb.x_tl = potential_aabb.x_tl;
-      actor_aabb.y_tl = potential_aabb.y_tl;
-      actor_aabb.w = potential_aabb.w;
-      actor_aabb.h = potential_aabb.h;
-      pos += sign;
-      move_x -= sign;
     }
   }
 };

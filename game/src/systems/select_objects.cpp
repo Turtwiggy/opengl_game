@@ -37,9 +37,11 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
     });
   }
 
+  int selected = 0;
+
   {
     const auto& view = registry.view<CursorComponent>();
-    view.each([&registry, &selectable](auto entity, auto& c) {
+    view.each([&registry, &selectable, &selected](auto entity, auto& c) {
       //... for each cursor ...
 
       if (!c.click && !c.held) {
@@ -76,7 +78,14 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
         // colliding
         if (currently_colliding)
           sc.is_selected = true;
+
+        if (sc.is_selected)
+          selected++;
       }
     });
   }
+
+  ImGui::Begin("Selected");
+  ImGui::Text("Seclected %i", selected);
+  ImGui::End();
 };

@@ -9,6 +9,6 @@
 namespace game2d {
 
 void
-update_ui_physics_system(entt::registry& registry, engine::Application& app);
+update_actor_actor_system(entt::registry& registry, engine::Application& app);
 
-} // namespace game2d
+}; // namespace game2d

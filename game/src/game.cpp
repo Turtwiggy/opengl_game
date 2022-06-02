@@ -2,14 +2,12 @@
 #include "game.hpp"
 
 // components
-#include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
 // systems
 #include "modules/physics/process_move_objects.hpp"
-#include "modules/physics/system.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
@@ -46,21 +44,62 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
-  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
-  // gameplay
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
+
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
+  auto r = registry.ctx<SINGLETON_ResourceComponent>();
 
   create_cursor(registry);
-  create_player(registry, 1, 2, std::string("DUDE_1"), colours.cyan, colours.dblue);
-  create_player(registry, 2, 2, std::string("DUDE_2"), colours.cyan, colours.dblue);
-  create_player(registry, 3, 2, std::string("FLAG_0"), colours.cyan, colours.dblue);
-  create_player(registry, 4, 5, std::string("PET_0"), colours.cyan, colours.dblue);
-  create_player(registry, 6, 5, std::string("PET_1"), colours.cyan, colours.dblue);
-  create_player(registry, 5, 5, std::string("PET_2"), colours.cyan, colours.dblue);
-  create_player(registry, 7, 7, std::string("SHIP_1"), colours.cyan, colours.dblue);
-  create_player(registry, 8, 7, std::string("SHIP_5"), colours.cyan, colours.dblue);
-  create_player(registry, 9, 7, std::string("EMPTY"), colours.cyan, colours.dblue);
+
+  // army 0
+  {
+    int column_offset = 5;
+    int columns = 3;
+    int rows = 20;
+    int blank_line_every_x_rows = 10;
+    for (int i = 0; i < columns; i++) {
+      for (int j = 0; j < rows; j++) {
+
+        // skip a row
+        if (j % blank_line_every_x_rows == 0)
+          continue;
+
+        auto num = engine::rand_det_s(r.rnd.rng, 1, 3);
+        int random_1_or_2 = static_cast<int>(num);
+        create_player(registry,
+                      column_offset + i,
+                      j,
+                      std::string("DUDE_") + std::to_string(random_1_or_2),
+                      colours.cyan,
+                      colours.dblue);
+      }
+    }
+  }
+
+  // army 1
+  {
+    int column_offset = 25;
+    int columns = 3;
+    int rows = 20;
+    int blank_line_every_x_rows = 10;
+    for (int i = 0; i < columns; i++) {
+      for (int j = 0; j < rows; j++) {
+
+        // skip a row
+        if (j % blank_line_every_x_rows == 0)
+          continue;
+
+        auto num = engine::rand_det_s(r.rnd.rng, 0, 3);
+        int random_value = static_cast<int>(num);
+        create_player(registry,
+                      column_offset + i,
+                      j,
+                      std::string("PET_") + std::to_string(random_value),
+                      colours.white,
+                      colours.red);
+      }
+    }
+  }
 };
 
 } // namespace game2d
@@ -89,7 +128,7 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
       // generate all collisions between actor-actor objects
-      update_physics_system(registry, app);
+      // update_physics_system(registry, app);
       // process actor-actor collisions
       // update_actor_actor_collision_system(registry, app, fixed_dt);
     }
