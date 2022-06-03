@@ -22,7 +22,7 @@ game2d::update_select_objects_move_system(entt::registry& registry, engine::Appl
   glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
 
   const auto& view =
-    registry.view<SelectableComponent, PositionIntComponent, VelocityComponent, DestinationComponent>();
+    registry.view<const SelectableComponent, const PositionIntComponent, VelocityComponent, DestinationComponent>();
   view.each(
     [&registry, &app, &colours, &mouse_pos, &rnd](const auto& s, const auto& pos, auto& vel, auto& destinationC) {
       if (!s.is_selected)
@@ -53,6 +53,12 @@ game2d::update_select_objects_move_system(entt::registry& registry, engine::Appl
         const float x = pos.x + (n.x * radius / 2.0f);
         const float y = pos.y + (n.y * radius / 2.0f);
 
+        // delete line if it already existed
+        if (destinationC.destination_line != entt::null) {
+          registry.destroy(destinationC.destination_line);
+          destinationC.destination_line = entt::null;
+        }
+
         // create line from current position to end position
         entt::entity e = registry.create();
         registry.emplace<TagComponent>(e, "SPAWNED LINE");
@@ -63,8 +69,7 @@ game2d::update_select_objects_move_system(entt::registry& registry, engine::Appl
         registry.emplace<SpriteTagComponent>(e, "EMPTY");
         registry.emplace<TextureComponent>(e, tex_unit_custom_spaceships);
 
-        // TODO: if collided with another actor...
-        // TODO: move destination point earlier along line
+        destinationC.destination_line = e;
       }
     });
 };

@@ -83,9 +83,9 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   ri.viewport_size_current = screen_wh;
 
   // load sprite configs
-  std::string config_path = "assets/config/spritemaps/";
-  std::string tex_0_sprite_config = config_path + std::string("kennynl.yml");
-  std::string tex_1_sprite_config = config_path + std::string("custom_spaceships.yml");
+  std::string config_path = "assets/config/";
+  std::string tex_0_sprite_config = config_path + std::string("spritemap_kennynl.yml");
+  std::string tex_1_sprite_config = config_path + std::string("spritemap_custom.yml");
   load_sprite_yml(ri.sprites, tex_0_sprite_config);
   load_sprite_yml(ri.sprites, tex_1_sprite_config);
 

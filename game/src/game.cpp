@@ -2,11 +2,13 @@
 #include "game.hpp"
 
 // components
+#include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
 // systems
+#include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
@@ -17,7 +19,7 @@
 // gameplay
 #include "components/app.hpp"
 #include "components/selectable.hpp"
-#include "helpers/create_entities.hpp"
+#include "create_entities.hpp"
 #include "systems/cursor.hpp"
 #include "systems/pathfinding.hpp"
 #include "systems/select_objects.hpp"
@@ -42,6 +44,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
   registry.set<SINGLETON_HierarchyComponent>(SINGLETON_HierarchyComponent());
+  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
@@ -128,7 +131,7 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
       // generate all collisions between actor-actor objects
-      // update_physics_system(registry, app);
+      update_actor_actor_system(registry, app);
       // process actor-actor collisions
       // update_actor_actor_collision_system(registry, app, fixed_dt);
     }

@@ -42,6 +42,10 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
       glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
       glm::vec2 mouse_pos_adjusted_in_worldspace = mouse_pos;
 
+      //
+      // Input...
+      //
+
       c.click = false;
       if (app.get_input().get_mouse_lmb_press()) {
         c.mouse_click = mouse_pos_adjusted_in_worldspace;
@@ -60,6 +64,10 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
         c.mouse_held = glm::ivec2(0);
         c.release = true;
       }
+
+      //
+      // Rendering...
+      //
 
       if (c.click || c.held || c.release) {
         // draw expanding square
@@ -92,6 +100,10 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
           int x = c.mouse_click.x + (width / 2.0f);
           int y = c.mouse_click.y + (height / 2.0f);
           update_renderable(registry, c.backdrop, x, y, width, height);
+          // backdrop has physics size, update that too
+          auto& ps = registry.get<PhysicsSizeComponent>(c.backdrop);
+          ps.w = width;
+          ps.h = height;
         }
       } else {
         // draw regular square
@@ -125,6 +137,10 @@ game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
           int x = world_pos.x;
           int y = world_pos.y;
           update_renderable(registry, c.backdrop, x, y, CURSOR_SIZE, CURSOR_SIZE);
+          // backdrop has physics size, update that too
+          auto& ps = registry.get<PhysicsSizeComponent>(c.backdrop);
+          ps.w = CURSOR_SIZE;
+          ps.h = CURSOR_SIZE;
         }
       }
     });

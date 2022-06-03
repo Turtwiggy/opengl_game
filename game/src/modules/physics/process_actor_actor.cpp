@@ -3,10 +3,12 @@
 
 // game2d
 #include "modules/physics/components.hpp"
+#include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
 
 // other lib headers
 #include <glm/glm.hpp>
+#include <vector>
 
 void
 game2d::update_actor_actor_system(entt::registry& registry, engine::Application& app)
@@ -17,9 +19,21 @@ game2d::update_actor_actor_system(entt::registry& registry, engine::Application&
 
   SINGLETON_PhysicsComponent& p = registry.ctx<SINGLETON_PhysicsComponent>();
 
-  const auto& actors =
-    registry
-      .view<const VelocityComponent, PositionIntComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
+  std::vector<PhysicsObject> actors;
+  {
+    const auto& entt_actors =
+      registry.view<const PositionIntComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
+    PhysicsObject po;
+    entt_actors.each([&actors, &po](const auto entity, const auto& pos, const auto& size, const auto& actor) {
+      po.ent_id = static_cast<uint32_t>(entity);
+      po.x_tl = static_cast<int>(pos.x - glm::abs(size.w) / 2.0f);
+      po.y_tl = static_cast<int>(pos.y - glm::abs(size.h) / 2.0f);
+      po.w = glm::abs(size.w);
+      po.h = glm::abs(size.h);
+
+      actors.push_back(po);
+    });
+  }
 
   generate_filtered_broadphase_collisions(actors, p.frame_collisions);
 
@@ -68,6 +82,4 @@ game2d::update_actor_actor_system(entt::registry& registry, engine::Application&
       p.persistent_collisions.erase(it++);
     }
   }
-
-  // ImGui::End();
 };

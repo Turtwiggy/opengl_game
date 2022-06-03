@@ -4,9 +4,6 @@
 // components
 #include "modules/physics/components.hpp"
 
-// helpers
-#include "helpers/physics_layers.hpp"
-
 // c++ lib headers
 #include <algorithm>
 #include <iostream>

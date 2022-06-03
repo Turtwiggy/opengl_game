@@ -12,11 +12,10 @@
 void
 game2d::update_pathfinding_system(entt::registry& registry, engine::Application& app)
 {
-  const auto& view = registry.view<PositionIntComponent, DestinationComponent, VelocityComponent>();
-  view.each([&app](const auto& pos, const auto& destination, auto& vel) {
+  const auto& view = registry.view<const PositionIntComponent, DestinationComponent, VelocityComponent>();
+  view.each([&app, &registry](const auto& pos, auto& destination, auto& vel) {
     //
     // Stop object if at or past destination
-    //
     bool at_x = destination.xy.x == pos.x;
     bool at_y = destination.xy.y == pos.y;
     bool past_x = glm::sign(vel.x) > 0 ? pos.x > destination.xy.x : pos.x < destination.xy.x;
@@ -25,5 +24,11 @@ game2d::update_pathfinding_system(entt::registry& registry, engine::Application&
       vel.x = 0.0f;
     if (at_y || past_y)
       vel.y = 0.0f;
+
+    // clear up destination line
+    if ((at_x || past_x) && (at_y || past_y) && destination.destination_line != entt::null) {
+      registry.destroy(destination.destination_line);
+      destination.destination_line = entt::null;
+    }
   });
 };

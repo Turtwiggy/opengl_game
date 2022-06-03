@@ -7,7 +7,6 @@
 // c++ lib headers
 #include <algorithm>
 #include <iostream>
-#include <optional>
 
 namespace game2d {
 
@@ -134,5 +133,32 @@ generate_filtered_broadphase_collisions(const std::vector<PhysicsObject>& unsort
     }
   }
 };
+
+// std::optional<CollisionInfo2D>
+// collides(const PhysicsObject& one, const std::vector<PhysicsObject>& others)
+// {
+//   for (const auto& two : others) {
+//     if (!two.collidable)
+//       continue;
+//     bool collides = collide(one, two);
+//     // note, doesn't return "others" ids, stops when any collision
+//     if (collides) {
+
+//       CollisionInfo2D info;
+//       info.eid = static_cast<entt::entity>(one.ent_id);
+//       // info.point = glm::vec2(0.0f);
+
+//       // calculate normal
+//       // calculates from the solid to the actor
+//       glm::vec2 one_center = convert_tl_to_center(one);
+//       glm::vec2 two_center = convert_tl_to_center(two);
+//       glm::vec2 normal = glm::normalize(one_center - two_center);
+
+//       info.normal = normal;
+//       return std::optional<CollisionInfo2D>{ info };
+//     }
+//   }
+//   return std::nullopt;
+// };
 
 }; // namespace game2d

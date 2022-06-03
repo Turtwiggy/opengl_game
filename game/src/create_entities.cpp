@@ -5,7 +5,6 @@
 #include "components/cursor.hpp"
 #include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
-#include "helpers/physics_layers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
@@ -42,6 +41,10 @@ create_cursor(entt::registry& r)
   c.line_l = create_renderable(r, std::string("cursor_line_l"), colours.red);
   c.line_r = create_renderable(r, std::string("cursor_line_r"), colours.red);
   c.backdrop = create_renderable(r, std::string("cursor_backdrop"), colours.backdrop_red);
+  // physics
+  r.emplace<PhysicsActorComponent>(c.backdrop, GameCollisionLayer::ACTOR_CURSOR);
+  r.emplace<PhysicsSizeComponent>(c.backdrop, SPRITE_SIZE, SPRITE_SIZE);
+  r.emplace<VelocityComponent>(c.backdrop, 0.0f, 0.0f);
 
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, std::string("cursor_parent"));
@@ -66,7 +69,7 @@ create_player(entt::registry& r,
   r.emplace<SpriteTagComponent>(e, sprite);
   r.emplace<TextureComponent>(e, tex_unit_custom_spaceships);
   // physics
-  r.emplace<CollidableComponent>(e, static_cast<uint32_t>(GameCollisionLayer::ACTOR_PLAYER));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_UNIT);
   r.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
   r.emplace<VelocityComponent>(e, 0.0f, 0.0f);
   // gameplay

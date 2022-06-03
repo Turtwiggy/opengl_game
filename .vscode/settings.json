@@ -7,5 +7,8 @@
     "**/.git": true,
     "**/thirdparty": true
   },
+  "files.exclude": {
+    // "**/*.obb": true
+  },
   "cmake.preferredGenerators": ["Ninja"]
 }
