@@ -17,4 +17,7 @@ create_player(entt::registry& registry,
               const glm::vec4& start_colour,
               const glm::vec4& highlight_colour);
 
+void
+create_debug_square(entt::registry& registry);
+
 } // namespace game2d

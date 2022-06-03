@@ -53,6 +53,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
   auto r = registry.ctx<SINGLETON_ResourceComponent>();
 
   create_cursor(registry);
+  create_debug_square(registry);
 
   // army 0
   {

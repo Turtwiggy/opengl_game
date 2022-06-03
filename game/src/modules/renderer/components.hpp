@@ -120,9 +120,9 @@ struct SINGLETON_RendererInfo
   unsigned int tex_id_custom = 0;
   // viewport
   // note: values are updated in render
-  glm::vec2 viewport_size_render_at = { 0, 0 };
-  glm::vec2 viewport_size_current = { 0, 0 };
-  glm::vec2 viewport_pos = { 0, 0 };
+  glm::ivec2 viewport_size_render_at = { 0, 0 };
+  glm::ivec2 viewport_size_current = { 0, 0 };
+  glm::ivec2 viewport_pos = { 0, 0 };
   bool viewport_process_events = false;
 };
 

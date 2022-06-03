@@ -2,9 +2,9 @@
 
 namespace game2d {
 
-struct DestroyAfterTimeComponent
+struct DebugSquareComponent
 {
-  float time = 0.0f;
+  bool placeholder = true;
 };
 
 } // namespace game2d

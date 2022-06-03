@@ -3,6 +3,7 @@
 // my libs
 #include "components/app.hpp"
 #include "components/cursor.hpp"
+#include "components/debug.hpp"
 #include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
 #include "modules/physics/components.hpp"
@@ -83,5 +84,14 @@ create_player(entt::registry& r,
   // registry.emplace<PlayerInputComponent>(r, pic);
   // gameplay
 };
+
+void
+create_debug_square(entt::registry& registry)
+{
+  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
+  auto e = create_renderable(registry, std::string("debug_square"), colours.white);
+  // debug square
+  registry.emplace<DebugSquareComponent>(e);
+}
 
 } // namespace game2d
