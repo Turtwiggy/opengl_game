@@ -3,6 +3,7 @@
 
 // components
 #include "components/cursor.hpp"
+#include "modules/camera/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -31,17 +32,21 @@ update_renderable(entt::registry& r, const entt::entity& e, const int x, const i
 void
 game2d::update_cursor_system(entt::registry& registry, engine::Application& app)
 {
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
   const int CURSOR_SIZE = 16;
+
+  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& cameras = registry.view<CameraComponent, PositionIntComponent>();
+  const auto& main_camera = cameras.front();
+  const auto& main_camera_position = registry.get<PositionIntComponent>(main_camera);
+  const auto& camera_pos = glm::ivec2{ main_camera_position.x, main_camera_position.y };
+  glm::ivec2 imgui_mouse_pos = app.get_input().get_mouse_pos();
+  glm::ivec2 mouse_pos = imgui_mouse_pos - ri.viewport_pos;
+  glm::ivec2 mouse_pos_adjusted_in_worldspace = { mouse_pos.x + (camera_pos.x * -1),
+                                                  mouse_pos.y + (camera_pos.y * -1) };
 
   {
     const auto& view = registry.view<CursorComponent>();
-    view.each([&registry, &app, &ri, &CURSOR_SIZE](auto& c) {
-      glm::ivec2 imgui_mouse_pos = app.get_input().get_mouse_pos();
-      glm::vec2 imgui_viewport_tl = ri.viewport_pos;
-      glm::ivec2 mouse_pos = imgui_mouse_pos - glm::ivec2(imgui_viewport_tl.x, imgui_viewport_tl.y);
-      glm::vec2 mouse_pos_adjusted_in_worldspace = mouse_pos;
-
+    view.each([&registry, &app, &CURSOR_SIZE, &mouse_pos_adjusted_in_worldspace](auto& c) {
       //
       // Input...
       //

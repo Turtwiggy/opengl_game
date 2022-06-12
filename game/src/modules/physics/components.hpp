@@ -10,9 +10,12 @@ namespace game2d {
 enum class GameCollisionLayer
 {
   ACTOR_UNIT = 1,
-  ACTOR_CURSOR = 2,
-  ACTOR_PROJECTILE = 3,
-  SOLID_WALL = 4,
+  ACTOR_OBJECTIVE = 2,
+  ACTOR_CURSOR = 3,
+  ACTOR_PROJECTILE = 4,
+  SOLID_WALL = 5,
+
+  COUNT = 6,
 };
 
 struct PhysicsActorComponent

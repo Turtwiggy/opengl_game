@@ -2,33 +2,34 @@
 #include "game.hpp"
 
 // components
+#include "modules/camera/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
 // systems
+#include "modules/camera/system.hpp"
 #include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
+#include "modules/ui_game/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
 // gameplay
 #include "components/app.hpp"
+#include "components/objectives.hpp"
 #include "components/selectable.hpp"
 #include "create_entities.hpp"
 #include "systems/cursor.hpp"
+#include "systems/objectives.hpp"
 #include "systems/pathfinding.hpp"
 #include "systems/select_objects.hpp"
 #include "systems/select_objects_highlight.hpp"
 #include "systems/select_objects_move.hpp"
-// #include "systems/collisions_actor_actor.hpp"
-// #include "components/components.hpp"
-// #include "systems/destroy_after_time.hpp"
-// #include "systems/player_input.hpp"
 
 // engine headers
 #include "engine/app/io.hpp"
@@ -38,6 +39,11 @@
 #include <string>
 
 namespace game2d {
+
+// game config
+const glm::ivec2 battlefield_xy{ 800, 800 };
+const int objective_size = 250;
+const int demo_unit_offset = 100;
 
 void
 init_game_state(entt::registry& registry, engine::Application& app)
@@ -49,60 +55,120 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
 
-  const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
-  auto r = registry.ctx<SINGLETON_ResourceComponent>();
+  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
+  auto& r = registry.ctx<SINGLETON_ResourceComponent>();
+  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
+  const auto viewport_wh = ri.viewport_size_render_at;
+  const int camera_x = viewport_wh.x / 2 - battlefield_xy.x / 2;
+  const int camera_y = viewport_wh.y / 2 - battlefield_xy.y / 2;
+  create_camera(registry, camera_x, camera_y);
   create_cursor(registry);
-  create_debug_square(registry);
+  // create_debug_square(registry);
 
   // army 0
   {
-    int column_offset = 5;
-    int columns = 3;
-    int rows = 20;
-    int blank_line_every_x_rows = 10;
-    for (int i = 0; i < columns; i++) {
-      for (int j = 0; j < rows; j++) {
+    create_player(registry,
+                  100,                   // x
+                  200,                   // y
+                  50,                    // sx
+                  200,                   // sy
+                  std::string("UNIT 0"), // name
+                  std::string("EMPTY"),  // sprite
+                  colours.cyan,
+                  colours.dblue);
 
-        // skip a row
-        if (j % blank_line_every_x_rows == 0)
-          continue;
+    create_player(registry,
+                  200,                   // x
+                  400,                   // y
+                  50,                    // sx
+                  200,                   // sy
+                  std::string("UNIT 1"), // name
+                  std::string("EMPTY"),  // sprite
+                  colours.cyan,
+                  colours.dblue);
 
-        auto num = engine::rand_det_s(r.rnd.rng, 1, 3);
-        int random_1_or_2 = static_cast<int>(num);
-        create_player(registry,
-                      column_offset + i,
-                      j,
-                      std::string("DUDE_") + std::to_string(random_1_or_2),
-                      colours.cyan,
-                      colours.dblue);
-      }
-    }
+    create_player(registry,
+                  100,                   // x
+                  600,                   // y
+                  50,                    // sx
+                  200,                   // sy
+                  std::string("UNIT 2"), // name
+                  std::string("EMPTY"),  // sprite
+                  colours.cyan,
+                  colours.dblue);
   }
 
   // army 1
   {
-    int column_offset = 25;
-    int columns = 3;
-    int rows = 20;
-    int blank_line_every_x_rows = 10;
-    for (int i = 0; i < columns; i++) {
-      for (int j = 0; j < rows; j++) {
+    create_player(registry,
+                  battlefield_xy.x - 100, // x
+                  200,                    // y
+                  50,                     // sx
+                  200,                    // sy
+                  std::string("UNIT 3"),  // name
+                  std::string("EMPTY"),   // sprite
+                  colours.desat_red,
+                  colours.red);
 
-        // skip a row
-        if (j % blank_line_every_x_rows == 0)
-          continue;
+    create_player(registry,
+                  battlefield_xy.x - 200, // x
+                  400,                    // y
+                  50,                     // sx
+                  200,                    // sy
+                  std::string("UNIT 4"),  // name
+                  std::string("EMPTY"),   // sprite
+                  colours.desat_red,
+                  colours.red);
 
-        auto num = engine::rand_det_s(r.rnd.rng, 0, 3);
-        int random_value = static_cast<int>(num);
-        create_player(registry,
-                      column_offset + i,
-                      j,
-                      std::string("PET_") + std::to_string(random_value),
-                      colours.white,
-                      colours.red);
-      }
-    }
+    create_player(registry,
+                  battlefield_xy.x - 100, // x
+                  600,                    // y
+                  50,                     // sx
+                  200,                    // sy
+                  std::string("UNIT 5"),  // name
+                  std::string("EMPTY"),   // sprite
+                  colours.desat_red,
+                  colours.red);
+  }
+
+  // objectives
+  {
+
+    // tl
+    create_objective(registry,
+                     objective_size / 2.0f, // x
+                     objective_size / 2.0f, // y
+                     objective_size,        // sx
+                     objective_size,        // sy
+                     std::string("EMPTY")   // sprite
+    );
+    // bl
+    create_objective(registry,
+                     objective_size / 2.0f,                    // x
+                     battlefield_xy.y - objective_size / 2.0f, // y
+                     objective_size,                           // sx
+                     objective_size,                           // sy
+                     std::string("EMPTY")                      // sprite
+    );
+
+    // tr
+    create_objective(registry,
+                     battlefield_xy.x - objective_size / 2.0f, // x
+                     objective_size / 2.0f,                    // y
+                     objective_size,                           // sx
+                     objective_size,                           // sy
+                     std::string("EMPTY")                      // sprite
+    );
+
+    // br
+    create_objective(registry,
+                     battlefield_xy.x - objective_size / 2.0f, // x
+                     battlefield_xy.y - objective_size / 2.0f, // y
+                     objective_size,                           // sx
+                     objective_size,                           // sy
+                     std::string("EMPTY")                      // sprite
+    );
   }
 };
 
@@ -116,7 +182,7 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
   registry.set<Profiler>(Profiler());
   app.get_input().open_controllers(); // enable controllers
 
-  init_game_state(registry, app); // could be deleted and re-init at any time
+  init_game_state(registry, app); // this is bad
 };
 
 void
@@ -144,8 +210,9 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
 void
 game2d::update(entt::registry& registry, engine::Application& app, float dt)
 {
-  Profiler& p = registry.ctx<Profiler>();
-  SINGLETON_GamePausedComponent& gp = registry.ctx<SINGLETON_GamePausedComponent>();
+  auto& p = registry.ctx<Profiler>();
+  auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
+  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
   if (app.get_input().get_key_down(SDL_SCANCODE_P))
     gp.paused = !gp.paused;
@@ -155,6 +222,16 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     app.get_window().toggle_fullscreen();
   if (app.get_input().get_key_down(SDL_SCANCODE_ESCAPE))
     app.shutdown();
+  if (ri.viewport_size_render_at != ri.viewport_size_current) {
+    // viewport was updated
+    const auto& cameras = registry.view<CameraComponent, PositionIntComponent>();
+    const auto& main_camera = cameras.front();
+    auto& main_camera_position = registry.get<PositionIntComponent>(main_camera);
+    const int camera_x = ri.viewport_size_current.x / 2 - battlefield_xy.x / 2;
+    const int camera_y = ri.viewport_size_current.y / 2 - battlefield_xy.y / 2;
+    main_camera_position.x = camera_x;
+    main_camera_position.y = camera_y;
+  }
 
   // game logic
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
@@ -162,6 +239,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update
       {
+        update_objectives_system(registry, app);
         update_pathfinding_system(registry, app);
         update_cursor_system(registry, app);
         update_select_objects_system(registry, app);
@@ -171,7 +249,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
       // ... now systems that only update if viewport is focused
       {
-        const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
         if (ri.viewport_process_events) {
           // update_player_input_system(registry, app, dt);
 
@@ -189,12 +266,14 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   {
     update_sprite_tag_system(registry, app);
     update_render_system(registry, app);
+    update_camera_system(registry, app);
   };
   Uint64 end_render = SDL_GetPerformanceCounter();
   p.render_elapsed_ms = (end_render - start_render) / float(SDL_GetPerformanceFrequency()) * 1000.0f;
 
   // ui
   {
+    update_ui_game_system(registry, app);
     update_ui_physics_system(registry, app);
     update_ui_hierarchy_system(registry, app);
     update_ui_profiler_system(registry, app);

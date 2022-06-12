@@ -31,7 +31,7 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
       }
 
       const auto& selectable = registry.view<SelectableComponent>();
-      selectable.each([&c](auto entity, auto& selectable) {
+      selectable.each([&c](auto& selectable) {
         if (c.click) {
           // user clicked... remove all the old selected
           // (i.e. keep persistent until new click)

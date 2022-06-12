@@ -7,6 +7,7 @@
 #include "modules/renderer/helpers/helpers.hpp"
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
+#include "modules/camera/components.hpp"
 
 // engine headers
 #include "engine/app/io.hpp"
@@ -118,12 +119,11 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
 
 #ifdef _DEBUG
   // CHECK_OPENGL_ERROR(0);
-
   // DEBUG: hot reload shader
-  if (app.get_input().get_key_down(SDL_SCANCODE_T)) {
-    ri.instanced.reload();
-    rebind(ri.instanced, viewport_wh, ri);
-  }
+  // if (app.get_input().get_key_down(SDL_SCANCODE_T)) {
+  //   ri.instanced.reload();
+  //   rebind(ri.instanced, viewport_wh, ri);
+  // }
 #endif
 
   // Resize
@@ -162,19 +162,24 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
                                      const ColourComponent,
                                      const SpriteComponent,
                                      const TextureComponent>();
-    view.each(
-      [&registry, &ri, &desc](auto eid, const auto& p, const auto& s, const auto& c, const auto& sc, const auto& tex) {
-        float angle_radians = sc.offset;
-        if (registry.all_of<RenderAngleComponent>(eid))
-          angle_radians += registry.get<RenderAngleComponent>(eid).angle_radians;
-        desc.pos_tl = { p.x - int(s.w / 2.0f), p.y - int(s.h / 2.0f) };
-        desc.colour = c.colour;
-        desc.size = { s.w, s.h };
-        desc.tex_unit = tex.tex_unit;
-        desc.sprite_offset = { sc.x, sc.y };
-        desc.angle_radians = angle_radians;
-        quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
-      });
+
+    const auto& cameras = registry.view<const CameraComponent, const PositionIntComponent>();
+    const auto& main_camera = cameras.front();
+    const auto& main_camera_position = registry.get<PositionIntComponent>(main_camera);
+
+    view.each([&registry, &ri, &desc, &main_camera_position](
+                auto eid, const auto& p, const auto& s, const auto& c, const auto& sc, const auto& tex) {
+      float angle_radians = sc.offset;
+      if (registry.all_of<RenderAngleComponent>(eid))
+        angle_radians += registry.get<RenderAngleComponent>(eid).angle_radians;
+      desc.pos_tl = { main_camera_position.x + p.x - int(s.w / 2.0f), main_camera_position.y + p.y - int(s.h / 2.0f) };
+      desc.colour = c.colour;
+      desc.size = { s.w, s.h };
+      desc.tex_unit = tex.tex_unit;
+      desc.sprite_offset = { sc.x, sc.y };
+      desc.angle_radians = angle_radians;
+      quad_renderer::QuadRenderer::draw_sprite(desc, ri.instanced);
+    });
 
     quad_renderer::QuadRenderer::end_batch();
     quad_renderer::QuadRenderer::flush(ri.instanced);
