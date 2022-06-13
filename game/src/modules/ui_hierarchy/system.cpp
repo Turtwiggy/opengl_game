@@ -1,6 +1,8 @@
 #include "modules/ui_hierarchy/system.hpp"
 
 // components
+#include "components/hierarchy.hpp"
+#include "helpers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
@@ -16,42 +18,10 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
 
   ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   {
-    // List all entities...
-    registry.each([&registry, &d](auto entity) {
-      const std::string& tag = registry.get<TagComponent>(entity).tag;
-      const auto& eid = d.selected_entity;
-
-      ImGuiTreeNodeFlags flags = ((eid == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
-      flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
-      bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
-
-      if (ImGui::IsItemClicked())
-        d.selected_entity = entity;
-
-      // Right click on the dropdown entry to delete it
-      bool delete_entity = false;
-      if (ImGui::BeginPopupContextItem()) {
-        if (ImGui::MenuItem("Delete Entity")) {
-          delete_entity = true;
-        }
-        ImGui::EndPopup();
-      }
-
-      if (opened) {
-        // ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-        // bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-        // if (opened)
-        //   ImGui::TreePop();
-        ImGui::Text("a node");
-        ImGui::TreePop();
-      }
-
-      if (delete_entity && eid != entt::null) {
-        registry.destroy(eid);
-        if (eid == d.selected_entity) {
-          d.selected_entity = entt::null;
-        }
-      }
+    // List entities...
+    const auto& view = registry.view<TagComponent, EntityHierarchyComponent>();
+    view.each([&registry, &d](auto entity, const auto& tag, const auto& hierarchy) {
+      imgui_draw_entity(registry, tag.tag, entity, d.selected_entity);
     });
 
     // If select anywhere in the window, make entity unselected
@@ -69,127 +39,54 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
   }
   ImGui::End();
 
+  //
+  // If an entity is selected draw it's properties
+  //
+
   ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   if (d.selected_entity != entt::null) {
     const auto& eid = d.selected_entity;
 
-    // Display TagComponent
     if (registry.all_of<TagComponent>(eid)) {
       TagComponent& t = registry.get<TagComponent>(eid);
-
-      // Able to change the value of the tag component
-      char buffer[256];
-      memset(buffer, 0, sizeof(buffer));
-      strcpy_s(buffer, t.tag.c_str());
-
-      ImGui::Text("Tag: ");
-      ImGui::SameLine();
-      if (ImGui::InputText("##tagbox", buffer, sizeof(buffer)))
-        t.tag = std::string(buffer);
+      imgui_draw_string(registry, "Tag: ", t.tag);
     }
 
-    // Display PositionIntComponent
     if (registry.all_of<PositionIntComponent>(eid)) {
       PositionIntComponent& pi = registry.get<PositionIntComponent>(eid);
-      glm::ivec2 pos = { pi.x, pi.y };
-
-      ImGui::Text("Pos: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##position", glm::value_ptr(pos), 0.5f)) {
-        pi.x = pos.x;
-        pi.y = pos.y;
-      }
+      imgui_draw_ivec2(registry, "Pos: ", pi.x, pi.y);
     }
 
-    // Display RenderSizeComponent
     if (registry.all_of<RenderSizeComponent>(eid)) {
       RenderSizeComponent& sc = registry.get<RenderSizeComponent>(eid);
-
-      // Able to change the value of PositionInt component
-      glm::ivec2 size = { sc.w, sc.h };
-
-      ImGui::Text("Render Size: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##rendersize", glm::value_ptr(size), 0.5f)) {
-        sc.w = size.x;
-        sc.h = size.y;
-      }
+      imgui_draw_ivec2(registry, "Render Size: ", sc.w, sc.h);
     }
 
-    // Display RenderAngleComponent
     if (registry.all_of<RenderAngleComponent>(eid)) {
       RenderAngleComponent& ra = registry.get<RenderAngleComponent>(eid);
-
-      // Able to change the value of PositionInt component
-      float angle = ra.angle_radians;
-
-      ImGui::Text("Render Angle: ");
-      ImGui::SameLine();
-      if (ImGui::DragFloat("##renderangle", &angle, 0.5f)) {
-        ra.angle_radians = angle;
-      }
+      imgui_draw_float(registry, "Render Angle:", ra.angle_radians);
     }
 
-    // Display PhysicsSizeComponent
     if (registry.all_of<PhysicsSizeComponent>(eid)) {
       PhysicsSizeComponent& psc = registry.get<PhysicsSizeComponent>(eid);
-
-      // Able to change the value of PositionInt component
-      glm::ivec2 size = { psc.w, psc.h };
-
-      ImGui::Text("Physics Size: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##physicssize", glm::value_ptr(size), 0.5f)) {
-        psc.w = size.x;
-        psc.h = size.y;
-      }
+      imgui_draw_ivec2(registry, "Physics Size: ", psc.w, psc.h);
     }
 
-    // Display ColourComponent
     if (registry.all_of<ColourComponent>(eid)) {
       ColourComponent& c = registry.get<ColourComponent>(eid);
-
       ImGui::Text("Colour: ");
       ImGui::SameLine();
       ImGui::ColorEdit4("##colour", glm::value_ptr(c.colour));
     }
 
-    // Display VelocityComponent
     if (registry.all_of<VelocityComponent>(eid)) {
       VelocityComponent& c = registry.get<VelocityComponent>(eid);
-
-      // Able to change the value of PositionInt component
-      glm::ivec2 vel = { c.x, c.y };
-
-      ImGui::Text("Vel: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##velocity", glm::value_ptr(vel), 0.5f)) {
-        c.x = vel.x;
-        c.y = vel.y;
-      }
+      imgui_draw_vec2(registry, "Vel: ", c.x, c.y);
     }
 
-    // Display SpriteComponent
-    if (registry.all_of<SpriteComponent>(eid)) {
-      SpriteComponent& c = registry.get<SpriteComponent>(eid);
-
-      glm::ivec2 pos = { c.x, c.y };
-
-      ImGui::Text("Sprite: ");
-      ImGui::SameLine();
-      if (ImGui::DragInt2("##sprite", glm::value_ptr(pos), 0.5f)) {
-        c.x = pos.x;
-        c.y = pos.y;
-      }
-    }
-
-    // Display SpriteTagComponent
-    if (registry.all_of<SpriteTagComponent>(eid)) {
-      SpriteTagComponent& c = registry.get<SpriteTagComponent>(eid);
-
-      ImGui::Text("SpriteTag: ");
-      ImGui::SameLine();
-      ImGui::Text("%s", c.tag);
+    if (registry.all_of<SpriteSlotComponent>(eid)) {
+      SpriteSlotComponent& c = registry.get<SpriteSlotComponent>(eid);
+      imgui_draw_ivec2(registry, "Sprite: ", c.x, c.y);
     }
 
     // Add component

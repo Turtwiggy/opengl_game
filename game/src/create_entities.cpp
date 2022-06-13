@@ -4,6 +4,7 @@
 #include "components/app.hpp"
 #include "components/cursor.hpp"
 #include "components/debug.hpp"
+#include "components/hierarchy.hpp"
 #include "components/objectives.hpp"
 #include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
@@ -62,6 +63,15 @@ create_cursor(entt::registry& r)
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, std::string("cursor_parent"));
   r.emplace<CursorComponent>(e, c);
+
+  // update hierarchy view
+  std::vector<entt::entity> children;
+  children.push_back(c.line_u);
+  children.push_back(c.line_d);
+  children.push_back(c.line_l);
+  children.push_back(c.line_r);
+  children.push_back(c.backdrop);
+  r.emplace<EntityHierarchyComponent>(e, children);
 };
 
 void
@@ -71,6 +81,7 @@ create_objective(entt::registry& r, int x, int y, int size_x, int size_y, const 
 
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, "objective");
+  r.emplace<EntityHierarchyComponent>(e);
 
   // rendering
   r.emplace<ColourComponent>(e, colours.feint_white);
@@ -101,6 +112,7 @@ create_player(entt::registry& r,
 {
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
+  r.emplace<EntityHierarchyComponent>(e);
 
   // rendering
   r.emplace<ColourComponent>(e, start_colour);

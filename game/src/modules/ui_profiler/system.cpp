@@ -16,8 +16,10 @@
 void
 game2d::update_ui_profiler_system(entt::registry& registry, engine::Application& app)
 {
+#ifdef _DEBUG
   // bool show_imgui_demo_window = true;
   // ImGui::ShowDemoWindow(&show_imgui_demo_window);
+#endif
 
   Profiler& p = registry.ctx<Profiler>();
 
