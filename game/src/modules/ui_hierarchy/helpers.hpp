@@ -1,6 +1,6 @@
 #pragma once
 
-#include "components/hierarchy.hpp"
+#include "modules/ui_hierarchy/components.hpp"
 
 // other lib
 #include <entt/entt.hpp>
@@ -24,6 +24,6 @@ void
 imgui_draw_vec2(entt::registry& r, const std::string& label, float& x, float& y);
 
 void
-imgui_draw_entity(entt::registry& r, const std::string& label, const entt::entity& e, entt::entity& selected_e );
+imgui_draw_entity(entt::registry& r, const std::string& label, const entt::entity& e, entt::entity& selected_e);
 
 }; // namespace game2d

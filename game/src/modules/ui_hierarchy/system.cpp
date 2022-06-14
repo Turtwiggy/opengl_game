@@ -1,7 +1,6 @@
 #include "modules/ui_hierarchy/system.hpp"
 
 // components
-#include "components/hierarchy.hpp"
 #include "helpers.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
@@ -18,11 +17,9 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
 
   ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   {
-    // List entities...
-    const auto& view = registry.view<TagComponent, EntityHierarchyComponent>();
-    view.each([&registry, &d](auto entity, const auto& tag, const auto& hierarchy) {
-      imgui_draw_entity(registry, tag.tag, entity, d.selected_entity);
-    });
+    auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
+    const auto& tag = registry.get<TagComponent>(h.root).tag;
+    imgui_draw_entity(registry, tag, h.root, h.selected_entity);
 
     // If select anywhere in the window, make entity unselected
     if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())

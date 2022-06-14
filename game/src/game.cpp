@@ -24,6 +24,7 @@
 #include "components/objectives.hpp"
 #include "components/selectable.hpp"
 #include "create_entities.hpp"
+#include "modules/ui_hierarchy/components.hpp"
 #include "systems/cursor.hpp"
 #include "systems/objectives.hpp"
 #include "systems/pathfinding.hpp"
@@ -56,6 +57,12 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
 
+  // create hierarchy root node
+  auto& hi = registry.ctx<SINGLETON_HierarchyComponent>();
+  hi.root = registry.create();
+  registry.emplace<TagComponent>(hi.root, "root-node");
+  registry.emplace<EntityHierarchyComponent>(hi.root, hi.root);
+
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   auto& r = registry.ctx<SINGLETON_ResourceComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
@@ -74,15 +81,15 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
     int x = 100, y = 200, sx = 50, sy = 200;
     name = { "UNIT 0" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
 
     x = 200, y = 400, sx = 50, sy = 200;
     name = { "UNIT 1" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
 
     x = 100, y = 600, sx = 50, sy = 200;
     name = { "UNIT 2" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
   }
 
   // army 1
@@ -92,15 +99,15 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
     int x = battlefield_xy.x - 100, y = 200, sx = 50, sy = 200;
     name = { "UNIT 3" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
 
     x = battlefield_xy.x - 200, y = 400, sx = 50, sy = 200;
     name = { "UNIT 4" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
 
     x = battlefield_xy.x - 100, y = 600, sx = 50, sy = 200;
     name = { "UNIT 5" };
-    create_player(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
   }
 
   // objectives

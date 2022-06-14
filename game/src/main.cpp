@@ -24,7 +24,7 @@ static glm::ivec2 start_screen_wh = { 1366, 720 };
 static Application app("2D Game [0.0.8]", start_screen_wh.x, start_screen_wh.y, vsync);
 static entt::registry registry;
 
-// physics fixed tick
+// fixed tick
 static int FIXED_TICKS_PER_SECOND = 120;
 static float SECONDS_PER_FIXED_TICK = 1.0f / FIXED_TICKS_PER_SECOND;
 static float seconds_since_last_game_tick = 0.0f;
@@ -36,6 +36,7 @@ main_loop(void* arg)
 
   Uint64 frame_start_time = SDL_GetPerformanceCounter();
 
+  // TODO: resample input events in fixed update
   app.frame_begin(); // input events
 
   float delta_time_s = app.get_delta_time();
@@ -55,6 +56,7 @@ main_loop(void* arg)
   // const double alpha = seconds_since_last_game_tick / SECONDS_PER_FIXED_TICK;
   // state = current_state * alpha + previous_state * (1.0f - alpha );
 
+  // TODO: put rendering on thread?
   game2d::update(registry, app, delta_time_s);
 
   app.frame_end(frame_start_time);

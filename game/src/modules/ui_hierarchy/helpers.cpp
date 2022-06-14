@@ -64,7 +64,8 @@ game2d::imgui_draw_vec2(entt::registry& r, const std::string& label, float& x, f
 void
 game2d::imgui_draw_entity(entt::registry& r, const std::string& label, const entt::entity& e, entt::entity& selected_e)
 {
-  ImGuiTreeNodeFlags flags = ((selected_e == e) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+  ImGuiTreeNodeFlags flags = ((selected_e == e) ? ImGuiTreeNodeFlags_Selected : 0);
+  flags |= ImGuiTreeNodeFlags_OpenOnArrow;
   flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
   bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)e, flags, label.c_str());
 
@@ -94,28 +95,21 @@ game2d::imgui_draw_entity(entt::registry& r, const std::string& label, const ent
 
       if (payload_n != e) {
         // add payload to this hierarchy
-        if (r.all_of<EntityHierarchyComponent>(e)) {
-          auto& h = r.get<EntityHierarchyComponent>(e);
-          h.children.push_back(payload_n);
-        }
+        // if (r.all_of<EntityHierarchyComponent>(e)) {
+        //   auto& h = r.get<EntityHierarchyComponent>(e);
+        //   h.children.push_back(payload_n);
+        // }
       }
     }
     ImGui::EndDragDropTarget();
   }
 
-  if (delete_entity) {
+  if (delete_entity)
     std::cout << "TODO: implement delete entity..." << std::endl;
-  }
 
   if (opened) {
 
-    // The parent should have a entity hierarchy component
-    if (!r.all_of<EntityHierarchyComponent>(e)) {
-      ImGui::TreePop();
-      return;
-    }
     const auto& h = r.get<EntityHierarchyComponent>(e);
-
     for (const auto& child : h.children) {
       const auto& new_tag = r.get<TagComponent>(child).tag;
       imgui_draw_entity(r, new_tag, child, selected_e);
