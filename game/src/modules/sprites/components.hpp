@@ -24,7 +24,7 @@ struct SpriteTagComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(SpriteTagComponent, tag)
 };
 
-struct SpriteComponent
+struct SpriteSlotComponent
 {
   int x = 0;
   int y = 0;

@@ -2,12 +2,12 @@
 #include "modules/renderer/system.hpp"
 
 // components/systems
+#include "modules/camera/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/renderer/helpers/batch_quad.hpp"
 #include "modules/renderer/helpers/helpers.hpp"
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
-#include "modules/camera/components.hpp"
 
 // engine headers
 #include "engine/app/io.hpp"
@@ -160,7 +160,7 @@ game2d::update_render_system(entt::registry& registry, engine::Application& app)
     const auto& view = registry.view<const PositionIntComponent,
                                      const RenderSizeComponent,
                                      const ColourComponent,
-                                     const SpriteComponent,
+                                     const SpriteSlotComponent,
                                      const TextureComponent>();
 
     const auto& cameras = registry.view<const CameraComponent, const PositionIntComponent>();
