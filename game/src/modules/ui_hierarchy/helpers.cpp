@@ -2,6 +2,7 @@
 
 // my lib
 #include "modules/renderer/components.hpp"
+#include "modules/ui_hierarchy/components.hpp"
 
 // other lib
 #include <glm/glm.hpp>
@@ -9,7 +10,9 @@
 #include <imgui.h>
 
 // std lib
-#include <iostream>
+#include <algorithm>
+#include <stdio.h>
+#include <vector>
 
 void
 game2d::imgui_draw_string(entt::registry& r, const std::string& label, std::string& v)
@@ -87,25 +90,10 @@ game2d::imgui_draw_entity(entt::registry& r, const std::string& label, const ent
     ImGui::EndDragDropSource();
   }
 
-  if (ImGui::BeginDragDropTarget()) {
-    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DEMO")) {
-      IM_ASSERT(payload->DataSize == sizeof(entt::entity));
-      entt::entity payload_n = *(const entt::entity*)payload->Data;
-      std::cout << "received payload: " << static_cast<uint32_t>(payload_n) << std::endl;
-
-      if (payload_n != e) {
-        // add payload to this hierarchy
-        // if (r.all_of<EntityHierarchyComponent>(e)) {
-        //   auto& h = r.get<EntityHierarchyComponent>(e);
-        //   h.children.push_back(payload_n);
-        // }
-      }
-    }
-    ImGui::EndDragDropTarget();
-  }
+  drop_accept_entity(r, e);
 
   if (delete_entity)
-    std::cout << "TODO: implement delete entity..." << std::endl;
+    printf("todo: implement delete");
 
   if (opened) {
 
@@ -116,5 +104,37 @@ game2d::imgui_draw_entity(entt::registry& r, const std::string& label, const ent
     }
 
     ImGui::TreePop();
+  }
+}
+
+void
+game2d::drop_accept_entity(entt::registry& r, const entt::entity& e)
+{
+  if (ImGui::BeginDragDropTarget()) {
+    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DEMO")) {
+      IM_ASSERT(payload->DataSize == sizeof(entt::entity));
+      entt::entity payload_n = *(const entt::entity*)payload->Data;
+      // std::cout << "received payload: " << static_cast<uint32_t>(payload_n) << std::endl;
+
+      if (payload_n != e) { // payload entity isn't this entity
+
+        // iterate over all entity-hierarchy-components
+        // if any of them contained the payload n as a child, remove it
+        auto view = r.view<EntityHierarchyComponent>();
+        view.each([&payload_n](EntityHierarchyComponent& hierarchy) {
+          hierarchy.children.erase(std::remove(hierarchy.children.begin(), hierarchy.children.end(), payload_n),
+                                   hierarchy.children.end());
+        });
+
+        // add payload to this entity's hierarchy
+        auto& current_h = r.get<EntityHierarchyComponent>(e);
+        current_h.children.push_back(payload_n); // add as child
+
+        // set the parent for the payload entity's hierarchy
+        auto& old_h = r.get<EntityHierarchyComponent>(payload_n);
+        old_h.parent = e; // set new parent
+      }
+    }
+    ImGui::EndDragDropTarget();
   }
 }

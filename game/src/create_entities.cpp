@@ -23,9 +23,11 @@ const int SPRITE_SIZE = 32;
 void
 create_camera(entt::registry& r, int x, int y)
 {
+  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, "camera");
-  r.emplace<EntityHierarchyComponent>(e);
+  r.emplace<EntityHierarchyComponent>(e, h.root);
 
   // rendering
   r.emplace<PositionIntComponent>(e, x, y);
@@ -35,9 +37,11 @@ create_camera(entt::registry& r, int x, int y)
 entt::entity
 create_renderable(entt::registry& r, const std::string& name, const glm::vec4& colour)
 {
+  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
-  r.emplace<EntityHierarchyComponent>(e);
+  r.emplace<EntityHierarchyComponent>(e, h.root);
 
   // rendering
   r.emplace<PositionIntComponent>(e);
@@ -74,6 +78,7 @@ create_cursor(entt::registry& r)
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root);
   h_root.children.push_back(e); // cursor parent
+
   // hierarchy cursor-children
   EntityHierarchyComponent cursor_hierarchy;
   cursor_hierarchy.children.push_back(c.line_u);
@@ -81,7 +86,8 @@ create_cursor(entt::registry& r)
   cursor_hierarchy.children.push_back(c.line_l);
   cursor_hierarchy.children.push_back(c.line_r);
   cursor_hierarchy.children.push_back(c.backdrop);
-  r.emplace<EntityHierarchyComponent>(e);
+  cursor_hierarchy.parent = h.root;
+  r.emplace<EntityHierarchyComponent>(e, cursor_hierarchy);
 };
 
 void
@@ -94,7 +100,7 @@ create_objective(entt::registry& r, int x, int y, int size_x, int size_y, const 
   entt::entity e = r.create();
   h_root.children.push_back(e);
   r.emplace<TagComponent>(e, "objective");
-  r.emplace<EntityHierarchyComponent>(e);
+  r.emplace<EntityHierarchyComponent>(e, h.root);
 
   // rendering
   r.emplace<ColourComponent>(e, colours.feint_white);
@@ -129,7 +135,7 @@ create_unit(entt::registry& r,
   entt::entity e = r.create();
   h_root.children.push_back(e);
   r.emplace<TagComponent>(e, name);
-  r.emplace<EntityHierarchyComponent>(e);
+  r.emplace<EntityHierarchyComponent>(e, h.root);
 
   // rendering
   r.emplace<ColourComponent>(e, start_colour);

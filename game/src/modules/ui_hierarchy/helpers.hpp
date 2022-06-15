@@ -26,4 +26,7 @@ imgui_draw_vec2(entt::registry& r, const std::string& label, float& x, float& y)
 void
 imgui_draw_entity(entt::registry& r, const std::string& label, const entt::entity& e, entt::entity& selected_e);
 
+void
+drop_accept_entity(entt::registry& r, const entt::entity& e);
+
 }; // namespace game2d

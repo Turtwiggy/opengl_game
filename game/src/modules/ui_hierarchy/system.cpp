@@ -9,6 +9,7 @@
 // other lib headers
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
+#include <iostream>
 
 void
 game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application& app)
@@ -18,8 +19,16 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
   ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   {
     auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
-    const auto& tag = registry.get<TagComponent>(h.root).tag;
-    imgui_draw_entity(registry, tag, h.root, h.selected_entity);
+
+    // let root hierarchy entity be dropped on
+    drop_accept_entity(registry, h.root);
+
+    // skip showing the root node, go to children
+    const auto& hroot = registry.get<EntityHierarchyComponent>(h.root);
+    for (const auto& child : hroot.children) {
+      const auto& tag = registry.get<TagComponent>(child).tag;
+      imgui_draw_entity(registry, tag, child, h.selected_entity);
+    }
 
     // If select anywhere in the window, make entity unselected
     if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
