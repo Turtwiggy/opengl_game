@@ -3,6 +3,7 @@
 // game
 // #include "modules/game_combat"
 #include "components/app.hpp"
+#include "components/units.hpp"
 #include "create_entities.hpp"
 
 // other lib headers
@@ -15,11 +16,10 @@ game2d::update_ui_game_system(entt::registry& registry, engine::Application& app
 {
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 
-  ImGui::Begin("Game");
-  ImGui::Text("Hello");
+  ImGui::Begin("Game", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
 
   if (ImGui::Button("Create Unit")) {
-    std::cout << "creating unit..!" << std::endl;
+    std::cout << "todo: create unit" << std::endl;
 
     // ..!
     // create_player(registry,

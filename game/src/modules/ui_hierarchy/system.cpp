@@ -1,15 +1,15 @@
 #include "modules/ui_hierarchy/system.hpp"
 
 // components
-#include "helpers.hpp"
+#include "create_entities.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
+#include "modules/ui_hierarchy/helpers.hpp"
 
 // other lib headers
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
-#include <iostream>
 
 void
 game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application& app)
@@ -36,10 +36,8 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
 
     // Right click on menu
     if (ImGui::BeginPopupContextWindow(0, 1, false)) {
-      if (ImGui::MenuItem("Create Entity")) {
-        entt::entity r = registry.create();
-        registry.emplace<TagComponent>(r, std::string("Empty Entity"));
-      }
+      if (ImGui::MenuItem("Create Entity"))
+        create_empty(registry);
       ImGui::EndPopup();
     }
   }

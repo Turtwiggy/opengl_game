@@ -12,20 +12,22 @@ game2d::render_texture_to_imgui_viewport(const int& tex_unit)
   static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
   ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
+  window_flags |= ImGuiWindowFlags_NoFocusOnAppearing;
 
-  if (opt_fullscreen) {
-    const ImGuiViewport* viewport = ImGui::GetMainViewport();
-    ImGui::SetNextWindowPos(viewport->WorkPos);
-    ImGui::SetNextWindowSize(viewport->WorkSize);
-    ImGui::SetNextWindowViewport(viewport->ID);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    window_flags |=
-      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-  } else {
-    dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
-  }
+  // if (opt_fullscreen) {
+  const ImGuiViewport* viewport = ImGui::GetMainViewport();
+  ImGui::SetNextWindowPos(viewport->WorkPos);
+  ImGui::SetNextWindowSize(viewport->WorkSize);
+  ImGui::SetNextWindowViewport(viewport->ID);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+  window_flags |=
+    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+  window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+  // }
+  // else {
+  //   dockspace_flags &= ~ImGuiDockNodeFlags_PassthruCentralNode;
+  // }
   if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
     window_flags |= ImGuiWindowFlags_NoBackground;
 

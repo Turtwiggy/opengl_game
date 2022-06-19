@@ -23,6 +23,7 @@
 #include "components/app.hpp"
 #include "components/objectives.hpp"
 #include "components/selectable.hpp"
+#include "components/units.hpp"
 #include "create_entities.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "systems/cursor.hpp"
@@ -31,6 +32,7 @@
 #include "systems/select_objects.hpp"
 #include "systems/select_objects_highlight.hpp"
 #include "systems/select_objects_move.hpp"
+#include "systems/unit_group_position_units.hpp"
 
 // engine headers
 #include "engine/app/io.hpp"
@@ -74,22 +76,33 @@ init_game_state(entt::registry& registry, engine::Application& app)
   create_cursor(registry);
   // create_debug_square(registry);
 
+  // input
+  // PlayerInputComponent pic;
+  // pic.use_keyboard = true;
+  // registry.emplace<PlayerInputComponent>(r, pic);
+
   // army 0
   {
     std::string sprite{ "EMPTY" };
     std::string name;
 
     int x = 100, y = 200, sx = 50, sy = 200;
-    name = { "UNIT 0" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    name = { "UNIT GROUP 0" };
+    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.backdrop_red, colours.red);
+    auto& u = registry.get<UnitGroupComponent>(e).units;
+    u.push_back(create_unit(registry, e, "unit 1", colours.cyan));
+    u.push_back(create_unit(registry, e, "unit 2", colours.cyan));
+    u.push_back(create_unit(registry, e, "unit 3", colours.cyan));
+    u.push_back(create_unit(registry, e, "unit 4", colours.cyan));
+    u.push_back(create_unit(registry, e, "unit 5", colours.cyan));
 
     x = 200, y = 400, sx = 50, sy = 200;
-    name = { "UNIT 1" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    name = { "UNIT GROUP 1" };
+    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
 
     x = 100, y = 600, sx = 50, sy = 200;
-    name = { "UNIT 2" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    name = { "UNIT GROUP 2" };
+    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
   }
 
   // army 1
@@ -98,16 +111,16 @@ init_game_state(entt::registry& registry, engine::Application& app)
     std::string name;
 
     int x = battlefield_xy.x - 100, y = 200, sx = 50, sy = 200;
-    name = { "UNIT 3" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    name = { "UNIT GROUP 3" };
+    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
 
     x = battlefield_xy.x - 200, y = 400, sx = 50, sy = 200;
-    name = { "UNIT 4" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    name = { "UNIT GROUP 4" };
+    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
 
     x = battlefield_xy.x - 100, y = 600, sx = 50, sy = 200;
-    name = { "UNIT 5" };
-    create_unit(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
+    name = { "UNIT GROUP 5" };
+    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
   }
 
   // objectives
@@ -203,21 +216,17 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       // ... systems that always update
       {
         update_objectives_system(registry, app);
-        update_pathfinding_system(registry, app);
         update_cursor_system(registry, app);
+        update_pathfinding_system(registry, app);
         update_select_objects_system(registry, app);
         update_select_objects_highlight_system(registry, app);
-        update_select_objects_move_system(registry, app, dt);
+        update_select_objects_move_system(registry, app);
+        update_unit_group_position_units_system(registry, app, dt);
       }
 
-      // ... now systems that only update if viewport is focused
+      // ... systems that update if viewport is focused
       {
         if (ri.viewport_process_events) {
-          // update_player_input_system(registry, app, dt);
-
-          // last thing to do for gametick: destroy any entities
-          // update_destroy_after_time_system(registry, app, dt);
-
           update_camera_system(registry, app);
         }
       }

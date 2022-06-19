@@ -9,6 +9,6 @@
 namespace game2d {
 
 void
-update_select_objects_move_system(entt::registry& registry, engine::Application& app);
+update_unit_group_position_units_system(entt::registry& registry, engine::Application& app, float dt);
 
 } // namespace game2d

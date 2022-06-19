@@ -55,11 +55,11 @@ game2d::update_select_objects_system(entt::registry& registry, engine::Applicati
         entt::entity e1_unit = entt::null;
 
         // Collisions are bi-directional, but only one collision exists
-        if (e0_layer_id == GameCollisionLayer::ACTOR_UNIT && e1_layer_id == GameCollisionLayer::ACTOR_CURSOR) {
+        if (e0_layer_id == GameCollisionLayer::ACTOR_UNIT_GROUP && e1_layer_id == GameCollisionLayer::ACTOR_CURSOR) {
           e0_cursor = e1_id;
           e1_unit = e0_id;
         }
-        if (e0_layer_id == GameCollisionLayer::ACTOR_CURSOR && e1_layer_id == GameCollisionLayer::ACTOR_UNIT) {
+        if (e0_layer_id == GameCollisionLayer::ACTOR_CURSOR && e1_layer_id == GameCollisionLayer::ACTOR_UNIT_GROUP) {
           e0_cursor = e0_id;
           e1_unit = e1_id;
         }

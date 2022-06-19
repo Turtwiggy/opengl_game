@@ -1,12 +1,16 @@
 #pragma once
 
-#include <entt/entt.hpp>
+// other lib
+#include "entt/entt.hpp"
+
+// std lib
+#include <vector>
 
 namespace game2d {
 
-struct UnitComponent
+struct UnitGroupComponent
 {
-  bool placeholder = true;
+  std::vector<entt::entity> units;
 };
 
 }; // namespace game2d

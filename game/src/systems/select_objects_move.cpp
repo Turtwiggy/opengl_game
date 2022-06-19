@@ -14,7 +14,7 @@
 #include "engine/maths/maths.hpp"
 
 void
-game2d::update_select_objects_move_system(entt::registry& registry, engine::Application& app, const float dt)
+game2d::update_select_objects_move_system(entt::registry& registry, engine::Application& app)
 {
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   auto& rnd = registry.ctx<SINGLETON_ResourceComponent>();
