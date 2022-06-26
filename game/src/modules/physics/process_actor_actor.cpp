@@ -22,12 +22,12 @@ game2d::update_actor_actor_system(entt::registry& registry, engine::Application&
   std::vector<PhysicsObject> actors;
   {
     const auto& entt_actors =
-      registry.view<const PositionIntComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
+      registry.view<const TransformComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
     PhysicsObject po;
-    entt_actors.each([&actors, &po](const auto entity, const auto& pos, const auto& size, const auto& actor) {
+    entt_actors.each([&actors, &po](const auto entity, const auto& transform, const auto& size, const auto& actor) {
       po.ent_id = static_cast<uint32_t>(entity);
-      po.x_tl = static_cast<int>(pos.x - glm::abs(size.w) / 2.0f);
-      po.y_tl = static_cast<int>(pos.y - glm::abs(size.h) / 2.0f);
+      po.x_tl = static_cast<int>(transform.position.x - glm::abs(size.w) / 2.0f);
+      po.y_tl = static_cast<int>(transform.position.y - glm::abs(size.h) / 2.0f);
       po.w = glm::abs(size.w);
       po.h = glm::abs(size.h);
 

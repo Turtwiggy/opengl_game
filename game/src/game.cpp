@@ -3,13 +3,15 @@
 
 // components
 #include "modules/camera/components.hpp"
+#include "modules/input/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
-// systems
+// system modules
 #include "modules/camera/system.hpp"
+#include "modules/input/system.hpp"
 #include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
@@ -19,12 +21,17 @@
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
-// gameplay
+// game helpers
+#include "create_entities.hpp"
+#include "modules/camera/helpers.hpp"
+
+// game modules
 #include "components/app.hpp"
 #include "components/objectives.hpp"
 #include "components/selectable.hpp"
 #include "components/units.hpp"
-#include "create_entities.hpp"
+#include "game_modules/turn_system/components.hpp"
+#include "game_modules/turn_system/system.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "systems/cursor.hpp"
 #include "systems/objectives.hpp"
@@ -47,7 +54,6 @@ namespace game2d {
 // game config
 const static glm::ivec2 battlefield_xy{ 800, 800 };
 const static int objective_size = 250;
-const static int demo_unit_offset = 100;
 
 void
 init_game_state(entt::registry& registry, engine::Application& app)
@@ -58,12 +64,14 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_ResourceComponent>(SINGLETON_ResourceComponent());
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
+  registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
+  registry.set<SINGLETON_InputComponent>(SINGLETON_InputComponent());
 
   // create hierarchy root node
   auto& hi = registry.ctx<SINGLETON_HierarchyComponent>();
-  hi.root = registry.create();
-  registry.emplace<TagComponent>(hi.root, "root-node");
-  registry.emplace<EntityHierarchyComponent>(hi.root, hi.root);
+  hi.root_node = registry.create();
+  registry.emplace<TagComponent>(hi.root_node, "root-node");
+  registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
 
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   auto& r = registry.ctx<SINGLETON_ResourceComponent>();
@@ -76,74 +84,25 @@ init_game_state(entt::registry& registry, engine::Application& app)
   create_cursor(registry);
   // create_debug_square(registry);
 
-  // input
-  // PlayerInputComponent pic;
-  // pic.use_keyboard = true;
-  // registry.emplace<PlayerInputComponent>(r, pic);
-
   // army 0
   {
     std::string sprite{ "EMPTY" };
     std::string name;
 
-    int x = 100, y = 200, sx = 50, sy = 200;
+    int x = 100, y = 200, sx = 100, sy = 100;
     name = { "UNIT GROUP 0" };
-    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.backdrop_red, colours.red);
+    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
     auto& u = registry.get<UnitGroupComponent>(e).units;
-    u.push_back(create_unit(registry, e, "unit 1", colours.cyan));
-    u.push_back(create_unit(registry, e, "unit 2", colours.cyan));
-    u.push_back(create_unit(registry, e, "unit 3", colours.cyan));
-    u.push_back(create_unit(registry, e, "unit 4", colours.cyan));
-    u.push_back(create_unit(registry, e, "unit 5", colours.cyan));
-
-    x = 200, y = 400, sx = 50, sy = 200;
-    name = { "UNIT GROUP 1" };
-    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
-
-    x = 100, y = 600, sx = 50, sy = 200;
-    name = { "UNIT GROUP 2" };
-    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    u.push_back(create_unit(registry, e, "unit 1", colours.player_unit));
   }
 
-  // army 1
-  {
-    std::string sprite{ "EMPTY" };
-    std::string name;
-
-    int x = battlefield_xy.x - 100, y = 200, sx = 50, sy = 200;
-    name = { "UNIT GROUP 3" };
-    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
-
-    x = battlefield_xy.x - 200, y = 400, sx = 50, sy = 200;
-    name = { "UNIT GROUP 4" };
-    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
-
-    x = battlefield_xy.x - 100, y = 600, sx = 50, sy = 200;
-    name = { "UNIT GROUP 5" };
-    e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.desat_red, colours.red);
-  }
-
-  // objectives
-  {
-    std::string sprite{ "EMPTY" };
-
-    // tl
-    int x = objective_size / 2.0f, y = objective_size / 2.0f, sx = objective_size, sy = objective_size;
-    create_objective(registry, x, y, sx, sy, sprite);
-
-    // bl
-    x = objective_size / 2.0f, y = battlefield_xy.y - objective_size / 2.0f, sx = objective_size, sy = objective_size;
-    create_objective(registry, x, y, sx, sy, sprite);
-
-    // tr
-    x = battlefield_xy.x - objective_size / 2.0f, y = objective_size / 2.0f, sx = objective_size, sy = objective_size;
-    create_objective(registry, x, y, sx, sy, sprite);
-
-    // br
-    x = battlefield_xy.x - objective_size / 2.0f, y = battlefield_xy.y - objective_size / 2.0f, sx = objective_size,
-    sy = objective_size;
-    create_objective(registry, x, y, sx, sy, sprite);
-  }
+  // // objectives
+  // {
+  //   std::string sprite{ "EMPTY" };
+  //   // tl
+  //   int x = objective_size / 2.0f, y = objective_size / 2.0f, sx = objective_size, sy = objective_size;
+  //   create_objective(registry, x, y, sx, sy, sprite)
+  // }
 };
 
 } // namespace game2d
@@ -165,10 +124,26 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   Profiler& p = registry.ctx<Profiler>();
   SINGLETON_GamePausedComponent& gp = registry.ctx<SINGLETON_GamePausedComponent>();
 
+#ifdef _DEBUG
+  // static int fixed_frame = 0;
+  // if (!app.get_input().get_key_down(SDL_SCANCODE_RETURN))
+  //   return; // must press return to go forward a fixed update frame
+  // fixed_frame += 1;
+
+  // if (fixed_frame == 10) {
+  //   const auto& ugs = registry.view<UnitGroupComponent>();
+  //   auto ug = ugs.front();
+  //   auto& transform = registry.get<TransformComponent>(ug);
+  //   std::cout << "position on fixed frame 10: " << transform.position.x << " " << transform.position.y << std::endl;
+  // }
+#endif
+
   // physics
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
+      // update the input also in fixedupdate
+      update_input_system(registry, app);
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
       // generate all collisions between actor-actor objects
@@ -200,13 +175,11 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     app.shutdown();
   if (ri.viewport_size_render_at != ri.viewport_size_current) {
     // viewport was updated, recenter the camera on the battlefield
-    const auto& cameras = registry.view<CameraComponent, PositionIntComponent>();
-    const auto& main_camera = cameras.front();
-    auto& main_camera_position = registry.get<PositionIntComponent>(main_camera);
-    const int camera_x = ri.viewport_size_current.x / 2 - battlefield_xy.x / 2;
-    const int camera_y = ri.viewport_size_current.y / 2 - battlefield_xy.y / 2;
-    main_camera_position.x = camera_x;
-    main_camera_position.y = camera_y;
+    const auto& main_camera = get_main_camera(registry);
+    auto& transform = registry.get<TransformComponent>(main_camera);
+    auto camera_position = ri.viewport_size_current / 2 - battlefield_xy / 2;
+    transform.position.x = camera_position.x;
+    transform.position.y = camera_position.y;
   }
 
   // game logic
@@ -215,19 +188,22 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update
       {
-        update_objectives_system(registry, app);
-        update_cursor_system(registry, app);
-        update_pathfinding_system(registry, app);
-        update_select_objects_system(registry, app);
-        update_select_objects_highlight_system(registry, app);
-        update_select_objects_move_system(registry, app);
-        update_unit_group_position_units_system(registry, app, dt);
+        // update the input in update
+        update_input_system(registry, app);
+        update_cursor_system(registry);
+        update_objectives_system(registry);
+        update_pathfinding_system(registry);
+        update_select_objects_system(registry);
+        update_select_objects_highlight_system(registry);
+        update_select_objects_move_system(registry);
+        update_unit_group_position_units_system(registry);
+        update_turn_system(registry);
       }
 
       // ... systems that update if viewport is focused
       {
         if (ri.viewport_process_events) {
-          update_camera_system(registry, app);
+          update_camera_system(registry);
         }
       }
     }

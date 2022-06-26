@@ -6,7 +6,7 @@
 #include "modules/renderer/components.hpp"
 
 void
-game2d::update_select_objects_highlight_system(entt::registry& registry, engine::Application& app)
+game2d::update_select_objects_highlight_system(entt::registry& registry)
 {
   const auto& view = registry.view<SelectableComponent, HighlightComponent, ColourComponent>();
   view.each([](auto entity, const auto& s, const auto& highlight, auto& colour) {

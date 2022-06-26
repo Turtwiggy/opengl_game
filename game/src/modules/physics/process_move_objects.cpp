@@ -29,32 +29,32 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
   // and solids dont overlap with solids
 
   const auto& solids = registry.view<const VelocityComponent,
-                                     const PositionIntComponent,
+                                     const TransformComponent,
                                      const PhysicsSizeComponent,
                                      const PhysicsSolidComponent>();
 
   const auto& actors =
     registry
-      .view<const VelocityComponent, PositionIntComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
+      .view<const VelocityComponent, TransformComponent, const PhysicsSizeComponent, const PhysicsActorComponent>();
 
   // move actors, but stop at solids
-  actors.each([&solids, &dt](const auto& vel, auto& pos, const auto size, const auto& actor) {
-    pos.dx += vel.x * dt;
-    pos.dy += vel.y * dt;
+  actors.each([&solids, &dt](const auto& vel, auto& transform, const auto size, const auto& actor) {
+    transform.position_dxdy.x += vel.x * dt;
+    transform.position_dxdy.y += vel.y * dt;
 
     constexpr auto Sign = [](int x) { return x == 0 ? 0 : (x > 0 ? 1 : -1); };
 
     // x-axis
-    int move_x = static_cast<int>(pos.dx);
+    int move_x = static_cast<int>(transform.position_dxdy.x);
     if (move_x != 0) {
-      pos.dx -= move_x;
+      transform.position_dxdy.x -= move_x;
       int sign = Sign(move_x);
       while (move_x != 0) {
         //     aabb.x_tl = static_cast<int>(pos.x - (size.w / 2.0f));
         //     aabb.y_tl = static_cast<int>(pos.y - (size.h / 2.0f));
         // if(!collides(solids, pos.x + new vector2(sign, 0)))
         {
-          pos.x += sign;
+          transform.position.x += sign;
           move_x -= sign;
         }
         // else // hit a solid
@@ -65,14 +65,14 @@ game2d::update_move_objects_system(entt::registry& registry, engine::Application
     }
 
     // y-axis
-    int move_y = static_cast<int>(pos.dy);
+    int move_y = static_cast<int>(transform.position_dxdy.y);
     if (move_y != 0) {
-      pos.dy -= move_y;
+      transform.position_dxdy.y -= move_y;
       int sign = Sign(move_y);
       while (move_y != 0) {
         // while no solids collision...
         {
-          pos.y += sign;
+          transform.position.y += sign;
           move_y -= sign;
         }
         // else // hit a solid

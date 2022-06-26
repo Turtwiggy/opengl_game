@@ -25,7 +25,7 @@ static Application app("2D Game [0.0.8]", start_screen_wh.x, start_screen_wh.y, 
 static entt::registry registry;
 
 // fixed tick
-static int FIXED_TICKS_PER_SECOND = 120;
+static int FIXED_TICKS_PER_SECOND = 60;
 static float SECONDS_PER_FIXED_TICK = 1.0f / FIXED_TICKS_PER_SECOND;
 static float seconds_since_last_game_tick = 0.0f;
 
@@ -36,8 +36,7 @@ main_loop(void* arg)
 
   Uint64 frame_start_time = SDL_GetPerformanceCounter();
 
-  // TODO: resample input events in fixed update
-  app.frame_begin(); // input events
+  app.frame_begin();
 
   float delta_time_s = app.get_delta_time();
   if (delta_time_s > 0.25f)
@@ -49,12 +48,17 @@ main_loop(void* arg)
   while (seconds_since_last_game_tick >= SECONDS_PER_FIXED_TICK) {
     seconds_since_last_game_tick -= SECONDS_PER_FIXED_TICK;
 
+    // resample input events in fixed update
+    app.poll_input();
+
     game2d::fixed_update(registry, app, SECONDS_PER_FIXED_TICK);
   }
 
   // Implement this if stuttering?
   // const double alpha = seconds_since_last_game_tick / SECONDS_PER_FIXED_TICK;
   // state = current_state * alpha + previous_state * (1.0f - alpha );
+
+  app.poll_input();
 
   // TODO: put rendering on thread?
   game2d::update(registry, app, delta_time_s);
