@@ -6,6 +6,6 @@
 namespace game2d {
 
 void
-update_unit_group_position_units_system(entt::registry& registry);
+update_turn_system(entt::registry& registry);
 
 } // namespace game2d

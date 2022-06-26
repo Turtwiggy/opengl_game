@@ -29,4 +29,7 @@ imgui_draw_entity(entt::registry& r, const std::string& label, const entt::entit
 void
 drop_accept_entity(entt::registry& r, const entt::entity& e);
 
+void
+add_child(EntityHierarchyComponent& parent, EntityHierarchyComponent& child);
+
 }; // namespace game2d

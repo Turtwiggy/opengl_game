@@ -11,9 +11,34 @@
 
 // other
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <nlohmann/json.hpp>
 
 namespace game2d {
+
+struct TagComponent
+{
+  std::string tag;
+
+  NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
+};
+
+struct TransformComponent
+{
+  glm::ivec3 position{ 0, 0, 0 };
+  glm::vec3 position_dxdy{ 0.0f, 0.0f, 0.0f };
+
+  glm::vec3 rotation = { 0, 0, 0 };
+
+  glm::ivec3 scale{ 0, 0, 0 };
+  glm::vec3 scale_dxdy{ 0.0f, 0.0f, 0.0f };
+
+  // quat(glm::vec3(90, 45, 0))
+  // gtx::quaternion::angleAxis(degrees(RotationAngle), RotationAxis);
+  // glm::quaternion::toMat4(quaternion);
+  // mat4 RotationMatrix = quaternion::toMat4(quaternion);
+  // mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
+};
 
 struct ColourComponent
 {
@@ -45,62 +70,12 @@ struct ColourComponent
   NLOHMANN_DEFINE_TYPE_INTRUSIVE(ColourComponent, colour.x, colour.y, colour.z, colour.a)
 };
 
-struct PositionIntComponent
-{
-  int x = 0;
-  int y = 0;
-  float dx = 0.0f; // amount to move in the x and y dirs
-  float dy = 0.0f;
-
-  PositionIntComponent() = default;
-  PositionIntComponent(int x, int y)
-    : x(x)
-    , y(y){};
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(PositionIntComponent, x, y, dx, dy)
-};
-
-struct RenderSizeComponent
-{
-  int w = 0;
-  int h = 0;
-  float dw = 0.0f;
-  float dh = 0.0f;
-
-  RenderSizeComponent() = default;
-  RenderSizeComponent(int w, int h)
-    : w(w)
-    , h(h){};
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderSizeComponent, w, h, dw, dh)
-};
-
-struct RenderAngleComponent
-{
-  float angle_radians = 0.0f;
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(RenderAngleComponent, angle_radians)
-};
-
 struct TextureComponent
 {
   int tex_unit = 100;
 
   // do not serialize
 };
-
-struct TagComponent
-{
-  std::string tag;
-
-  NLOHMANN_DEFINE_TYPE_INTRUSIVE(TagComponent, tag)
-};
-
-// texture constants
-const int tex_unit_main_scene = 0;
-const int tex_unit_lighting = 1;
-const int tex_unit_kenny_nl = 2;
-const int tex_unit_custom_spaceships = 3;
 
 // Attributes only updated by renderer system, read by anything.
 struct SINGLETON_RendererInfo
@@ -113,7 +88,12 @@ struct SINGLETON_RendererInfo
   // shaders
   engine::Shader instanced;
   engine::Shader fan;
-  // textures
+  // texture unit (slot on gpu)
+  const int tex_unit_main_scene = 0;
+  const int tex_unit_lighting = 1;
+  const int tex_unit_kenny_nl = 2;
+  const int tex_unit_custom_spaceships = 3;
+  // texture ids (id after bound)
   unsigned int tex_id_main_scene = 0;
   unsigned int tex_id_lighting = 0;
   unsigned int tex_id_kenny = 0;

@@ -20,7 +20,7 @@ struct EntityHierarchyComponent
 struct SINGLETON_HierarchyComponent
 {
   entt::entity selected_entity = entt::null;
-  entt::entity root = entt::null;
+  entt::entity root_node = entt::null;
 };
 
 } // namespace game2d

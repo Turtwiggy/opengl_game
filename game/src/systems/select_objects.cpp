@@ -4,6 +4,8 @@
 // components
 #include "components/cursor.hpp"
 #include "components/selectable.hpp"
+#include "modules/input/components.hpp"
+#include "modules/input/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
@@ -15,24 +17,24 @@
 #include <vector>
 
 void
-game2d::update_select_objects_system(entt::registry& registry, engine::Application& app)
+game2d::update_select_objects_system(entt::registry& registry)
 {
   // .. get the list of all collisions
   const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
-
+  const auto& input = registry.ctx<SINGLETON_InputComponent>();
   {
     const auto& view = registry.view<CursorComponent>();
-    view.each([&registry, &p](auto entity, auto& c) {
+    view.each([&registry, &p, &input](auto entity, auto& c) {
       //... for each cursor ...
 
-      if (!c.click && !c.held) {
+      if (!get_mouse_lmb_press() && !get_mouse_lmb_held()) {
         // user is not holding...
         return;
       }
 
       const auto& selectable = registry.view<SelectableComponent>();
-      selectable.each([&c](auto& selectable) {
-        if (c.click) {
+      selectable.each([&input](auto& selectable) {
+        if (get_mouse_lmb_press()) {
           // user clicked... remove all the old selected
           // (i.e. keep persistent until new click)
           selectable.is_selected = false;

@@ -9,7 +9,7 @@
 // std libs
 
 void
-game2d::update_objectives_system(entt::registry& registry, engine::Application& app)
+game2d::update_objectives_system(entt::registry& registry)
 {
   const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
   const float OBJECTIVE_FADE = 0.5f;

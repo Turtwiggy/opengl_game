@@ -16,13 +16,6 @@ struct CursorComponent
   entt::entity line_l = entt::null;
   entt::entity line_r = entt::null;
   entt::entity backdrop = entt::null;
-
-  bool click = false;
-  bool held = false;
-  bool release = false;
-  glm::ivec2 mouse_click = glm::ivec2(0);
-  glm::ivec2 mouse_held = glm::ivec2(0);
-  glm::ivec2 mouse_wh = glm::ivec2(0);
 };
 
 } // namespace game2d

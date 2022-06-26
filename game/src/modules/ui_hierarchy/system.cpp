@@ -21,10 +21,10 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
     auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
 
     // let root hierarchy entity be dropped on
-    drop_accept_entity(registry, h.root);
+    drop_accept_entity(registry, h.root_node);
 
     // skip showing the root node, go to children
-    const auto& hroot = registry.get<EntityHierarchyComponent>(h.root);
+    const auto& hroot = registry.get<EntityHierarchyComponent>(h.root_node);
     for (const auto& child : hroot.children) {
       const auto& tag = registry.get<TagComponent>(child).tag;
       imgui_draw_entity(registry, tag, child, h.selected_entity);
@@ -56,19 +56,11 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       imgui_draw_string(registry, "Tag: ", t.tag);
     }
 
-    if (registry.all_of<PositionIntComponent>(eid)) {
-      PositionIntComponent& pi = registry.get<PositionIntComponent>(eid);
-      imgui_draw_ivec2(registry, "Pos: ", pi.x, pi.y);
-    }
-
-    if (registry.all_of<RenderSizeComponent>(eid)) {
-      RenderSizeComponent& sc = registry.get<RenderSizeComponent>(eid);
-      imgui_draw_ivec2(registry, "Render Size: ", sc.w, sc.h);
-    }
-
-    if (registry.all_of<RenderAngleComponent>(eid)) {
-      RenderAngleComponent& ra = registry.get<RenderAngleComponent>(eid);
-      imgui_draw_float(registry, "Render Angle:", ra.angle_radians);
+    if (registry.all_of<TransformComponent>(eid)) {
+      auto& transform = registry.get<TransformComponent>(eid);
+      imgui_draw_ivec2(registry, "Pos: ", transform.position.x, transform.position.y);
+      imgui_draw_ivec2(registry, "Render Size: ", transform.scale.x, transform.scale.y);
+      imgui_draw_float(registry, "Render Angle:", transform.rotation.z);
     }
 
     if (registry.all_of<PhysicsSizeComponent>(eid)) {
