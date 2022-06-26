@@ -5,6 +5,7 @@
 #include "components/cursor.hpp"
 #include "components/selectable.hpp"
 #include "modules/input/components.hpp"
+#include "modules/input/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/physics/helpers.hpp"
 #include "modules/renderer/components.hpp"
@@ -26,14 +27,14 @@ game2d::update_select_objects_system(entt::registry& registry)
     view.each([&registry, &p, &input](auto entity, auto& c) {
       //... for each cursor ...
 
-      if (!input.cursor_click && !input.cursor_held) {
+      if (!get_mouse_lmb_press() && !get_mouse_lmb_held()) {
         // user is not holding...
         return;
       }
 
       const auto& selectable = registry.view<SelectableComponent>();
       selectable.each([&input](auto& selectable) {
-        if (input.cursor_click) {
+        if (get_mouse_lmb_press()) {
           // user clicked... remove all the old selected
           // (i.e. keep persistent until new click)
           selectable.is_selected = false;

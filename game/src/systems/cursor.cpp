@@ -5,7 +5,7 @@
 #include "components/cursor.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/input/components.hpp"
-#include "modules/input/mouse.hpp"
+#include "modules/input/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -40,10 +40,10 @@ game2d::update_cursor_system(entt::registry& registry)
       //
       // Rendering...
       //
-      int x_offset = input.mouse_wh.x;
-      int x_offset_half = input.mouse_wh.x / 2.0f;
-      int y_offset = input.mouse_wh.y;
-      int y_offset_half = input.mouse_wh.y / 2.0f;
+      int x_offset = input.mouse_drag_boundingbox.x;
+      int x_offset_half = input.mouse_drag_boundingbox.x / 2.0f;
+      int y_offset = input.mouse_drag_boundingbox.y;
+      int y_offset_half = input.mouse_drag_boundingbox.y / 2.0f;
 
       int tx = 0;
       int ty = 0;
@@ -53,8 +53,8 @@ game2d::update_cursor_system(entt::registry& registry)
       int ly = 0;
       int rx = 0;
       int ry = 0;
-      if (input.cursor_click || input.cursor_held || input.cursor_release) {
-        // draw a cursor from the top left point
+      if (get_mouse_lmb_press() || get_mouse_lmb_held() || get_mouse_lmb_release()) {
+        // draw a cursor from the clicked point as the top left
         tx = input.mouse_click.x + x_offset_half;
         ty = input.mouse_click.y;
         bx = input.mouse_click.x + x_offset_half;
@@ -64,7 +64,7 @@ game2d::update_cursor_system(entt::registry& registry)
         rx = input.mouse_click.x + x_offset;
         ry = input.mouse_click.y + y_offset_half;
       } else {
-        // draw a cursor around a center point
+        // draw a cursor around the cursor as the center point
         tx = input.mouse_position_in_worldspace.x;
         ty = input.mouse_position_in_worldspace.y - y_offset_half;
         bx = input.mouse_position_in_worldspace.x;
@@ -74,14 +74,14 @@ game2d::update_cursor_system(entt::registry& registry)
         rx = input.mouse_position_in_worldspace.x + x_offset_half;
         ry = input.mouse_position_in_worldspace.y;
       }
-      update_renderable(registry, c.line_u, tx, ty, input.mouse_wh.x, 1);
-      update_renderable(registry, c.line_d, bx, by, input.mouse_wh.x, 1);
-      update_renderable(registry, c.line_l, lx, ly, 1, input.mouse_wh.y);
-      update_renderable(registry, c.line_r, rx, ry, 1, input.mouse_wh.y);
-      update_renderable(registry, c.backdrop, tx, ly, input.mouse_wh.x, input.mouse_wh.y);
+      update_renderable(registry, c.line_u, tx, ty, input.mouse_drag_boundingbox.x, 1);
+      update_renderable(registry, c.line_d, bx, by, input.mouse_drag_boundingbox.x, 1);
+      update_renderable(registry, c.line_l, lx, ly, 1, input.mouse_drag_boundingbox.y);
+      update_renderable(registry, c.line_r, rx, ry, 1, input.mouse_drag_boundingbox.y);
+      update_renderable(registry, c.backdrop, tx, ly, input.mouse_drag_boundingbox.x, input.mouse_drag_boundingbox.y);
       auto& ps = registry.get<PhysicsSizeComponent>(c.backdrop);
-      ps.w = input.mouse_wh.x;
-      ps.h = input.mouse_wh.y;
+      ps.w = input.mouse_drag_boundingbox.x;
+      ps.h = input.mouse_drag_boundingbox.y;
     });
   }
 };

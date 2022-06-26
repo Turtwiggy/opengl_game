@@ -8,7 +8,7 @@
 #include "components/selectable.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/input/components.hpp"
-#include "modules/input/mouse.hpp"
+#include "modules/input/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -45,7 +45,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
   //
   entt::entity random_chosen_entity_parent = entt::null;
 
-  if (app.get_input().get_mouse_rmb_press()) {
+  if (get_mouse_rmb_press()) {
 
     const auto& selectable =
       registry.view<const SelectableComponent, const TransformComponent, VelocityComponent, DestinationComponent>();

@@ -48,17 +48,12 @@ main_loop(void* arg)
   while (seconds_since_last_game_tick >= SECONDS_PER_FIXED_TICK) {
     seconds_since_last_game_tick -= SECONDS_PER_FIXED_TICK;
 
-    // resample input events in fixed update
-    app.poll_input();
-
     game2d::fixed_update(registry, app, SECONDS_PER_FIXED_TICK);
   }
 
   // Implement this if stuttering?
   // const double alpha = seconds_since_last_game_tick / SECONDS_PER_FIXED_TICK;
   // state = current_state * alpha + previous_state * (1.0f - alpha );
-
-  app.poll_input();
 
   // TODO: put rendering on thread?
   game2d::update(registry, app, delta_time_s);

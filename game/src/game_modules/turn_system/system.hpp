@@ -6,6 +6,6 @@
 namespace game2d {
 
 void
-update_turn_system(entt::registry& registry;
+update_turn_system(entt::registry& registry);
 
 } // namespace game2d

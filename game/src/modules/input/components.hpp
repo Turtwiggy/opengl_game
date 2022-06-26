@@ -14,16 +14,12 @@ namespace game2d {
 
 struct SINGLETON_InputComponent
 {
-  bool cursor_click = false;
-  bool cursor_held = false;
-  bool cursor_release = false;
+  const int CURSOR_SIZE = 16;
   glm::ivec2 mouse_position_in_worldspace = glm::ivec2(0);
-  glm::ivec2 mouse_click = glm::ivec2(0);
-  glm::ivec2 mouse_held = glm::ivec2(0);
-  glm::ivec2 mouse_wh = glm::ivec2(0);
+  glm::ivec2 mouse_drag_boundingbox = glm::ivec2(0);
+  glm::ivec2 mouse_click;
 
-  // frame
-  uint64_t frame = 0;
+  std::vector<SDL_Event> sdl_events;
 
   // keyboard state
   const Uint8* state;
@@ -31,10 +27,10 @@ struct SINGLETON_InputComponent
   std::vector<SDL_Scancode> keys_released;
 
   // connected controllers
-  std::vector<SDL_GameController*> controllers;
+  // std::vector<SDL_GameController*> controllers;
 
   // joystick-id, to frame-button associaton
-  std::map<SDL_JoystickID, std::vector<std::pair<uint64_t, Uint8>>> controller_buttons_pressed;
+  // std::map<SDL_JoystickID, std::vector<std::pair<uint64_t, Uint8>>> controller_buttons_pressed;
 };
 
 // struct PlayerKeyboardComponent

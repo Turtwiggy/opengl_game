@@ -13,7 +13,7 @@ void
 game2d::update_pathfinding_system(entt::registry& registry)
 {
   const auto& view = registry.view<const TransformComponent, DestinationComponent, VelocityComponent>();
-  view.each([&app, &registry](const auto& transform, auto& destination, auto& vel) {
+  view.each([&registry](const auto& transform, auto& destination, auto& vel) {
     //
     // Stop object if at or past destination
     bool at_x = destination.xy.x == transform.position.x;

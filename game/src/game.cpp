@@ -24,6 +24,7 @@
 // game helpers
 #include "create_entities.hpp"
 #include "modules/camera/helpers.hpp"
+#include "modules/input/helpers/keyboard.hpp"
 
 // game modules
 #include "components/app.hpp"
@@ -113,7 +114,7 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
   // init once only
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());
-  app.get_input().open_controllers(); // enable controllers
+  // open_controllers(); // enable controllers
 
   init_game_state(registry, app);
 };
@@ -126,7 +127,7 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
 
 #ifdef _DEBUG
   // static int fixed_frame = 0;
-  // if (!app.get_input().get_key_down(SDL_SCANCODE_RETURN))
+  // if (!get_key_down(SDL_SCANCODE_RETURN))
   //   return; // must press return to go forward a fixed update frame
   // fixed_frame += 1;
 
@@ -142,8 +143,7 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
-      // update the input also in fixedupdate
-      update_input_system(registry, app);
+      update_input_system(registry, app); // in update and fixedupdate
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
       // generate all collisions between actor-actor objects
@@ -163,16 +163,17 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
-  if (ri.viewport_process_events) {
-    if (app.get_input().get_key_down(SDL_SCANCODE_P))
-      gp.paused = !gp.paused;
-    if (app.get_input().get_key_down(SDL_SCANCODE_R))
-      init_game_state(registry, app);
-    if (app.get_input().get_key_down(SDL_SCANCODE_F))
-      app.get_window().toggle_fullscreen();
-  }
-  if (app.get_input().get_key_down(SDL_SCANCODE_ESCAPE))
-    app.shutdown();
+  // if (ri.viewport_process_events) {
+  //   if (get_key_down(SDL_SCANCODE_P))
+  //     gp.paused = !gp.paused;
+  //   if (get_key_down(SDL_SCANCODE_R))
+  //     init_game_state(registry, app);
+  //   if (get_key_down(SDL_SCANCODE_F))
+  //     app.get_window().toggle_fullscreen();
+  // }
+  // if (get_key_down(SDL_SCANCODE_ESCAPE))
+  //   app.shutdown();
+
   if (ri.viewport_size_render_at != ri.viewport_size_current) {
     // viewport was updated, recenter the camera on the battlefield
     const auto& main_camera = get_main_camera(registry);
@@ -188,8 +189,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update
       {
-        // update the input in update
-        update_input_system(registry, app);
+        update_input_system(registry, app); // in update and fixedupdate
         update_cursor_system(registry);
         update_objectives_system(registry);
         update_pathfinding_system(registry);
