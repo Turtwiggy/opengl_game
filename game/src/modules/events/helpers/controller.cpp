@@ -1,5 +1,5 @@
 // header
-#include "modules/input/helpers/controller.hpp"
+#include "modules/events/helpers/controller.hpp"
 
 namespace game2d {
 

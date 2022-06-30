@@ -15,8 +15,8 @@ game2d::update_objectives_system(entt::registry& registry)
   const float OBJECTIVE_FADE = 0.5f;
 
   {
-    const auto& view = registry.view<const ObjectiveComponent, ColourComponent, const HighlightComponent>();
-    view.each([&p, &registry, &OBJECTIVE_FADE](auto entity, const auto& obj, auto& colour, const auto& highlight) {
+    const auto& view = registry.view<const ObjectiveComponent, const HighlightComponent>();
+    view.each([&p, &registry, &OBJECTIVE_FADE](const auto& obj, const auto& highlight) {
       //
       // Now check physics systems for objective-unit collisions
 
@@ -48,15 +48,15 @@ game2d::update_objectives_system(entt::registry& registry)
         }
       }
 
-      if (e0_objective != entt::null && e1_unit != entt::null) {
-        if (registry.all_of<HighlightComponent>(e1_unit)) {
-          // change the colour of this objective to the colour of the unit occupying it
-          const auto unit_colour = registry.get<HighlightComponent>(e1_unit).start_colour;
-          colour.colour = unit_colour * OBJECTIVE_FADE;
-        } else {
-          colour.colour = highlight.start_colour;
-        }
-      }
+      // if (e0_objective != entt::null && e1_unit != entt::null) {
+      //   if (registry.all_of<HighlightComponent>(e1_unit)) {
+      //     // change the colour of this objective to the colour of the unit occupying it
+      //     const auto unit_colour = registry.get<HighlightComponent>(e1_unit).start_colour;
+      //     colour.colour = unit_colour * OBJECTIVE_FADE;
+      //   } else {
+      //     colour.colour = highlight.start_colour;
+      //   }
+      // }
     });
   }
 };

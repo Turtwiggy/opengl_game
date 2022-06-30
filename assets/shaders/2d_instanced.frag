@@ -6,7 +6,8 @@ in vec4 v_colour;
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-uniform sampler2D textures[4];
+uniform sampler2D textures[32];
+
 const int texture_unit_kenny = 2;
 const int texture_unit_spaceships = 3;
 

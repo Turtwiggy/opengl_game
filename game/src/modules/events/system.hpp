@@ -9,6 +9,9 @@
 namespace game2d {
 
 void
-update_cycle_sprite_system(entt::registry& registry, engine::Application& app);
+init_input_system(entt::registry& registry);
+
+void
+update_input_system(entt::registry& registry, engine::Application& app);
 
 } // namespace game2d

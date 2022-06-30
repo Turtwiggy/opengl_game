@@ -8,44 +8,44 @@ spritesheet:
   ny: 8
 sprites:
   - name: EMPTY
-    x: 0
-    y: 0
+    frames:
+      - [0, 0]
   - name: SHIP_1
-    x: 1
-    y: 0
+    frames:
+      - [1, 0]
   - name: SHIP_2
-    x: 2
-    y: 0
+    frames:
+      - [2, 0]
   - name: SHIP_3
-    x: 3
-    y: 0
+    frames:
+      - [3, 0]
   - name: SHIP_4
-    x: 4
-    y: 0
+    frames:
+      - [4, 0]
   - name: SHIP_5
-    x: 5
-    y: 0
+    frames:
+      - [5, 0]
   - name: SHIP_6
-    x: 6
-    y: 0
+    frames:
+      - [6, 0]
   - name: SHIP_7
-    x: 7
-    y: 0
+    frames:
+      - [7, 0]
   - name: DUDE_1
-    x: 0
-    y: 5
+    frames:
+      - [0, 5]
   - name: FLAG_0
-    x: 1
-    y: 5
+    frames:
+      - [1, 5]
   - name: DUDE_2
-    x: 2
-    y: 5
+    frames:
+      - [2, 5]
   - name: PET_0
-    x: 0
-    y: 7
+    frames:
+      - [0, 7]
   - name: PET_1
-    x: 1
-    y: 7
+    frames:
+      - [1, 7]
   - name: PET_2
-    x: 2
-    y: 7
+    frames:
+      - [2, 7]

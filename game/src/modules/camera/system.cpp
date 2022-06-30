@@ -4,8 +4,8 @@
 // components/systems
 #include "modules/camera/components.hpp"
 #include "modules/camera/helpers.hpp"
-#include "modules/input/components.hpp"
-#include "modules/input/helpers/keyboard.hpp"
+#include "modules/events/components.hpp"
+#include "modules/events/helpers/keyboard.hpp"
 #include "modules/renderer/components.hpp"
 
 namespace game2d {

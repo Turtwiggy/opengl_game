@@ -14,14 +14,16 @@ namespace game2d {
 
 struct SINGLETON_InputComponent
 {
+  // all sdl events
+  std::vector<SDL_Event> sdl_events;
+
+  // mouse
   const int CURSOR_SIZE = 16;
   glm::ivec2 mouse_position_in_worldspace = glm::ivec2(0);
   glm::ivec2 mouse_drag_boundingbox = glm::ivec2(0);
   glm::ivec2 mouse_click;
 
-  std::vector<SDL_Event> sdl_events;
-
-  // keyboard state
+  // keyboard
   const Uint8* state;
   std::vector<SDL_Scancode> keys_pressed;
   std::vector<SDL_Scancode> keys_released;

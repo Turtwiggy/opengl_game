@@ -12,6 +12,7 @@
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
+#include "modules/sprites/helpers.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 
 // std libs
@@ -53,7 +54,7 @@ create_camera(entt::registry& r, int x, int y)
 entt::entity
 create_renderable(entt::registry& r, const entt::entity& parent, const std::string& name, const glm::vec4& colour)
 {
-  const auto& ri = r.ctx<SINGLETON_RendererInfo>();
+  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
 
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
@@ -63,14 +64,18 @@ create_renderable(entt::registry& r, const entt::entity& parent, const std::stri
   parent_hierarchy.children.push_back(e);
   r.emplace<EntityHierarchyComponent>(e, parent);
 
-  // rendering
   TransformComponent transform;
   transform.scale.x = SPRITE_SIZE;
   transform.scale.y = SPRITE_SIZE;
   r.emplace<TransformComponent>(e, transform);
-  r.emplace<ColourComponent>(e, colour);
-  r.emplace<SpriteTagComponent>(e, "EMPTY");
-  r.emplace<TextureComponent>(e, ri.tex_unit_kenny_nl);
+
+  SpriteComponent sprite;
+  sprite.colour = colour;
+  sprite.tex_unit = si.tex_unit_kenny_nl;
+  sprite.x = 0;
+  sprite.y = 0;
+  r.emplace<SpriteComponent>(e, sprite);
+
   return e;
 }
 
@@ -104,12 +109,12 @@ create_cursor(entt::registry& r)
 };
 
 void
-create_objective(entt::registry& r, int x, int y, int size_x, int size_y, const std::string& sprite)
+create_objective(entt::registry& r, int x, int y, int size_x, int size_y)
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
   const auto colours = r.ctx<SINGLETON_ColoursComponent>();
-  const auto& ri = r.ctx<SINGLETON_RendererInfo>();
+  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
 
   entt::entity e = r.create();
   h_root.children.push_back(e);
@@ -124,9 +129,12 @@ create_objective(entt::registry& r, int x, int y, int size_x, int size_y, const 
   transform.scale.y = size_y;
   transform.rotation.z = 0.0f;
   r.emplace<TransformComponent>(e, transform);
-  r.emplace<ColourComponent>(e, colours.feint_white);
-  r.emplace<SpriteTagComponent>(e, sprite);
-  r.emplace<TextureComponent>(e, ri.tex_unit_custom_spaceships);
+  SpriteComponent sprite;
+  sprite.colour = colours.feint_white;
+  sprite.tex_unit = si.tex_unit_custom_spaceships;
+  sprite.x = 0;
+  sprite.y = 0;
+  r.emplace<SpriteComponent>(e, sprite);
   // physics
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_OBJECTIVE);
   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
@@ -143,13 +151,12 @@ create_unit_group(entt::registry& r,
                   int size_x,
                   int size_y,
                   const std::string& name,
-                  const std::string& sprite,
                   const glm::vec4& start_colour,
                   const glm::vec4& highlight_colour)
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-  const auto& ri = r.ctx<SINGLETON_RendererInfo>();
+  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
 
   entt::entity e = r.create();
   h_root.children.push_back(e);
@@ -164,9 +171,12 @@ create_unit_group(entt::registry& r,
   transform.scale.y = size_y;
   transform.rotation.z = 0.0f;
   r.emplace<TransformComponent>(e, transform);
-  r.emplace<ColourComponent>(e, start_colour);
-  r.emplace<SpriteTagComponent>(e, sprite);
-  r.emplace<TextureComponent>(e, ri.tex_unit_custom_spaceships);
+  SpriteComponent sprite;
+  sprite.colour = start_colour;
+  sprite.tex_unit = si.tex_unit_custom_spaceships;
+  sprite.x = 0;
+  sprite.y = 0;
+  r.emplace<SpriteComponent>(e, sprite);
   // physics
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_UNIT_GROUP);
   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
@@ -184,7 +194,19 @@ entt::entity
 create_unit(entt::registry& registry, const entt::entity& parent, const std::string& name, const glm::vec4& colour)
 {
   auto e = create_renderable(registry, parent, name, colour);
+  const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
 
+  // animation
+  SpriteAnimationComponent sac;
+  sac.animations.push_back(find_animation(si.animations, "down_idle"));
+  sac.animations.push_back(find_animation(si.animations, "down_walk_cycle"));
+  sac.animations.push_back(find_animation(si.animations, "up_idle"));
+  sac.animations.push_back(find_animation(si.animations, "up_walk_cycle"));
+  sac.animations.push_back(find_animation(si.animations, "left_idle"));
+  sac.animations.push_back(find_animation(si.animations, "left_walk_cycle"));
+  sac.animations.push_back(find_animation(si.animations, "right_idle"));
+  sac.animations.push_back(find_animation(si.animations, "right_walk_cycle"));
+  registry.emplace<SpriteAnimationComponent>(e, sac);
   // physics
   registry.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_U);
   registry.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);

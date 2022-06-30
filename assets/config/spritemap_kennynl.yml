@@ -8,203 +8,203 @@ spritesheet:
   ny: 22
 sprites:
   - name: EMPTY
-    x: 0
-    y: 0
+    frames:
+      - [0, 0]
   - name: BUSH_0
-    x: 1
-    y: 0
+    frames:
+      - [1, 0]
   - name: BUSH_1
-    x: 2
-    y: 0
+    frames:
+      - [2, 0]
   - name: BUSH_2
-    x: 3
-    y: 0
+    frames:
+      - [3, 0]
   - name: BUSH_3
-    x: 4
-    y: 0
+    frames:
+      - [4, 0]
   - name: BUSH_4
-    x: 5
-    y: 0
+    frames:
+      - [5, 0]
   - name: BUSH_5
-    x: 6
-    y: 0
+    frames:
+      - [6, 0]
   - name: BUSH_6
-    x: 7
-    y: 0
+    frames:
+      - [7, 0]
   - name: PERSON_0
-    x: 24
-    y: 0
+    frames:
+      - [24, 0]
   - name: PERSON_1
-    x: 25
-    y: 0
+    frames:
+      - [25, 0]
   - name: PERSON_2
-    x: 26
-    y: 0
+    frames:
+      - [26, 0]
   - name: PERSON_3
-    x: 27
-    y: 0
+    frames:
+      - [27, 0]
   - name: PERSON_4
-    x: 28
-    y: 0
+    frames:
+      - [28, 0]
   - name: PERSON_5
-    x: 29
-    y: 0
+    frames:
+      - [29, 0]
   - name: PERSON_6
-    x: 30
-    y: 0
+    frames:
+      - [30, 0]
   - name: PERSON_7
-    x: 31
-    y: 0
+    frames:
+      - [31, 0]
   - name: TREE_1
-    x: 0
-    y: 1
+    frames:
+      - [0, 1]
   - name: TREE_2
-    x: 1
-    y: 1
+    frames:
+      - [1, 1]
   - name: TREE_3
-    x: 2
-    y: 1
+    frames:
+      - [2, 1]
   - name: TREE_4
-    x: 3
-    y: 1
+    frames:
+      - [3, 1]
   - name: TREE_5
-    x: 4
-    y: 1
+    frames:
+      - [4, 1]
   - name: TREE_6
-    x: 5
-    y: 1
+    frames:
+      - [5, 1]
   - name: TREE_7
-    x: 6
-    y: 1
+    frames:
+      - [6, 1]
   - name: TREE_8
-    x: 7
-    y: 1
+    frames:
+      - [7, 1]
   - name: CASTLE_FLOOR
-    x: 19
-    y: 1
+    frames:
+      - [19, 1]
   - name: WALL_BIG
-    x: 2
-    y: 3
+    frames:
+      - [2, 3]
   - name: WEAPON_ARROW_1
-    x: 40
-    y: 5
+    frames:
+      - [40, 5]
     angle: -45.0
   - name: WEAPON_ARROW_2
-    x: 41
-    y: 5
+    frames:
+      - [41, 5]
     angle: -45.0
   - name: WEAPON_SHOVEL
-    x: 42
-    y: 5
+    frames:
+      - [42, 5]
     angle: -45.0
   - name: WEAPON_PICKAXE
-    x: 42
-    y: 5
+    frames:
+      - [42, 5]
     angle: -30.0
   - name: ORC
-    x: 30
-    y: 6
+    frames:
+      - [30, 6]
   - name: WEAPON_DAGGER_OUTLINED_1
-    x: 32
-    y: 6
+    frames:
+      - [32, 6]
     angle: -45.0
   - name: WEAPON_DAGGER_SOLID_3
-    x: 34
-    y: 6
+    frames:
+      - [34, 6]
     angle: -45.0
   - name: WEAPON_PISTOL
-    x: 37
-    y: 9
+    frames:
+      - [37, 9]
   - name: WEAPON_RAY_PISTOL
-    x: 38
-    y: 9
+    frames:
+      - [38, 9]
   - name: WEAPON_SHOTGUN
-    x: 39
-    y: 9
+    frames:
+      - [39, 9]
   - name: WEAPON_SUB_MACHINE_GUN
-    x: 40
-    y: 9
+    frames:
+      - [40, 9]
   - name: WEAPON_MINI_UZI
-    x: 41
-    y: 9
+    frames:
+      - [41, 9]
   - name: WEAPON_MP5
-    x: 42
-    y: 9
+    frames:
+      - [42, 9]
   - name: WEAPON_RPG
-    x: 43
-    y: 9
+    frames:
+      - [43, 9]
   - name: AMMO_BOX
-    x: 44
-    y: 9
+    frames:
+      - [44, 9]
   - name: CAMPFIRE
-    x: 14
-    y: 10
+    frames:
+      - [14, 10]
   - name: FIRE
-    x: 15
-    y: 10
+    frames:
+      - [15, 10]
   - name: ICON_HEART
-    x: 39
-    y: 10
+    frames:
+      - [39, 10]
   - name: ICON_HEART_OUTLINE
-    x: 40
-    y: 10
+    frames:
+      - [40, 10]
   - name: ICON_HEART_HALF_FULL
-    x: 41
-    y: 10
+    frames:
+      - [41, 10]
   - name: ICON_HEART_FULL
-    x: 42
-    y: 10
+    frames:
+      - [42, 10]
   - name: SKULL_AND_BONES
-    x: 0
-    y: 15
+    frames:
+      - [0, 15]
   - name: NUMBER_0
-    x: 35
-    y: 17
+    frames:
+      - [35, 17]
   - name: NUMBER_1
-    x: 36
-    y: 17
+    frames:
+      - [36, 17]
   - name: NUMBER_2
-    x: 37
-    y: 17
+    frames:
+      - [37, 17]
   - name: NUMBER_3
-    x: 38
-    y: 17
+    frames:
+      - [38, 17]
   - name: NUMBER_4
-    x: 39
-    y: 17
+    frames:
+      - [39, 17]
   - name: NUMBER_5
-    x: 40
-    y: 17
+    frames:
+      - [40, 17]
   - name: NUMBER_6
-    x: 41
-    y: 17
+    frames:
+      - [41, 17]
   - name: NUMBER_7
-    x: 42
-    y: 17
+    frames:
+      - [42, 17]
   - name: NUMBER_8
-    x: 43
-    y: 17
+    frames:
+      - [43, 17]
   - name: NUMBER_9
-    x: 44
-    y: 17
+    frames:
+      - [44, 17]
   - name: BOAT
-    x: 10
-    y: 19
+    frames:
+      - [10, 19]
   - name: SPACE_VEHICLE_1
-    x: 12
-    y: 21
+    frames:
+      - [12, 21]
   - name: SPACE_VEHICLE_2
-    x: 13
-    y: 21
+    frames:
+      - [13, 21]
   - name: SPACE_VEHICLE_3
-    x: 14
-    y: 21
+    frames:
+      - [14, 21]
   - name: FIREWORK
-    x: 32
-    y: 21
+    frames:
+      - [32, 21]
   - name: ROCKET_1
-    x: 33
-    y: 21
+    frames:
+      - [33, 21]
   - name: ROCKET_2
-    x: 34
-    y: 21
+    frames:
+      - [34, 21]

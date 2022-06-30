@@ -3,7 +3,7 @@
 
 // components
 #include "modules/camera/components.hpp"
-#include "modules/input/components.hpp"
+#include "modules/events/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
@@ -11,7 +11,7 @@
 
 // system modules
 #include "modules/camera/system.hpp"
-#include "modules/input/system.hpp"
+#include "modules/events/system.hpp"
 #include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
@@ -24,7 +24,7 @@
 // game helpers
 #include "create_entities.hpp"
 #include "modules/camera/helpers.hpp"
-#include "modules/input/helpers/keyboard.hpp"
+#include "modules/events/helpers/keyboard.hpp"
 
 // game modules
 #include "components/app.hpp"
@@ -66,7 +66,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
   registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
-  registry.set<SINGLETON_InputComponent>(SINGLETON_InputComponent());
+  init_input_system(registry);
 
   // create hierarchy root node
   auto& hi = registry.ctx<SINGLETON_HierarchyComponent>();
@@ -87,12 +87,11 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
   // army 0
   {
-    std::string sprite{ "EMPTY" };
     std::string name;
 
     int x = 100, y = 200, sx = 100, sy = 100;
     name = { "UNIT GROUP 0" };
-    auto e = create_unit_group(registry, x, y, sx, sy, name, sprite, colours.cyan, colours.dblue);
+    auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
     auto& u = registry.get<UnitGroupComponent>(e).units;
     u.push_back(create_unit(registry, e, "unit 1", colours.player_unit));
   }
@@ -112,6 +111,7 @@ void
 game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 screen_wh)
 {
   // init once only
+  init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());
   // open_controllers(); // enable controllers
@@ -143,7 +143,6 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
-      update_input_system(registry, app); // in update and fixedupdate
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
       // generate all collisions between actor-actor objects
@@ -163,17 +162,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
-  // if (ri.viewport_process_events) {
-  //   if (get_key_down(SDL_SCANCODE_P))
-  //     gp.paused = !gp.paused;
-  //   if (get_key_down(SDL_SCANCODE_R))
-  //     init_game_state(registry, app);
-  //   if (get_key_down(SDL_SCANCODE_F))
-  //     app.get_window().toggle_fullscreen();
-  // }
-  // if (get_key_down(SDL_SCANCODE_ESCAPE))
-  //   app.shutdown();
-
   if (ri.viewport_size_render_at != ri.viewport_size_current) {
     // viewport was updated, recenter the camera on the battlefield
     const auto& main_camera = get_main_camera(registry);
@@ -186,10 +174,23 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // game logic
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
   {
+    update_input_system(registry, app);
+
+    const auto& input = registry.ctx<SINGLETON_InputComponent>();
+    if (ri.viewport_process_events) {
+      if (get_key_down(input, SDL_SCANCODE_P))
+        gp.paused = !gp.paused;
+      if (get_key_down(input, SDL_SCANCODE_R))
+        init_game_state(registry, app);
+      if (get_key_down(input, SDL_SCANCODE_F))
+        app.window->toggle_fullscreen();
+    }
+    if (get_key_down(input, SDL_SCANCODE_ESCAPE))
+      app.shutdown();
+
     if (!gp.paused) {
       // ... systems that always update
       {
-        update_input_system(registry, app); // in update and fixedupdate
         update_cursor_system(registry);
         update_objectives_system(registry);
         update_pathfinding_system(registry);
@@ -214,8 +215,8 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // rendering
   Uint64 start_render = SDL_GetPerformanceCounter();
   {
-    update_sprite_tag_system(registry, app);
-    update_render_system(registry, app);
+    update_sprite_system(registry);
+    update_render_system(registry); // put rendering on thread?
   };
   Uint64 end_render = SDL_GetPerformanceCounter();
   p.render_elapsed_ms = (end_render - start_render) / float(SDL_GetPerformanceFrequency()) * 1000.0f;

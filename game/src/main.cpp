@@ -55,7 +55,6 @@ main_loop(void* arg)
   // const double alpha = seconds_since_last_game_tick / SECONDS_PER_FIXED_TICK;
   // state = current_state * alpha + previous_state * (1.0f - alpha );
 
-  // TODO: put rendering on thread?
   game2d::update(registry, app, delta_time_s);
 
   app.frame_end(frame_start_time);
@@ -76,10 +75,6 @@ main(int argc, char* argv[])
 
   game2d::init(registry, app, start_screen_wh);
 
-  bool hide_windows_console = false;
-  if (hide_windows_console)
-    engine::hide_windows_console();
-
   log_time_since("(INFO) End Setup ", app_start);
 
 #if defined(__EMSCRIPTEN__)
@@ -89,6 +84,11 @@ main(int argc, char* argv[])
   // processing events from the browser, and dispatching them.
   emscripten_set_main_loop_arg(main_loop, NULL, 0, true);
 #else
+
+  bool hide_windows_console = true;
+  if (hide_windows_console)
+    engine::hide_windows_console();
+
   while (app.is_running())
     main_loop(nullptr);
 #endif

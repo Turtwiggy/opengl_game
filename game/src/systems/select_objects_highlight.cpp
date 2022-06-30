@@ -4,15 +4,16 @@
 // components
 #include "components/selectable.hpp"
 #include "modules/renderer/components.hpp"
+#include "modules/sprites/components.hpp"
 
 void
 game2d::update_select_objects_highlight_system(entt::registry& registry)
 {
-  const auto& view = registry.view<SelectableComponent, HighlightComponent, ColourComponent>();
-  view.each([](auto entity, const auto& s, const auto& highlight, auto& colour) {
+  const auto& view = registry.view<SelectableComponent, HighlightComponent, SpriteComponent>();
+  view.each([](auto entity, const auto& s, const auto& highlight, auto& sprite) {
     if (s.is_selected)
-      colour.colour = highlight.highlight_colour;
+      sprite.colour = highlight.highlight_colour;
     else
-      colour.colour = highlight.start_colour;
+      sprite.colour = highlight.start_colour;
   });
 };

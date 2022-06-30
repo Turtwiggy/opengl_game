@@ -4,6 +4,7 @@
 #include "create_entities.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
+#include "modules/sprites/components.hpp"
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_hierarchy/helpers.hpp"
 
@@ -68,21 +69,17 @@ game2d::update_ui_hierarchy_system(entt::registry& registry, engine::Application
       imgui_draw_ivec2(registry, "Physics Size: ", psc.w, psc.h);
     }
 
-    if (registry.all_of<ColourComponent>(eid)) {
-      ColourComponent& c = registry.get<ColourComponent>(eid);
+    if (registry.all_of<SpriteComponent>(eid)) {
+      SpriteComponent& sc = registry.get<SpriteComponent>(eid);
       ImGui::Text("Colour: ");
       ImGui::SameLine();
-      ImGui::ColorEdit4("##colour", glm::value_ptr(c.colour));
+      ImGui::ColorEdit4("##colour", glm::value_ptr(sc.colour));
+      imgui_draw_ivec2(registry, "Sprite: ", sc.x, sc.y);
     }
 
     if (registry.all_of<VelocityComponent>(eid)) {
       VelocityComponent& c = registry.get<VelocityComponent>(eid);
       imgui_draw_vec2(registry, "Vel: ", c.x, c.y);
-    }
-
-    if (registry.all_of<SpriteSlotComponent>(eid)) {
-      SpriteSlotComponent& c = registry.get<SpriteSlotComponent>(eid);
-      imgui_draw_ivec2(registry, "Sprite: ", c.x, c.y);
     }
 
     // Add component

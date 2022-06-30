@@ -4,8 +4,8 @@
 // components
 #include "components/cursor.hpp"
 #include "modules/camera/components.hpp"
-#include "modules/input/components.hpp"
-#include "modules/input/helpers/mouse.hpp"
+#include "modules/events/components.hpp"
+#include "modules/events/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

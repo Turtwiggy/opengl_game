@@ -10,15 +10,9 @@
 namespace game2d {
 
 void
-load_sprite_yml(std::vector<sprite>& sprites, const std::string path);
+load_sprite_yml(std::vector<SpriteAnimation>& sprites, const std::string path);
 
-sprite
-find_sprite(const std::vector<sprite>& sprites, const std::string name);
-
-// std::vector<sprite::type>
-// convert_int_to_sprites(int damage);
-
-// std::array<ImVec2, 2>
-// convert_sprite_to_uv(sprite::type type, float pixels, glm::ivec2 wh);
+SpriteAnimation
+find_animation(const std::vector<SpriteAnimation>& sprites, const std::string name);
 
 }; // namespace game2d

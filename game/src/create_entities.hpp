@@ -22,7 +22,7 @@ void
 create_cursor(entt::registry& registry);
 
 void
-create_objective(entt::registry& r, int x, int y, int size_x, int size_y, const std::string& sprite);
+create_objective(entt::registry& r, int x, int y, int size_x, int size_y);
 
 entt::entity
 create_unit_group(entt::registry& registry,
@@ -31,15 +31,11 @@ create_unit_group(entt::registry& registry,
                   int size_x,
                   int size_y,
                   const std::string& name,
-                  const std::string& sprite,
                   const glm::vec4& start_colour,
                   const glm::vec4& highlight_colour);
 
 entt::entity
-create_unit(entt::registry& registry,
-            const entt::entity& parent,
-            const std::string& name,
-            const glm::vec4& colour);
+create_unit(entt::registry& registry, const entt::entity& parent, const std::string& name, const glm::vec4& colour);
 
 void
 create_debug_square(entt::registry& registry);

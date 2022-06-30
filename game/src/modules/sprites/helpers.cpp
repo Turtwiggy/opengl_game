@@ -5,34 +5,49 @@
 #include <yaml-cpp/yaml.h>
 
 // std libs
-#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
 
 namespace game2d {
 
+struct Frame
+{
+  int x = 0;
+  int y = 0;
+};
+
 void
-load_sprite_yml(std::vector<sprite>& sprites, const std::string path)
+load_sprite_yml(std::vector<SpriteAnimation>& sprites, const std::string path)
 {
   std::cout << "loading yml: " << path << std::endl;
   YAML::Node config = YAML::LoadFile(path)["sprites"];
-  sprite s;
+
+  SpriteAnimation s;
   for (int i = 0; i < config.size(); i++) {
     auto node = config[i];
     s.name = node["name"].as<std::string>();
-    s.x = node["x"].as<int>();
-    s.y = node["y"].as<int>();
+
+    auto frames = node["frames"];
+    for (int i = 0; i < frames.size(); i++) {
+      Frame f;
+      f.x = frames[i][0].as<int>();
+      f.y = frames[i][1].as<int>();
+      s.animation_frames.push_back({ f.x, f.y });
+    }
+
     if (node["angle"])
       s.angle = node["angle"].as<float>();
+
     sprites.push_back(s);
   }
 };
 
-sprite
-find_sprite(const std::vector<sprite>& sprites, const std::string name)
+SpriteAnimation
+find_animation(const std::vector<SpriteAnimation>& sprites, const std::string name)
 {
-  auto s = std::find_if(sprites.begin(), sprites.end(), [&name](const sprite& spr) { return spr.name == name; });
+  auto s =
+    std::find_if(sprites.begin(), sprites.end(), [&name](const SpriteAnimation& spr) { return spr.name == name; });
   if (s != std::end(sprites))
     return *s;
   else {
@@ -40,12 +55,6 @@ find_sprite(const std::vector<sprite>& sprites, const std::string name)
     exit(1); // explode!
   }
 }
-
-// void
-// print_sprite_info(sprite& sprite)
-// {
-//   std::cout << "sprite: " << sprite.name << " " << sprite.x << " " << sprite.y << std::endl;
-// }
 
 } // namespace game2d
 

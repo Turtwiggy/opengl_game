@@ -7,10 +7,11 @@
 #include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
 #include "modules/camera/components.hpp"
-#include "modules/input/components.hpp"
-#include "modules/input/helpers/mouse.hpp"
+#include "modules/events/components.hpp"
+#include "modules/events/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
+#include "modules/sprites/components.hpp"
 
 // engine headers
 #include "engine/maths/maths.hpp"
@@ -99,7 +100,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
         destinationC.destination_line = entt::null;
       }
 
-      const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+      const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
 
       // create line from current position to end position
       entt::entity e = registry.create();
@@ -112,9 +113,14 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       transform.scale.y = 1;
       transform.rotation.z = angle;
       registry.emplace<TransformComponent>(e, transform);
-      registry.emplace<ColourComponent>(e, colours.red);
-      registry.emplace<SpriteTagComponent>(e, "EMPTY");
-      registry.emplace<TextureComponent>(e, ri.tex_unit_custom_spaceships);
+
+      SpriteComponent sprite;
+      sprite.colour = colours.red;
+      sprite.tex_unit = si.tex_unit_custom_spaceships;
+      sprite.x = 0;
+      sprite.y = 0;
+      registry.emplace<SpriteComponent>(e, sprite);
+
       destinationC.destination_line = e;
     }
   }
