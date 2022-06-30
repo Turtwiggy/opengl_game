@@ -9,6 +9,6 @@ void
 init_sprite_system(entt::registry& registry);
 
 void
-update_sprite_system(entt::registry& registry);
+update_sprite_system(entt::registry& registry, float dt);
 
 } // namespace game2d

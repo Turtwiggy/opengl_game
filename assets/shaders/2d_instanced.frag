@@ -6,10 +6,13 @@ in vec4 v_colour;
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-uniform sampler2D textures[32];
+uniform sampler2D textures[5];
 
+const int texture_main = 0;
+const int texture_lighting = 1;
 const int texture_unit_kenny = 2;
 const int texture_unit_spaceships = 3;
+const int texture_unit_sprout = 4;
 
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
@@ -21,6 +24,10 @@ const int spaceship_rows = 8;
 const float spaceship_scale_x = 1.0f / spaceship_cols;
 const float spaceship_scale_y = 1.0f / spaceship_rows;
 
+const int sprout_cols = 5;
+const int sprout_rows = 4;
+const float sprout_scale_x = 1.0f / sprout_cols;
+const float sprout_scale_y = 1.0f / sprout_rows;
 
 void
 main()
@@ -31,14 +38,9 @@ main()
     out_colour = v_colour;
     return;
   } 
-
-  // vec2 sprite_uv = vec2(
-  //   v_tex.x / num_cols + v_sprite_pos.x * scale_x,
-  //   v_tex.y / num_rows + v_sprite_pos.y * scale_y      
-  // );
-
-  // // out_colour = vec4(1.0) * texture(texture_0, sprite_uv);
-  // // out_colour = texture(texture_1, v_tex);
+  
+  // out_colour = texture(textures[index], v_tex);
+  // return;
   
   if(index == texture_unit_kenny){
     vec2 sprite_uv = vec2(
@@ -54,8 +56,14 @@ main()
     );
     out_colour = v_colour * texture(textures[index], sprite_uv);
     return;
-
-  } 
+  } else if(index == texture_unit_sprout) {
+    vec2 sprite_uv = vec2(
+      v_tex.x / sprout_cols + v_sprite_pos.x * sprout_scale_x,
+      v_tex.y / sprout_rows + v_sprite_pos.y * sprout_scale_y  
+    );
+    out_colour = v_colour * texture(textures[index], sprite_uv);
+    return;
+  }
 
   out_colour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }

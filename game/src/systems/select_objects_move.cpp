@@ -116,7 +116,6 @@ game2d::update_select_objects_move_system(entt::registry& registry)
 
       SpriteComponent sprite;
       sprite.colour = colours.red;
-      sprite.tex_unit = si.tex_unit_custom_spaceships;
       sprite.x = 0;
       sprite.y = 0;
       registry.emplace<SpriteComponent>(e, sprite);

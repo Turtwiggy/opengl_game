@@ -8,7 +8,7 @@
 #include <imgui.h>
 
 void
-game2d::update_ui_physics_system(entt::registry& registry, engine::Application& app)
+game2d::update_ui_physics_system(entt::registry& registry)
 {
   const auto& p = registry.ctx<SINGLETON_PhysicsComponent>();
   const auto& actors = registry.view<PhysicsActorComponent>();

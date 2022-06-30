@@ -67,12 +67,7 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
   registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
   init_input_system(registry);
-
-  // create hierarchy root node
-  auto& hi = registry.ctx<SINGLETON_HierarchyComponent>();
-  hi.root_node = registry.create();
-  registry.emplace<TagComponent>(hi.root_node, "root-node");
-  registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
+  init_ui_hierarchy_system(registry);
 
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   auto& r = registry.ctx<SINGLETON_ResourceComponent>();
@@ -91,9 +86,19 @@ init_game_state(entt::registry& registry, engine::Application& app)
 
     int x = 100, y = 200, sx = 100, sy = 100;
     name = { "UNIT GROUP 0" };
+
+    auto u1 = create_unit(registry, "unit 1", colours.player_unit);
+    auto u2 = create_unit(registry, "unit 2", colours.player_unit);
+    auto u3 = create_unit(registry, "unit 3", colours.player_unit);
+    auto u4 = create_unit(registry, "unit 4", colours.player_unit);
+    auto u5 = create_unit(registry, "unit 5", colours.player_unit);
     auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
     auto& u = registry.get<UnitGroupComponent>(e).units;
-    u.push_back(create_unit(registry, e, "unit 1", colours.player_unit));
+    u.push_back(u1);
+    u.push_back(u2);
+    u.push_back(u3);
+    u.push_back(u4);
+    u.push_back(u5);
   }
 
   // // objectives
@@ -122,22 +127,8 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
 void
 game2d::fixed_update(entt::registry& registry, engine::Application& app, float fixed_dt)
 {
-  Profiler& p = registry.ctx<Profiler>();
-  SINGLETON_GamePausedComponent& gp = registry.ctx<SINGLETON_GamePausedComponent>();
-
-#ifdef _DEBUG
-  // static int fixed_frame = 0;
-  // if (!get_key_down(SDL_SCANCODE_RETURN))
-  //   return; // must press return to go forward a fixed update frame
-  // fixed_frame += 1;
-
-  // if (fixed_frame == 10) {
-  //   const auto& ugs = registry.view<UnitGroupComponent>();
-  //   auto ug = ugs.front();
-  //   auto& transform = registry.get<TransformComponent>(ug);
-  //   std::cout << "position on fixed frame 10: " << transform.position.x << " " << transform.position.y << std::endl;
-  // }
-#endif
+  const auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
+  auto& p = registry.ctx<Profiler>();
 
   // physics
   Uint64 start_physics = SDL_GetPerformanceCounter();
@@ -215,7 +206,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // rendering
   Uint64 start_render = SDL_GetPerformanceCounter();
   {
-    update_sprite_system(registry);
+    update_sprite_system(registry, dt);
     update_render_system(registry); // put rendering on thread?
   };
   Uint64 end_render = SDL_GetPerformanceCounter();
@@ -223,10 +214,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
-    update_ui_game_system(registry, app);
-    update_ui_physics_system(registry, app);
-    update_ui_hierarchy_system(registry, app);
-    update_ui_profiler_system(registry, app);
+    update_ui_game_system(registry);
+    update_ui_physics_system(registry);
+    update_ui_hierarchy_system(registry);
+    update_ui_profiler_system(registry);
   };
 
   // end frame

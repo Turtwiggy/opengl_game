@@ -20,7 +20,7 @@
 
 namespace game2d {
 
-const int SPRITE_SIZE = 16;
+const int SPRITE_SIZE = 32; // 16 is native
 
 void
 create_empty(entt::registry& r)
@@ -71,7 +71,7 @@ create_renderable(entt::registry& r, const entt::entity& parent, const std::stri
 
   SpriteComponent sprite;
   sprite.colour = colour;
-  sprite.tex_unit = si.tex_unit_kenny_nl;
+  sprite.tex_unit = si.tex_unit_kenny;
   sprite.x = 0;
   sprite.y = 0;
   r.emplace<SpriteComponent>(e, sprite);
@@ -108,41 +108,40 @@ create_cursor(entt::registry& r)
   r.emplace<VelocityComponent>(c.backdrop, 0.0f, 0.0f);
 };
 
-void
-create_objective(entt::registry& r, int x, int y, int size_x, int size_y)
-{
-  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-  auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-  const auto colours = r.ctx<SINGLETON_ColoursComponent>();
-  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
+// void
+// create_objective(entt::registry& r, int x, int y, int size_x, int size_y)
+// {
+//   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+//   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
+//   const auto colours = r.ctx<SINGLETON_ColoursComponent>();
+//   const auto& si = r.ctx<SINGLETON_SpriteTextures>();
 
-  entt::entity e = r.create();
-  h_root.children.push_back(e);
-  r.emplace<TagComponent>(e, "objective");
-  r.emplace<EntityHierarchyComponent>(e, h.root_node);
+//   entt::entity e = r.create();
+//   h_root.children.push_back(e);
+//   r.emplace<TagComponent>(e, "objective");
+//   r.emplace<EntityHierarchyComponent>(e, h.root_node);
 
-  // rendering
-  TransformComponent transform;
-  transform.position.x = x;
-  transform.position.y = y;
-  transform.scale.x = size_x;
-  transform.scale.y = size_y;
-  transform.rotation.z = 0.0f;
-  r.emplace<TransformComponent>(e, transform);
-  SpriteComponent sprite;
-  sprite.colour = colours.feint_white;
-  sprite.tex_unit = si.tex_unit_custom_spaceships;
-  sprite.x = 0;
-  sprite.y = 0;
-  r.emplace<SpriteComponent>(e, sprite);
-  // physics
-  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_OBJECTIVE);
-  r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
-  r.emplace<VelocityComponent>(e, 0.0f, 0.0f);
-  // gameplay
-  r.emplace<ObjectiveComponent>(e);
-  r.emplace<HighlightComponent>(e, colours.feint_white, colours.backdrop_red);
-}
+//   // rendering
+//   TransformComponent transform;
+//   transform.position.x = x;
+//   transform.position.y = y;
+//   transform.scale.x = size_x;
+//   transform.scale.y = size_y;
+//   transform.rotation.z = 0.0f;
+//   r.emplace<TransformComponent>(e, transform);
+//   SpriteComponent sprite;
+//   sprite.colour = colours.feint_white;
+//   sprite.x = 0;
+//   sprite.y = 0;
+//   r.emplace<SpriteComponent>(e, sprite);
+//   // physics
+//   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_OBJECTIVE);
+//   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
+//   r.emplace<VelocityComponent>(e, 0.0f, 0.0f);
+//   // gameplay
+//   r.emplace<ObjectiveComponent>(e);
+//   r.emplace<HighlightComponent>(e, colours.feint_white, colours.backdrop_red);
+// }
 
 entt::entity
 create_unit_group(entt::registry& r,
@@ -157,6 +156,7 @@ create_unit_group(entt::registry& r,
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
   const auto& si = r.ctx<SINGLETON_SpriteTextures>();
+  const auto colours = r.ctx<SINGLETON_ColoursComponent>();
 
   entt::entity e = r.create();
   h_root.children.push_back(e);
@@ -172,8 +172,7 @@ create_unit_group(entt::registry& r,
   transform.rotation.z = 0.0f;
   r.emplace<TransformComponent>(e, transform);
   SpriteComponent sprite;
-  sprite.colour = start_colour;
-  sprite.tex_unit = si.tex_unit_custom_spaceships;
+  sprite.colour = colours.feint_white;
   sprite.x = 0;
   sprite.y = 0;
   r.emplace<SpriteComponent>(e, sprite);
@@ -182,8 +181,8 @@ create_unit_group(entt::registry& r,
   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
   r.emplace<VelocityComponent>(e, 10.0f, 0.0f);
   // gameplay
-  r.emplace<SelectableComponent>(e, false);
-  r.emplace<HighlightComponent>(e, start_colour, highlight_colour);
+  r.emplace<SelectableComponent>(e);
+  // r.emplace<HighlightComponent>(e, start_colour, highlight_colour);
   r.emplace<DestinationComponent>(e);
   r.emplace<UnitGroupComponent>(e);
 
@@ -191,22 +190,34 @@ create_unit_group(entt::registry& r,
 };
 
 entt::entity
-create_unit(entt::registry& registry, const entt::entity& parent, const std::string& name, const glm::vec4& colour)
+create_unit(entt::registry& registry, const std::string& name, const glm::vec4& colour)
 {
-  auto e = create_renderable(registry, parent, name, colour);
   const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
 
+  // entity
+  entt::entity e = registry.create();
+  registry.emplace<TagComponent>(e, name);
+  // hierarchy
+  auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
+  auto& h_root = registry.get<EntityHierarchyComponent>(h.root_node);
+  h_root.children.push_back(e);
+  registry.emplace<EntityHierarchyComponent>(e, h.root_node);
+  // auto& parent_hierarchy = registry.get<EntityHierarchyComponent>(parent);
+  // parent_hierarchy.children.push_back(e);
+  // registry.emplace<EntityHierarchyComponent>(e, parent);
+  // rendering
+  TransformComponent transform;
+  transform.scale.x = SPRITE_SIZE;
+  transform.scale.y = SPRITE_SIZE;
+  registry.emplace<TransformComponent>(e, transform);
+  SpriteComponent sprite;
+  sprite.colour = colour;
+  sprite.tex_unit = si.tex_unit_sprout;
+  sprite.x = 1;
+  sprite.y = 0;
+  registry.emplace<SpriteComponent>(e, sprite);
   // animation
-  SpriteAnimationComponent sac;
-  sac.animations.push_back(find_animation(si.animations, "down_idle"));
-  sac.animations.push_back(find_animation(si.animations, "down_walk_cycle"));
-  sac.animations.push_back(find_animation(si.animations, "up_idle"));
-  sac.animations.push_back(find_animation(si.animations, "up_walk_cycle"));
-  sac.animations.push_back(find_animation(si.animations, "left_idle"));
-  sac.animations.push_back(find_animation(si.animations, "left_walk_cycle"));
-  sac.animations.push_back(find_animation(si.animations, "right_idle"));
-  sac.animations.push_back(find_animation(si.animations, "right_walk_cycle"));
-  registry.emplace<SpriteAnimationComponent>(e, sac);
+  registry.emplace<SpriteAnimationComponent>(e);
   // physics
   registry.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_U);
   registry.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);

@@ -9,10 +9,9 @@
 // other lib headers
 #include <imgui.h>
 #include <iostream> // temp
-#include <string>
 
 void
-game2d::update_ui_game_system(entt::registry& registry, engine::Application& app)
+game2d::update_ui_game_system(entt::registry& registry)
 {
   const auto colours = registry.ctx<SINGLETON_ColoursComponent>();
 

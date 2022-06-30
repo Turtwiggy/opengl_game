@@ -14,7 +14,7 @@
 #include <imgui.h>
 
 void
-game2d::update_ui_profiler_system(entt::registry& registry, engine::Application& app)
+game2d::update_ui_profiler_system(entt::registry& registry)
 {
 #ifdef _DEBUG
   // bool show_imgui_demo_window = true;

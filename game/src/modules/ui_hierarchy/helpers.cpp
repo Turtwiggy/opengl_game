@@ -138,8 +138,3 @@ game2d::drop_accept_entity(entt::registry& r, const entt::entity& e)
     ImGui::EndDragDropTarget();
   }
 }
-
-void
-game2d::add_child(EntityHierarchyComponent& parent, EntityHierarchyComponent& child)
-{
-}

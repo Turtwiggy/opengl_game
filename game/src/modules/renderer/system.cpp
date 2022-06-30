@@ -45,11 +45,14 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   glBindTexture(GL_TEXTURE_2D, si.tex_id_kenny);
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_2D, si.tex_id_custom);
+  glActiveTexture(GL_TEXTURE4);
+  glBindTexture(GL_TEXTURE_2D, si.tex_id_sprout);
+
   int textures[5] = { static_cast<int>(ri.tex_unit_main_scene),
                       static_cast<int>(ri.tex_unit_lighting),
-                      static_cast<int>(si.tex_unit_kenny_nl),
-                      static_cast<int>(si.tex_unit_custom_spaceships),
-                      static_cast<int>(si.tex_unit_sprout_lands) };
+                      static_cast<int>(si.tex_unit_kenny),
+                      static_cast<int>(si.tex_unit_custom),
+                      static_cast<int>(si.tex_unit_sprout) };
   ri.instanced.bind();
   ri.instanced.set_mat4("projection", calculate_projection(wh.x, wh.y));
   ri.instanced.set_int_array("textures", textures, 5);
@@ -123,8 +126,6 @@ game2d::update_render_system(entt::registry& registry)
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
   RenderCommand::set_clear_colour(background_colour);
   RenderCommand::clear();
-
-  // rebind(ri.instanced, viewport_wh, ri);
 
   // Do quad stuff
   {
