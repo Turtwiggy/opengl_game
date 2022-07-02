@@ -19,12 +19,18 @@ linear_to_srgb(float f)
 void
 main()
 {
-  vec4 lin_tex = texture(textures[0], v_tex);
+  vec4 lin = texture(textures[0], v_tex);
+
+  vec3 rgb = vec3(
+    linear_to_srgb(lin.r),
+    linear_to_srgb(lin.g),
+    linear_to_srgb(lin.b)
+  );
 
   out_colour = vec4(
-    linear_to_srgb(lin_tex.r),
-    linear_to_srgb(lin_tex.g),
-    linear_to_srgb(lin_tex.b),
-    lin_tex.a
+    rgb.x,
+    rgb.y,
+    rgb.z,
+    lin.a
   );
 }

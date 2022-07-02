@@ -51,7 +51,17 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   glActiveTexture(GL_TEXTURE5);
   glBindTexture(GL_TEXTURE_2D, tex.tex_unit_srgb_main_scene);
 
-  const auto& projection = calculate_projection(wh.x, wh.y);
+  glm::mat4 projection = calculate_projection(wh.x, wh.y);
+
+  // const auto& camera = get_main_camera(registry);
+  // if (camera != entt::null) {
+  //   const auto& camera_transform = registry.get<TransformComponent>(camera);
+  //   glm::vec3 cam_front = glm::vec3(0.0f, 0.0f, -1.0f);
+  //   glm::vec3 cam_up = glm::vec3(0.0f, 1.0f, 0.0f);
+  //   glm::vec3 cam_pos = camera_transform.position;
+  //   glm::mat4 view = glm::lookAt(cam_pos, cam_pos + cam_front, cam_up);
+  //   projection *= view;
+  // }
 
   {
     int textures[3] = { tex.tex_unit_kenny, tex.tex_unit_custom, tex.tex_unit_sprout };
@@ -114,6 +124,7 @@ game2d::update_render_system(entt::registry& registry)
   const auto& tex = registry.ctx<SINGLETON_Textures>();
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   const auto& background_colour = colours.background;
+  const auto background_colour_linear = engine::SRGBToLinear(background_colour);
   auto viewport_wh = ri.viewport_size_render_at;
 
   // Resize
@@ -145,7 +156,7 @@ game2d::update_render_system(entt::registry& registry)
   // FBO: Render sprites in to this fbo with linear colour
   Framebuffer::bind_fbo(ri.fbo_linear_main_scene);
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
-  RenderCommand::set_clear_colour(background_colour);
+  RenderCommand::set_clear_colour_linear(engine::SRGBToLinear(background_colour));
   RenderCommand::clear();
 
   // Do quad stuff
@@ -160,12 +171,10 @@ game2d::update_render_system(entt::registry& registry)
 
     // registry.sort<renderable>([](const auto& lhs, const auto& rhs) { return lhs.z < rhs.z; });
 
-    const auto& camera = get_main_camera(registry);
-    const auto& camera_transform = registry.get<TransformComponent>(camera);
-
-    view.each([&registry, &ri, &camera_transform](auto eid, const auto& transform, const auto& sc) {
+    view.each([&registry, &ri](auto eid, const auto& transform, const auto& sc) {
       quad_renderer::RenderDescriptor desc;
-      desc.pos_tl = camera_transform.position + transform.position - transform.scale / 2;
+      // desc.pos_tl = camera_transform.position + transform.position - transform.scale / 2;
+      desc.pos_tl = transform.position - transform.scale / 2;
       desc.size = transform.scale;
       desc.angle_radians = sc.angle + transform.rotation.z;
       desc.colour = sc.colour;
@@ -181,7 +190,7 @@ game2d::update_render_system(entt::registry& registry)
   // FBO: LINEAR->SRGB
   Framebuffer::bind_fbo(ri.fbo_srgb_main_scene);
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
-  RenderCommand::set_clear_colour(background_colour);
+  RenderCommand::set_clear_colour_linear(background_colour_linear);
   RenderCommand::clear();
 
   // Render the linear colour main scene in to this texture
@@ -193,7 +202,7 @@ game2d::update_render_system(entt::registry& registry)
       quad_renderer::RenderDescriptor desc;
       desc.pos_tl = { 0, 0 };
       desc.size = viewport_wh;
-      desc.colour = SRGBToLinear(SRGBColour(255, 255, 255, 1.0f));
+      // desc.colour = SRGBToLinear(SRGBColour(255, 255, 255, 1.0f));
       desc.angle_radians = 0.0f;
       desc.tex_unit = tex.tex_unit_linear_main_scene;
       desc.sprite_offset = { 0, 0 };
@@ -206,7 +215,7 @@ game2d::update_render_system(entt::registry& registry)
   // default fbo
   Framebuffer::default_fbo();
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
-  RenderCommand::set_clear_colour(colours.black);
+  RenderCommand::set_clear_colour_srgb(background_colour);
   RenderCommand::clear();
 
   // Note: ImGui::Image takes in TexID not TexUnit

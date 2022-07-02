@@ -60,7 +60,7 @@ game2d::render_texture_to_imgui_viewport(const int& tex_unit)
   vi.pos = ImGui::GetWindowPos();
 
   // render opengl texture to imgui
-  ImGui::Image((ImTextureID)tex_unit, viewport_size, ImVec2(0, 1), ImVec2(1, 0));
+  ImGui::Image((ImTextureID)tex_unit, viewport_size, ImVec2(0, 0), ImVec2(1, 1));
 
   ImGui::End();
 

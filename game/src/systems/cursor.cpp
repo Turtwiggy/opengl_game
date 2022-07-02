@@ -3,7 +3,6 @@
 
 // components
 #include "components/cursor.hpp"
-#include "modules/camera/components.hpp"
 #include "modules/events/components.hpp"
 #include "modules/events/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
