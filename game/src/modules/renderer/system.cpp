@@ -39,31 +39,31 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
-  glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
-  glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_kenny);
-  glActiveTexture(GL_TEXTURE3);
+  glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_custom);
-  glActiveTexture(GL_TEXTURE4);
+  glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_sprout);
+  glActiveTexture(GL_TEXTURE3);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
+  glActiveTexture(GL_TEXTURE4);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
+  glActiveTexture(GL_TEXTURE5);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_unit_srgb_main_scene);
+
+  const auto& projection = calculate_projection(wh.x, wh.y);
 
   {
-    int textures[5] = { tex.tex_unit_linear_main_scene,
-                        tex.tex_unit_linear_lighting,
-                        tex.tex_unit_kenny,
-                        tex.tex_unit_custom,
-                        tex.tex_unit_sprout };
+    int textures[3] = { tex.tex_unit_kenny, tex.tex_unit_custom, tex.tex_unit_sprout };
     ri.instanced.bind();
-    ri.instanced.set_mat4("projection", calculate_projection(wh.x, wh.y));
-    ri.instanced.set_int_array("textures", textures, 5);
+    ri.instanced.set_mat4("projection", projection);
+    ri.instanced.set_int_array("textures", textures, 3);
   }
 
   {
     int textures[1] = { tex.tex_unit_linear_main_scene };
     ri.linear_to_srgb.bind();
-    ri.linear_to_srgb.set_mat4("projection", calculate_projection(wh.x, wh.y));
+    ri.linear_to_srgb.set_mat4("projection", projection);
     ri.linear_to_srgb.set_int_array("textures", textures, 1);
   }
 };

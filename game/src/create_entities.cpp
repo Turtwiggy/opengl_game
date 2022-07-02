@@ -22,7 +22,7 @@
 
 namespace game2d {
 
-const int SPRITE_SIZE = 16; // 16 is native
+const int SPRITE_SIZE = 32; // 16 is native
 
 void
 create_empty(entt::registry& r)

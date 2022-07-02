@@ -7,20 +7,20 @@ namespace game2d {
 struct SINGLETON_Textures
 {
   // texture unit (slot on gpu)
-  const int tex_unit_linear_main_scene = 0;
-  const int tex_unit_linear_lighting = 1;
-  const int tex_unit_srgb_main_scene = 2;
-  const int tex_unit_kenny = 3;
-  const int tex_unit_custom = 4;
-  const int tex_unit_sprout = 5;
+  const int tex_unit_kenny = 0;
+  const int tex_unit_custom = 1;
+  const int tex_unit_sprout = 2;
+  const int tex_unit_linear_main_scene = 3;
+  const int tex_unit_linear_lighting = 4;
+  const int tex_unit_srgb_main_scene = 5;
 
   // texture ids (id after bound)
-  int tex_id_linear_main_scene = 0;
-  int tex_id_linear_lighting = 0;
-  int tex_id_srgb_main_scene = 0;
   int tex_id_kenny = 0;
   int tex_id_custom = 0;
   int tex_id_sprout = 0;
+  int tex_id_linear_main_scene = 0;
+  int tex_id_linear_lighting = 0;
+  int tex_id_srgb_main_scene = 0;
 
   // resource paths
   const std::string sheet_kenny = "assets/textures/kennynl_1bit_pack/monochrome_transparent_packed.png";
