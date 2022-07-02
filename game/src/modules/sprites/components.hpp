@@ -37,9 +37,9 @@ struct SpriteComponent
 struct SINGLETON_SpriteTextures
 {
   // texture unit (slot on gpu)
-  const int tex_unit_kenny = 2;
-  const int tex_unit_custom = 3;
-  const int tex_unit_sprout = 4;
+  const int tex_unit_kenny = 3;
+  const int tex_unit_custom = 4;
+  const int tex_unit_sprout = 5;
   // texture ids (id after bound)
   unsigned int tex_id_kenny = 0;
   unsigned int tex_id_custom = 0;

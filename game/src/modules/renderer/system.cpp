@@ -38,9 +38,9 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, ri.tex_id_main_scene);
+  glBindTexture(GL_TEXTURE_2D, ri.tex_id_linear_main_scene);
   glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, ri.tex_id_lighting);
+  glBindTexture(GL_TEXTURE_2D, ri.tex_id_linear_lighting);
   glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, si.tex_id_kenny);
   glActiveTexture(GL_TEXTURE3);
@@ -48,8 +48,8 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   glActiveTexture(GL_TEXTURE4);
   glBindTexture(GL_TEXTURE_2D, si.tex_id_sprout);
 
-  int textures[5] = { static_cast<int>(ri.tex_unit_main_scene),
-                      static_cast<int>(ri.tex_unit_lighting),
+  int textures[5] = { static_cast<int>(ri.tex_unit_linear_main_scene),
+                      static_cast<int>(ri.tex_unit_linear_lighting),
                       static_cast<int>(si.tex_unit_kenny),
                       static_cast<int>(si.tex_unit_custom),
                       static_cast<int>(si.tex_unit_sprout) };
@@ -66,11 +66,16 @@ game2d::init_render_system(entt::registry& registry, const glm::ivec2& screen_wh
   Framebuffer::default_fbo();
 
   SINGLETON_RendererInfo ri;
+  new_texture_to_fbo(ri.fbo_linear_main_scene, ri.tex_id_linear_main_scene, ri.tex_unit_linear_main_scene, screen_wh);
+  new_texture_to_fbo(ri.fbo_linear_lighting, ri.tex_id_linear_lighting, ri.tex_unit_linear_lighting, screen_wh);
+  new_texture_to_fbo(ri.fbo_srgb_main_scene, ri.tex_id_srgb_main_scene, ri.tex_unit_srgb_main_scene, screen_wh);
 
-  new_texture_to_fbo(ri.fbo_lighting, ri.tex_id_lighting, ri.tex_unit_lighting, screen_wh);
-  new_texture_to_fbo(ri.fbo_main_scene, ri.tex_id_main_scene, ri.tex_unit_main_scene, screen_wh);
   ri.instanced = Shader("assets/shaders/2d_instanced.vert", "assets/shaders/2d_instanced.frag");
   ri.fan = Shader("assets/shaders/2d_basic_with_proj.vert", "assets/shaders/2d_colour.frag");
+  ri.linear_to_srgb = Shader("assets/shaders/2d_instanced.vert", "assets/shaders/2d_linear_to_srgb.frag");
+  ri.linear_to_srgb.bind();
+  int textures[1] = { static_cast<int>(ri.tex_unit_linear_main_scene) };
+  ri.linear_to_srgb.set_int_array("textures", textures, 1);
   ri.viewport_size_render_at = screen_wh;
   ri.viewport_size_current = screen_wh;
 
@@ -104,16 +109,19 @@ game2d::update_render_system(entt::registry& registry)
     ri.viewport_size_render_at = ri.viewport_size_current;
     viewport_wh = ri.viewport_size_render_at;
 
-    // update texture
-    bind_tex(ri.tex_id_main_scene);
-    update_bound_texture_size(viewport_wh);
+    // update textures
+    bind_tex(ri.tex_id_linear_main_scene);
+    update_bound_linear_texture_size(viewport_wh);
+    unbind_tex();
+    bind_tex(ri.tex_id_srgb_main_scene);
+    update_bound_srgb_texture_size(viewport_wh);
     unbind_tex();
     RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
     game2d::rebind(registry, viewport_wh);
   }
 
-  // MAIN FBO
-  Framebuffer::bind_fbo(ri.fbo_main_scene);
+  // FBO: Render sprites in to this fbo with linear colour
+  Framebuffer::bind_fbo(ri.fbo_linear_main_scene);
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
   RenderCommand::set_clear_colour(background_colour);
   RenderCommand::clear();
@@ -148,20 +156,36 @@ game2d::update_render_system(entt::registry& registry)
     quad_renderer::QuadRenderer::flush(ri.instanced);
   }
 
+  // FBO: LINEAR->SRGB
+  Framebuffer::bind_fbo(ri.fbo_srgb_main_scene);
+  RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
+  RenderCommand::set_clear_colour(background_colour);
+  RenderCommand::clear();
+
+  // Render the linear colour main scene in to this texture
+  // and perform the linear->srgb conversion in the fragment shader.
+  {
+    quad_renderer::QuadRenderer::reset_quad_vert_count();
+    quad_renderer::QuadRenderer::begin_batch();
+    quad_renderer::RenderDescriptor desc;
+    desc.pos_tl = { 0, 0 };
+    desc.size = viewport_wh;
+    desc.angle_radians = 0.0f;
+    desc.tex_unit = ri.tex_unit_linear_main_scene;
+    desc.sprite_offset = { 0, 0 };
+    quad_renderer::QuadRenderer::draw_sprite(desc, ri.linear_to_srgb);
+    quad_renderer::QuadRenderer::end_batch();
+    quad_renderer::QuadRenderer::flush(ri.linear_to_srgb);
+  }
+
   // default fbo
   Framebuffer::default_fbo();
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
   RenderCommand::set_clear_colour(colours.black);
   RenderCommand::clear();
 
-  // here, my ri.tex_id_main_scene should be in linear space
-  // then, have another texture, and convert that to srgb
-  // then, write that srgb texture to imgui
-  linear_texture_to_srgb_texture();
-  // NOTE: ri.tex_id_main_scene is already SRGB
-
   // Note: ImGui::Image takes in TexID not TexUnit
-  ViewportInfo vi = render_texture_to_imgui_viewport(ri.tex_id_main_scene);
+  ViewportInfo vi = render_texture_to_imgui_viewport(ri.tex_id_srgb_main_scene);
   // If the viewport moves - viewport position will be a frame behind.
   // This would mainly affect an editor, a game viewport probably(?) wouldn't move that much
   // (or if a user is moving the viewport, they likely dont need that one frame?)

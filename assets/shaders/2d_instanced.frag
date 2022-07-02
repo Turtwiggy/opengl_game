@@ -10,9 +10,9 @@ uniform sampler2D textures[5];
 
 // const int texture_main = 0;             // fbo (write to these in linear)
 // const int texture_lighting = 1;         // fbo (write to these in linear)
-const int texture_unit_kenny = 2;       // loaded textures in linear
-const int texture_unit_spaceships = 3;  // loaded textures in linear
-const int texture_unit_sprout = 4;      // loaded textures in linear
+const int texture_unit_kenny = 3;       // loaded textures in linear
+const int texture_unit_spaceships = 4;  // loaded textures in linear
+const int texture_unit_sprout = 5;      // loaded textures in linear
 
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
