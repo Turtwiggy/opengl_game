@@ -2,17 +2,17 @@
 out vec4 out_colour;
 
 in vec2 v_tex;
-in vec4 v_colour;
+in vec4 v_colour; // make this linear space
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
 uniform sampler2D textures[5];
 
-const int texture_main = 0;
-const int texture_lighting = 1;
-const int texture_unit_kenny = 2;
-const int texture_unit_spaceships = 3;
-const int texture_unit_sprout = 4;
+// const int texture_main = 0;             // fbo (write to these in linear)
+// const int texture_lighting = 1;         // fbo (write to these in linear)
+const int texture_unit_kenny = 2;       // loaded textures in linear
+const int texture_unit_spaceships = 3;  // loaded textures in linear
+const int texture_unit_sprout = 4;      // loaded textures in linear
 
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
@@ -38,9 +38,6 @@ main()
     out_colour = v_colour;
     return;
   } 
-  
-  // out_colour = texture(textures[index], v_tex);
-  // return;
   
   if(index == texture_unit_kenny){
     vec2 sprite_uv = vec2(

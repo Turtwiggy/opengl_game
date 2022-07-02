@@ -23,8 +23,8 @@ load_sprite_yml(std::vector<SpriteAnimation>& sprites, const std::string path)
   std::cout << "loading yml: " << path << std::endl;
   YAML::Node config = YAML::LoadFile(path)["sprites"];
 
-  SpriteAnimation s;
   for (int i = 0; i < config.size(); i++) {
+    SpriteAnimation s;
     auto node = config[i];
     s.name = node["name"].as<std::string>();
 

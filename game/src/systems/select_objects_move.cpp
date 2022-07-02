@@ -14,6 +14,7 @@
 #include "modules/sprites/components.hpp"
 
 // engine headers
+#include "engine/colour.hpp"
 #include "engine/maths/maths.hpp"
 
 void
@@ -65,7 +66,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       if (d.x == 0 && d.y == 0) // check same spot not clicked
         return;
       glm::vec2 dir = glm::vec2(d.x, d.y);
-      glm::vec2 n = glm::normalize(dir);
+      glm::vec2 n = normalize(dir);
       const float speed = 200.0f;
       vel.x = n.x * speed;
       vel.y = n.y * speed;
@@ -86,7 +87,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       if (d.x == 0 && d.y == 0) // check same spot not clicked
         return;
       glm::vec2 dir = glm::vec2(d.x, d.y);
-      glm::vec2 n = glm::normalize(dir);
+      glm::vec2 n = normalize(dir);
 
       // convert dir to angle
       const float radius = glm::length(dir);
@@ -115,7 +116,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       registry.emplace<TransformComponent>(e, transform);
 
       SpriteComponent sprite;
-      sprite.colour = colours.red;
+      sprite.colour = engine::SRGBToLinear(colours.red);
       sprite.x = 0;
       sprite.y = 0;
       registry.emplace<SpriteComponent>(e, sprite);

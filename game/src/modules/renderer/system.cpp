@@ -94,18 +94,9 @@ void
 game2d::update_render_system(entt::registry& registry)
 {
   auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
-  const glm::vec4& background_colour = colours.background;
+  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
+  const auto& background_colour = colours.background;
   auto viewport_wh = ri.viewport_size_render_at;
-
-#ifdef _DEBUG
-  // CHECK_OPENGL_ERROR(0);
-  // DEBUG: hot reload shader
-  // if (app.get_input().get_key_down(SDL_SCANCODE_T)) {
-  //   ri.instanced.reload();
-  //   rebind(ri.instanced, viewport_wh, ri);
-  // }
-#endif
 
   // Resize
   if (ri.viewport_size_current.x > 0.0f && ri.viewport_size_current.y > 0.0f &&
@@ -160,8 +151,14 @@ game2d::update_render_system(entt::registry& registry)
   // default fbo
   Framebuffer::default_fbo();
   RenderCommand::set_viewport(0, 0, viewport_wh.x, viewport_wh.y);
-  RenderCommand::set_clear_colour(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+  RenderCommand::set_clear_colour(colours.black);
   RenderCommand::clear();
+
+  // here, my ri.tex_id_main_scene should be in linear space
+  // then, have another texture, and convert that to srgb
+  // then, write that srgb texture to imgui
+  linear_texture_to_srgb_texture();
+  // NOTE: ri.tex_id_main_scene is already SRGB
 
   // Note: ImGui::Image takes in TexID not TexUnit
   ViewportInfo vi = render_texture_to_imgui_viewport(ri.tex_id_main_scene);

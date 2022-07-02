@@ -81,15 +81,17 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
 
     if (registry.all_of<SpriteComponent>(eid)) {
       SpriteComponent& sc = registry.get<SpriteComponent>(eid);
-      ImGui::Text("Colour: ");
-      ImGui::SameLine();
-      ImGui::ColorEdit4("##colour", glm::value_ptr(sc.colour));
+      // ImGui::Text("Colour: ");
+      // ImGui::SameLine();
+      // ImGui::ColorEdit4("##colour", sc.colour.r, );
       imgui_draw_ivec2(registry, "Sprite: ", sc.x, sc.y);
     }
 
     if (registry.all_of<VelocityComponent>(eid)) {
-      VelocityComponent& c = registry.get<VelocityComponent>(eid);
-      imgui_draw_vec2(registry, "Vel: ", c.x, c.y);
+      const VelocityComponent& c = registry.get<VelocityComponent>(eid);
+      float x = c.x;
+      float y = c.y;
+      imgui_draw_vec2(registry, "Vel: ", x, y);
     }
 
     // Add component

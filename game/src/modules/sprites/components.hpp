@@ -1,5 +1,7 @@
 #pragma once
 
+#include "engine/colour.hpp"
+
 #include <glm/glm.hpp>
 #include <nlohmann/json.hpp>
 
@@ -25,7 +27,7 @@ struct SpriteAnimationComponent
 
 struct SpriteComponent
 {
-  glm::vec4 colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+  engine::LinearColour colour;
   int x = 0;
   int y = 0;
   int tex_unit = 0; // do not serialize

@@ -29,7 +29,7 @@ QuadRenderer::draw_sprite(const RenderDescriptor& r, Shader& s)
   const glm::vec2& size = r.size;
   const glm::vec2& sprite_offset = static_cast<glm ::vec2>(r.sprite_offset);
   const float tex_unit = static_cast<float>(r.tex_unit);
-  const glm::vec4& colour = r.colour;
+  const glm::vec4 colour = { r.colour.r, r.colour.g, r.colour.b, r.colour.a };
 
   glm::mat4 model = glm::mat4(1.0f);
   model = glm::translate(model, glm::vec3(pos.x, pos.y, 0.0f));

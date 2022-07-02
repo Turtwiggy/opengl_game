@@ -16,7 +16,7 @@ game2d::update_objectives_system(entt::registry& registry)
 
   {
     const auto& view = registry.view<const ObjectiveComponent, const HighlightComponent>();
-    view.each([&p, &registry, &OBJECTIVE_FADE](const auto& obj, const auto& highlight) {
+    view.each([&p, &registry, &OBJECTIVE_FADE](auto entity, const auto& obj, const auto& highlight) {
       //
       // Now check physics systems for objective-unit collisions
 

@@ -7,7 +7,7 @@
 // engine
 #include "engine/opengl/texture.hpp"
 
-#include <iostream> // temp
+#include <imgui.h> // temp
 
 namespace game2d {
 
@@ -43,6 +43,7 @@ update_sprite_system(entt::registry& registry, float dt)
   view.each([&registry, &si, &dt](auto& sprite, auto& animation) {
     //
     SpriteAnimation current_animation = find_animation(si.animations, animation.playing_animation_name);
+
     int frames = current_animation.animation_frames.size();
 
     animation.frame_dt += dt;

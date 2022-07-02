@@ -1,6 +1,7 @@
 #pragma once
 
 // engine headers
+#include "engine/colour.hpp"
 #include "engine/opengl/shader.hpp"
 
 // other project headers
@@ -18,7 +19,7 @@ struct RenderDescriptor
 {
   glm::ivec2 pos_tl = { 0, 0 };
   glm::ivec2 size = { 100, 100 };
-  glm::vec4 colour = { 1.0f, 0.0f, 0.0f, 1.0f };
+  LinearColour colour;
   float angle_radians = 0.0f;
   glm::ivec2 sprite_offset = { 0, 0 }; // for spritesheet
   int tex_unit = 0;

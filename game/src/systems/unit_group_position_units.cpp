@@ -51,8 +51,8 @@ update_unit_group_position_units_system(entt::registry& registry)
         continue;
 
       // set velocity to get to destination
-      glm::vec2 dir = glm::vec2(d.x, d.y);
-      glm::vec2 n = glm::normalize(dir);
+      glm::vec2 dir = { d.x, d.y };
+      glm::vec2 n = normalize(dir);
       const float speed = 100.0f;
       unitvel.x = n.x * speed;
       unitvel.y = n.y * speed;
