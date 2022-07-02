@@ -53,14 +53,8 @@ struct SINGLETON_RendererInfo
   bool viewport_process_events = false;
 
   // Textures
-  // texture unit (slot on gpu)
-  const unsigned int tex_unit_linear_main_scene = 0;
-  const unsigned int tex_unit_linear_lighting = 1;
-  const unsigned int tex_unit_srgb_main_scene = 2;
+
   // texture ids (id after bound)
-  unsigned int tex_id_linear_main_scene = 0;
-  unsigned int tex_id_linear_lighting = 0;
-  unsigned int tex_id_srgb_main_scene = 0;
 };
 
 } // namespace game2d

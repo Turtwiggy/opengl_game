@@ -101,8 +101,6 @@ game2d::update_select_objects_move_system(entt::registry& registry)
         destinationC.destination_line = entt::null;
       }
 
-      const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
-
       // create line from current position to end position
       entt::entity e = registry.create();
       registry.emplace<TagComponent>(e, "SPAWNED LINE");

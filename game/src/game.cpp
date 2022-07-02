@@ -25,6 +25,7 @@
 #include "create_entities.hpp"
 #include "modules/camera/helpers.hpp"
 #include "modules/events/helpers/keyboard.hpp"
+#include "textures.hpp"
 
 // game modules
 #include "components/app.hpp"
@@ -117,6 +118,7 @@ void
 game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 screen_wh)
 {
   // init once only
+  registry.set<SINGLETON_Textures>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());

@@ -15,6 +15,7 @@
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
 #include "modules/ui_hierarchy/components.hpp"
+#include "textures.hpp"
 
 // std libs
 #include <string>
@@ -58,7 +59,7 @@ create_renderable(entt::registry& r,
                   const std::string& name,
                   const engine::SRGBColour& colour)
 {
-  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
+  const auto& slots = r.ctx<SINGLETON_Textures>();
 
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
@@ -75,7 +76,7 @@ create_renderable(entt::registry& r,
 
   SpriteComponent sprite;
   sprite.colour = engine::SRGBToLinear(colour);
-  sprite.tex_unit = si.tex_unit_kenny;
+  sprite.tex_unit = slots.tex_unit_kenny;
   sprite.x = 0;
   sprite.y = 0;
   r.emplace<SpriteComponent>(e, sprite);
@@ -124,7 +125,6 @@ create_unit_group(entt::registry& r,
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
   const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
 
   entt::entity e = r.create();
@@ -161,8 +161,8 @@ create_unit_group(entt::registry& r,
 entt::entity
 create_unit(entt::registry& registry, const std::string& name, const engine::SRGBColour& colour)
 {
-  const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
+  const auto& slots = registry.ctx<SINGLETON_Textures>();
 
   // entity
   entt::entity e = registry.create();
@@ -182,7 +182,7 @@ create_unit(entt::registry& registry, const std::string& name, const engine::SRG
   registry.emplace<TransformComponent>(e, transform);
   SpriteComponent sprite;
   sprite.colour = engine::SRGBToLinear(colour);
-  sprite.tex_unit = si.tex_unit_sprout;
+  sprite.tex_unit = slots.tex_unit_sprout;
   sprite.x = 1;
   sprite.y = 0;
   registry.emplace<SpriteComponent>(e, sprite);

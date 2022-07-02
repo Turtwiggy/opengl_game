@@ -3,46 +3,46 @@
 
 // my libs
 #include "modules/sprites/helpers.hpp"
+#include "textures.hpp"
 
 // engine
 #include "engine/opengl/texture.hpp"
-
-#include <imgui.h> // temp
 
 namespace game2d {
 
 void
 init_sprite_system(entt::registry& registry)
 {
-  SINGLETON_SpriteTextures textures;
+  auto& tex = registry.ctx<SINGLETON_Textures>();
+  auto& anim = registry.set<SINGLETON_Animations>();
 
   // load textures
   std::vector<std::pair<int, std::string>> textures_to_load;
-  textures_to_load.emplace_back(textures.tex_unit_kenny, textures.sheet_kenny);
-  textures_to_load.emplace_back(textures.tex_unit_custom, textures.sheet_custom);
-  textures_to_load.emplace_back(textures.tex_unit_sprout, textures.sheet_sprout);
+  textures_to_load.emplace_back(tex.tex_unit_kenny, tex.sheet_kenny);
+  textures_to_load.emplace_back(tex.tex_unit_custom, tex.sheet_custom);
+  textures_to_load.emplace_back(tex.tex_unit_sprout, tex.sheet_sprout);
 
   auto tex_ids = engine::load_textures_threaded(textures_to_load);
-  textures.tex_id_kenny = tex_ids[0];
-  textures.tex_id_custom = tex_ids[1];
-  textures.tex_id_sprout = tex_ids[2];
+  tex.tex_id_kenny = tex_ids[0];
+  tex.tex_id_custom = tex_ids[1];
+  tex.tex_id_sprout = tex_ids[2];
 
-  load_sprite_yml(textures.animations, textures.yml_kenny);
-  load_sprite_yml(textures.animations, textures.yml_custom);
-  load_sprite_yml(textures.animations, textures.yml_sprout);
+  // load animations
 
-  registry.set<SINGLETON_SpriteTextures>(textures);
+  load_sprite_yml(anim.animations, tex.yml_kenny);
+  load_sprite_yml(anim.animations, tex.yml_custom);
+  load_sprite_yml(anim.animations, tex.yml_sprout);
 }
 
 void
 update_sprite_system(entt::registry& registry, float dt)
 {
-  const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
+  const auto& anim = registry.ctx<SINGLETON_Animations>();
 
   const auto& view = registry.view<SpriteComponent, SpriteAnimationComponent>();
-  view.each([&registry, &si, &dt](auto& sprite, auto& animation) {
+  view.each([&registry, &anim, &dt](auto& sprite, auto& animation) {
     //
-    SpriteAnimation current_animation = find_animation(si.animations, animation.playing_animation_name);
+    SpriteAnimation current_animation = find_animation(anim.animations, animation.playing_animation_name);
 
     int frames = current_animation.animation_frames.size();
 

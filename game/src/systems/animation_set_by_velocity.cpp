@@ -13,11 +13,12 @@ namespace game2d {
 void
 update_animation_set_by_velocity_system(entt::registry& registry)
 {
-  const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
+  const auto& anims = registry.ctx<SINGLETON_Animations>();
+
   const auto& view =
     registry.view<SpriteAnimationComponent, SpriteComponent, AnimationSetByVelocityComponent, VelocityComponent>();
 
-  view.each([&si](auto& anim, auto& sprite, const auto& asbv, const auto& vel) {
+  view.each([&anims](auto& anim, auto& sprite, const auto& asbv, const auto& vel) {
     std::string animation = "down_idle";
 
     float EPSILON = 0.05f;
@@ -38,7 +39,7 @@ update_animation_set_by_velocity_system(entt::registry& registry)
       anim.playing_animation_name = animation;
 
       // set starting frame
-      const auto& anim_data = find_animation(si.animations, anim.playing_animation_name);
+      const auto& anim_data = find_animation(anims.animations, anim.playing_animation_name);
       sprite.x = anim_data.animation_frames[0].x;
       sprite.y = anim_data.animation_frames[0].y;
     }

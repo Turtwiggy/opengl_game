@@ -24,7 +24,7 @@ struct SINGLETON_ColoursComponent
   const engine::SRGBColour black = { 0, 0, 0, 1.0f };
 
   // game colours
-  const engine::SRGBColour background = grey;
+  const engine::SRGBColour background = black;
   const engine::SRGBColour player_unit = feint_white;
   const engine::SRGBColour enemy_unit = red;
 };
