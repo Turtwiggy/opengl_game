@@ -2,7 +2,7 @@
 out vec4 out_colour;
 
 in vec2 v_tex;
-in vec4 v_colour; // make this linear space
+in vec4 v_colour; 
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 

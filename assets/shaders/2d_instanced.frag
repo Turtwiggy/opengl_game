@@ -8,12 +8,12 @@ in float v_tex_unit;
 
 uniform sampler2D textures[3];
 
-const int texture_unit_kenny = 0;       // loaded textures in linear
-const int texture_unit_custom = 1;  // loaded textures in linear
-const int texture_unit_sprout = 2;      // loaded textures in linear
-// const int texture_main = 3;             // fbo (write to these in linear)
-// const int texture_lighting = 4;         // fbo (write to these in linear)
-// const int texture_srgb= 5;         // fbo (write to these in linear)
+const int texture_unit_kenny = 0;     // loaded textures in linear
+const int texture_unit_custom = 1;    // loaded textures in linear
+const int texture_unit_sprout = 2;    // loaded textures in linear
+// const int texture_lin_main = 3;       // fbo
+// const int texture_lin_lighting = 4;   // fbo 
+// const int texture_srgb_main = 5;      // fbo 
 
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
