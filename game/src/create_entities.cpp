@@ -1,6 +1,7 @@
 #include "create_entities.hpp"
 
 // my libs
+#include "components/animation.hpp"
 #include "components/app.hpp"
 #include "components/cursor.hpp"
 #include "components/debug.hpp"
@@ -14,6 +15,7 @@
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
 #include "modules/ui_hierarchy/components.hpp"
+#include "textures.hpp"
 
 // std libs
 #include <string>
@@ -52,9 +54,12 @@ create_camera(entt::registry& r, int x, int y)
 }
 
 entt::entity
-create_renderable(entt::registry& r, const entt::entity& parent, const std::string& name, const glm::vec4& colour)
+create_renderable(entt::registry& r,
+                  const entt::entity& parent,
+                  const std::string& name,
+                  const engine::SRGBColour& colour)
 {
-  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
+  const auto& slots = r.ctx<SINGLETON_Textures>();
 
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, name);
@@ -70,8 +75,8 @@ create_renderable(entt::registry& r, const entt::entity& parent, const std::stri
   r.emplace<TransformComponent>(e, transform);
 
   SpriteComponent sprite;
-  sprite.colour = colour;
-  sprite.tex_unit = si.tex_unit_kenny;
+  sprite.colour = engine::SRGBToLinear(colour);
+  sprite.tex_unit = slots.tex_unit_kenny;
   sprite.x = 0;
   sprite.y = 0;
   r.emplace<SpriteComponent>(e, sprite);
@@ -105,43 +110,8 @@ create_cursor(entt::registry& r)
   // physics
   r.emplace<PhysicsActorComponent>(c.backdrop, GameCollisionLayer::ACTOR_CURSOR);
   r.emplace<PhysicsSizeComponent>(c.backdrop, SPRITE_SIZE, SPRITE_SIZE);
-  r.emplace<VelocityComponent>(c.backdrop, 0.0f, 0.0f);
+  r.emplace<VelocityComponent>(c.backdrop);
 };
-
-// void
-// create_objective(entt::registry& r, int x, int y, int size_x, int size_y)
-// {
-//   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-//   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-//   const auto colours = r.ctx<SINGLETON_ColoursComponent>();
-//   const auto& si = r.ctx<SINGLETON_SpriteTextures>();
-
-//   entt::entity e = r.create();
-//   h_root.children.push_back(e);
-//   r.emplace<TagComponent>(e, "objective");
-//   r.emplace<EntityHierarchyComponent>(e, h.root_node);
-
-//   // rendering
-//   TransformComponent transform;
-//   transform.position.x = x;
-//   transform.position.y = y;
-//   transform.scale.x = size_x;
-//   transform.scale.y = size_y;
-//   transform.rotation.z = 0.0f;
-//   r.emplace<TransformComponent>(e, transform);
-//   SpriteComponent sprite;
-//   sprite.colour = colours.feint_white;
-//   sprite.x = 0;
-//   sprite.y = 0;
-//   r.emplace<SpriteComponent>(e, sprite);
-//   // physics
-//   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_OBJECTIVE);
-//   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
-//   r.emplace<VelocityComponent>(e, 0.0f, 0.0f);
-//   // gameplay
-//   r.emplace<ObjectiveComponent>(e);
-//   r.emplace<HighlightComponent>(e, colours.feint_white, colours.backdrop_red);
-// }
 
 entt::entity
 create_unit_group(entt::registry& r,
@@ -150,13 +120,12 @@ create_unit_group(entt::registry& r,
                   int size_x,
                   int size_y,
                   const std::string& name,
-                  const glm::vec4& start_colour,
-                  const glm::vec4& highlight_colour)
+                  const engine::SRGBColour& start_colour,
+                  const engine::SRGBColour& highlight_colour)
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-  const auto& si = r.ctx<SINGLETON_SpriteTextures>();
-  const auto colours = r.ctx<SINGLETON_ColoursComponent>();
+  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
 
   entt::entity e = r.create();
   h_root.children.push_back(e);
@@ -167,19 +136,19 @@ create_unit_group(entt::registry& r,
   TransformComponent transform;
   transform.position.x = x;
   transform.position.y = y;
-  transform.scale.x = size_x;
-  transform.scale.y = size_y;
+  transform.scale.x = size_x / 2;
+  transform.scale.y = size_y / 2;
   transform.rotation.z = 0.0f;
   r.emplace<TransformComponent>(e, transform);
   SpriteComponent sprite;
-  sprite.colour = colours.feint_white;
+  sprite.colour = engine::SRGBToLinear(colours.red);
   sprite.x = 0;
   sprite.y = 0;
   r.emplace<SpriteComponent>(e, sprite);
   // physics
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_UNIT_GROUP);
   r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
-  r.emplace<VelocityComponent>(e, 10.0f, 0.0f);
+  r.emplace<VelocityComponent>(e);
   // gameplay
   r.emplace<SelectableComponent>(e);
   // r.emplace<HighlightComponent>(e, start_colour, highlight_colour);
@@ -190,9 +159,10 @@ create_unit_group(entt::registry& r,
 };
 
 entt::entity
-create_unit(entt::registry& registry, const std::string& name, const glm::vec4& colour)
+create_unit(entt::registry& registry, const std::string& name, const engine::SRGBColour& colour)
 {
-  const auto& si = registry.ctx<SINGLETON_SpriteTextures>();
+  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
+  const auto& slots = registry.ctx<SINGLETON_Textures>();
 
   // entity
   entt::entity e = registry.create();
@@ -211,17 +181,18 @@ create_unit(entt::registry& registry, const std::string& name, const glm::vec4& 
   transform.scale.y = SPRITE_SIZE;
   registry.emplace<TransformComponent>(e, transform);
   SpriteComponent sprite;
-  sprite.colour = colour;
-  sprite.tex_unit = si.tex_unit_sprout;
+  sprite.colour = engine::SRGBToLinear(colour);
+  sprite.tex_unit = slots.tex_unit_sprout;
   sprite.x = 1;
   sprite.y = 0;
   registry.emplace<SpriteComponent>(e, sprite);
   // animation
   registry.emplace<SpriteAnimationComponent>(e);
+  registry.emplace<AnimationSetByVelocityComponent>(e);
   // physics
   registry.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_U);
   registry.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
-  registry.emplace<VelocityComponent>(e, 0.0f, 0.0f);
+  registry.emplace<VelocityComponent>(e);
   // gameplay
   registry.emplace<DestinationComponent>(e);
 

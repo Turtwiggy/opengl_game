@@ -2,27 +2,28 @@
 out vec4 out_colour;
 
 in vec2 v_tex;
-in vec4 v_colour;
+in vec4 v_colour; // make this linear space
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-uniform sampler2D textures[5];
+uniform sampler2D textures[3];
 
-const int texture_main = 0;
-const int texture_lighting = 1;
-const int texture_unit_kenny = 2;
-const int texture_unit_spaceships = 3;
-const int texture_unit_sprout = 4;
+const int texture_unit_kenny = 0;     // loaded textures in linear
+const int texture_unit_custom = 1;    // loaded textures in linear
+const int texture_unit_sprout = 2;    // loaded textures in linear
+// const int texture_lin_main = 3;       // fbo
+// const int texture_lin_lighting = 4;   // fbo 
+// const int texture_srgb_main = 5;      // fbo 
 
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
 const float kenny_scale_x = 1.0f / kenny_num_cols;
 const float kenny_scale_y = 1.0f / kenny_num_cols;
 
-const int spaceship_cols = 8;
-const int spaceship_rows = 8;
-const float spaceship_scale_x = 1.0f / spaceship_cols;
-const float spaceship_scale_y = 1.0f / spaceship_rows;
+const int custom_cols = 8;
+const int custom_rows = 8;
+const float custom_scale_x = 1.0f / custom_cols;
+const float custom_scale_y = 1.0f / custom_rows;
 
 const int sprout_cols = 5;
 const int sprout_rows = 4;
@@ -39,9 +40,6 @@ main()
     return;
   } 
   
-  // out_colour = texture(textures[index], v_tex);
-  // return;
-  
   if(index == texture_unit_kenny){
     vec2 sprite_uv = vec2(
       v_tex.x / kenny_num_cols + v_sprite_pos.x * kenny_scale_x,
@@ -49,10 +47,10 @@ main()
     );
     out_colour = v_colour * texture(textures[index], sprite_uv);
     return;
-  } else if(index == texture_unit_spaceships) {
+  } else if(index == texture_unit_custom) {
     vec2 sprite_uv = vec2(
-      v_tex.x / spaceship_cols + v_sprite_pos.x * spaceship_scale_x,
-      v_tex.y / spaceship_rows + v_sprite_pos.y * spaceship_scale_y      
+      v_tex.x / custom_cols + v_sprite_pos.x * custom_scale_x,
+      v_tex.y / custom_rows + v_sprite_pos.y * custom_scale_y      
     );
     out_colour = v_colour * texture(textures[index], sprite_uv);
     return;

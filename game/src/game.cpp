@@ -25,6 +25,7 @@
 #include "create_entities.hpp"
 #include "modules/camera/helpers.hpp"
 #include "modules/events/helpers/keyboard.hpp"
+#include "textures.hpp"
 
 // game modules
 #include "components/app.hpp"
@@ -34,6 +35,7 @@
 #include "game_modules/turn_system/components.hpp"
 #include "game_modules/turn_system/system.hpp"
 #include "modules/ui_hierarchy/components.hpp"
+#include "systems/animation_set_by_velocity.hpp"
 #include "systems/cursor.hpp"
 #include "systems/objectives.hpp"
 #include "systems/pathfinding.hpp"
@@ -88,17 +90,17 @@ init_game_state(entt::registry& registry, engine::Application& app)
     name = { "UNIT GROUP 0" };
 
     auto u1 = create_unit(registry, "unit 1", colours.player_unit);
-    auto u2 = create_unit(registry, "unit 2", colours.player_unit);
-    auto u3 = create_unit(registry, "unit 3", colours.player_unit);
-    auto u4 = create_unit(registry, "unit 4", colours.player_unit);
-    auto u5 = create_unit(registry, "unit 5", colours.player_unit);
+    // auto u2 = create_unit(registry, "unit 2", colours.player_unit);
+    // auto u3 = create_unit(registry, "unit 3", colours.player_unit);
+    // auto u4 = create_unit(registry, "unit 4", colours.player_unit);
+    // auto u5 = create_unit(registry, "unit 5", colours.player_unit);
     auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
     auto& u = registry.get<UnitGroupComponent>(e).units;
     u.push_back(u1);
-    u.push_back(u2);
-    u.push_back(u3);
-    u.push_back(u4);
-    u.push_back(u5);
+    // u.push_back(u2);
+    // u.push_back(u3);
+    // u.push_back(u4);
+    // u.push_back(u5);
   }
 
   // // objectives
@@ -116,6 +118,7 @@ void
 game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 screen_wh)
 {
   // init once only
+  registry.set<SINGLETON_Textures>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   registry.set<Profiler>(Profiler());
@@ -185,6 +188,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         update_cursor_system(registry);
         update_objectives_system(registry);
         update_pathfinding_system(registry);
+        update_animation_set_by_velocity_system(registry);
         update_select_objects_system(registry);
         update_select_objects_highlight_system(registry);
         update_select_objects_move_system(registry);
