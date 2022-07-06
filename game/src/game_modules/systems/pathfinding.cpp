@@ -2,7 +2,7 @@
 #include "pathfinding.hpp"
 
 // components
-#include "components/pathfinding.hpp"
+#include "game_modules/components/pathfinding.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

@@ -16,7 +16,7 @@ update_turn_system(entt::registry& registry)
 {
   auto& tm = registry.ctx<SINGLETON_TurnComponent>();
 
-  ImGui::Begin("TurnManager");
+  ImGui::Begin("TurnManager", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   ImGui::Text("Turn: %i", tm.turn);
   ImGui::Text("Phase: %s", std::string(magic_enum::enum_name(tm.phase)).c_str());
 

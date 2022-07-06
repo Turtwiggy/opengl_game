@@ -1,7 +1,7 @@
-#include "systems/unit_group_position_units.hpp"
+#include "unit_group_position_units.hpp"
 
-#include "components/pathfinding.hpp"
-#include "components/units.hpp"
+#include "game_modules/components/pathfinding.hpp"
+#include "game_modules/components/units.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

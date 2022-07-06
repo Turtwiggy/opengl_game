@@ -1,8 +1,8 @@
 #include "objectives.hpp"
 
 // my libs
-#include "components/objectives.hpp"
-#include "components/selectable.hpp"
+#include "game_modules/components/objectives.hpp"
+#include "game_modules/components/selectable.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 

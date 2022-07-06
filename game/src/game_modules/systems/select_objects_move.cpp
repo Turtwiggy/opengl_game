@@ -2,9 +2,9 @@
 #include "select_objects_move.hpp"
 
 // components
-#include "components/debug.hpp"
-#include "components/pathfinding.hpp"
-#include "components/selectable.hpp"
+#include "game_modules/components/debug.hpp"
+#include "game_modules/components/pathfinding.hpp"
+#include "game_modules/components/selectable.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/events/components.hpp"
 #include "modules/events/helpers/mouse.hpp"

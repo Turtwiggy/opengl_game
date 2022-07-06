@@ -2,8 +2,8 @@
 
 // game
 // #include "modules/game_combat"
-#include "components/units.hpp"
 #include "create_entities.hpp"
+#include "game_modules/components/units.hpp"
 #include "resources/colour.hpp"
 
 // other lib headers

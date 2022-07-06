@@ -15,6 +15,7 @@
 #include "modules/events/system.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
+#include "modules/ui_audio/system.hpp"
 #include "modules/ui_game/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
 #include "modules/ui_physics/system.hpp"
@@ -32,20 +33,20 @@
 #include "resources/textures.hpp"
 
 // game modules
-#include "components/app.hpp"
-#include "components/objectives.hpp"
-#include "components/selectable.hpp"
-#include "components/units.hpp"
+#include "game_modules/components/app.hpp"
+#include "game_modules/components/objectives.hpp"
+#include "game_modules/components/selectable.hpp"
+#include "game_modules/components/units.hpp"
+#include "game_modules/systems/animation_set_by_velocity.hpp"
+#include "game_modules/systems/cursor.hpp"
+#include "game_modules/systems/objectives.hpp"
+#include "game_modules/systems/pathfinding.hpp"
+#include "game_modules/systems/select_objects.hpp"
+#include "game_modules/systems/select_objects_highlight.hpp"
+#include "game_modules/systems/select_objects_move.hpp"
+#include "game_modules/systems/unit_group_position_units.hpp"
 #include "game_modules/turn_system/components.hpp"
 #include "game_modules/turn_system/system.hpp"
-#include "systems/animation_set_by_velocity.hpp"
-#include "systems/cursor.hpp"
-#include "systems/objectives.hpp"
-#include "systems/pathfinding.hpp"
-#include "systems/select_objects.hpp"
-#include "systems/select_objects_highlight.hpp"
-#include "systems/select_objects_move.hpp"
-#include "systems/unit_group_position_units.hpp"
 
 // engine headers
 // #include "engine/app/io.hpp"
@@ -213,6 +214,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
+    update_ui_audio_system(registry);
     update_ui_game_system(registry);
     update_ui_physics_system(registry);
     update_ui_hierarchy_system(registry);

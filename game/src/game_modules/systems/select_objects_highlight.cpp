@@ -4,7 +4,7 @@
 #include "engine/colour.hpp"
 
 // components
-#include "components/selectable.hpp"
+#include "game_modules/components/selectable.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
 

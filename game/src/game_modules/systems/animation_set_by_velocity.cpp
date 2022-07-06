@@ -1,6 +1,6 @@
 #include "animation_set_by_velocity.hpp"
 
-#include "components/animation.hpp"
+#include "game_modules/components/animation.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
@@ -44,7 +44,7 @@ update_animation_set_by_velocity_system(entt::registry& registry)
       sprite.y = anim_data.animation_frames[0].y;
     }
 
-    ImGui::Begin("Anim");
+    ImGui::Begin("Anim", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
     ImGui::Text("Velocity: %f %f", vel.x, vel.y);
     ImGui::Text("Anim: %s", animation.c_str());
     ImGui::Text("Sprite: %i %i", sprite.x, sprite.y);

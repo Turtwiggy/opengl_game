@@ -2,7 +2,7 @@
 #include "cursor.hpp"
 
 // components
-#include "components/cursor.hpp"
+#include "game_modules/components/cursor.hpp"
 #include "modules/events/components.hpp"
 #include "modules/events/helpers/mouse.hpp"
 #include "modules/physics/components.hpp"
