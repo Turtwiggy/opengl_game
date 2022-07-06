@@ -2,7 +2,6 @@
 
 // my libs
 #include "components/animation.hpp"
-#include "components/app.hpp"
 #include "components/cursor.hpp"
 #include "components/debug.hpp"
 #include "components/objectives.hpp"
@@ -15,7 +14,8 @@
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
 #include "modules/ui_hierarchy/components.hpp"
-#include "textures.hpp"
+#include "resources/colour.hpp"
+#include "resources/textures.hpp"
 
 // std libs
 #include <string>

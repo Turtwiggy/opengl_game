@@ -14,6 +14,7 @@ using namespace engine;
 
 // std lib
 #include <chrono>
+#include <csignal>
 #include <iostream>
 
 static bool vsync = true;

@@ -2,9 +2,9 @@
 
 // game
 // #include "modules/game_combat"
-#include "components/app.hpp"
 #include "components/units.hpp"
 #include "create_entities.hpp"
+#include "resources/colour.hpp"
 
 // other lib headers
 #include <imgui.h>

@@ -22,12 +22,12 @@ struct SINGLETON_Textures
   int tex_id_linear_lighting = 0;
   int tex_id_srgb_main_scene = 0;
 
-  // resource paths
+  // texture paths
   const std::string sheet_kenny = "assets/textures/kennynl_1bit_pack/monochrome_transparent_packed.png";
   const std::string sheet_custom = "assets/textures/custom_spaceships.png";
   const std::string sheet_sprout = "assets/textures/sprout_lands/chars/basic_char.png";
 
-  // sprite info
+  // sprite-yml info
   const std::string yml_kenny = "assets/config/spritemap_kennynl.yml";
   const std::string yml_custom = "assets/config/spritemap_custom.yml";
   const std::string yml_sprout = "assets/config/spritemap_sprout.yml";

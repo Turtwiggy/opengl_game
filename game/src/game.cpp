@@ -9,11 +9,10 @@
 #include "modules/ui_hierarchy/components.hpp"
 #include "modules/ui_profiler/components.hpp"
 
-// system modules
+// systems
+#include "modules/audio/system.hpp"
 #include "modules/camera/system.hpp"
 #include "modules/events/system.hpp"
-#include "modules/physics/process_actor_actor.hpp"
-#include "modules/physics/process_move_objects.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
 #include "modules/ui_game/system.hpp"
@@ -21,11 +20,16 @@
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
 
-// game helpers
+// helpers
 #include "create_entities.hpp"
 #include "modules/camera/helpers.hpp"
 #include "modules/events/helpers/keyboard.hpp"
-#include "textures.hpp"
+#include "modules/physics/process_actor_actor.hpp"
+#include "modules/physics/process_move_objects.hpp"
+
+// resources?
+#include "resources/colour.hpp"
+#include "resources/textures.hpp"
 
 // game modules
 #include "components/app.hpp"
@@ -34,7 +38,6 @@
 #include "components/units.hpp"
 #include "game_modules/turn_system/components.hpp"
 #include "game_modules/turn_system/system.hpp"
-#include "modules/ui_hierarchy/components.hpp"
 #include "systems/animation_set_by_velocity.hpp"
 #include "systems/cursor.hpp"
 #include "systems/objectives.hpp"
@@ -45,18 +48,16 @@
 #include "systems/unit_group_position_units.hpp"
 
 // engine headers
-#include "engine/app/io.hpp"
-#include "engine/maths/maths.hpp"
+// #include "engine/app/io.hpp"
+// #include "engine/maths/maths.hpp"
+
+// other lib
+#include <glm/glm.hpp>
 
 // std lib
-#include <glm/glm.hpp>
 #include <string>
 
 namespace game2d {
-
-// game config
-const static glm::ivec2 battlefield_xy{ 800, 800 };
-const static int objective_size = 250;
 
 void
 init_game_state(entt::registry& registry, engine::Application& app)
@@ -69,16 +70,14 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
   registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
   init_input_system(registry);
+  init_audio_system(registry);
   init_ui_hierarchy_system(registry);
 
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   auto& r = registry.ctx<SINGLETON_ResourceComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
-  const auto viewport_wh = ri.viewport_size_render_at;
-  const int camera_x = viewport_wh.x / 2 - battlefield_xy.x / 2;
-  const int camera_y = viewport_wh.y / 2 - battlefield_xy.y / 2;
-  create_camera(registry, camera_x, camera_y);
+  create_camera(registry, 0, 0);
   create_cursor(registry);
   // create_debug_square(registry);
 
@@ -90,17 +89,13 @@ init_game_state(entt::registry& registry, engine::Application& app)
     name = { "UNIT GROUP 0" };
 
     auto u1 = create_unit(registry, "unit 1", colours.player_unit);
-    // auto u2 = create_unit(registry, "unit 2", colours.player_unit);
-    // auto u3 = create_unit(registry, "unit 3", colours.player_unit);
-    // auto u4 = create_unit(registry, "unit 4", colours.player_unit);
-    // auto u5 = create_unit(registry, "unit 5", colours.player_unit);
+    auto u2 = create_unit(registry, "unit 2", colours.player_unit);
+    auto u3 = create_unit(registry, "unit 3", colours.player_unit);
+    auto u4 = create_unit(registry, "unit 4", colours.player_unit);
+    auto u5 = create_unit(registry, "unit 5", colours.player_unit);
     auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
     auto& u = registry.get<UnitGroupComponent>(e).units;
-    u.push_back(u1);
-    // u.push_back(u2);
-    // u.push_back(u3);
-    // u.push_back(u4);
-    // u.push_back(u5);
+    u.insert(u.end(), { u1, u2, u3, u4, u5 });
   }
 
   // // objectives
@@ -160,9 +155,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     // viewport was updated, recenter the camera on the battlefield
     const auto& main_camera = get_main_camera(registry);
     auto& transform = registry.get<TransformComponent>(main_camera);
-    auto camera_position = ri.viewport_size_current / 2 - battlefield_xy / 2;
-    transform.position.x = camera_position.x;
-    transform.position.y = camera_position.y;
+    transform.position = { 0, 0, 0 };
   }
 
   // game logic
@@ -182,8 +175,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (get_key_down(input, SDL_SCANCODE_ESCAPE))
       app.shutdown();
 
+    update_audio_system(registry);
+
     if (!gp.paused) {
-      // ... systems that always update
+      // ... systems that always update (when not paused)
       {
         update_cursor_system(registry);
         update_objectives_system(registry);

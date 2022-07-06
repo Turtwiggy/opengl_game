@@ -2,7 +2,6 @@
 #include "modules/renderer/system.hpp"
 
 // components/systems
-#include "components/app.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/camera/helpers.hpp"
 #include "modules/renderer/components.hpp"
@@ -10,7 +9,8 @@
 #include "modules/renderer/helpers/helpers.hpp"
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
-#include "textures.hpp"
+#include "resources/colour.hpp"
+#include "resources/textures.hpp"
 
 // engine headers
 #include "engine/opengl/framebuffer.hpp"
@@ -202,7 +202,7 @@ game2d::update_render_system(entt::registry& registry)
       quad_renderer::RenderDescriptor desc;
       desc.pos_tl = { 0, 0 };
       desc.size = viewport_wh;
-      // desc.colour = SRGBToLinear(SRGBColour(255, 255, 255, 1.0f));
+      // desc.colour = // not needed
       desc.angle_radians = 0.0f;
       desc.tex_unit = tex.tex_unit_linear_main_scene;
       desc.sprite_offset = { 0, 0 };

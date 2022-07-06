@@ -2,7 +2,6 @@
 #include "select_objects_move.hpp"
 
 // components
-#include "components/app.hpp"
 #include "components/debug.hpp"
 #include "components/pathfinding.hpp"
 #include "components/selectable.hpp"
@@ -12,6 +11,7 @@
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
+#include "resources/colour.hpp"
 
 // engine headers
 #include "engine/colour.hpp"

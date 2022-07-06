@@ -66,11 +66,6 @@ game2d::update_input_system(entt::registry& registry, engine::Application& app)
           break;
       }
     }
-    // audio
-    if (e.type == SDL_AUDIODEVICEADDED)
-      std::cout << "audio device added?" << std::endl;
-    if (e.type == SDL_AUDIODEVICEREMOVED)
-      std::cout << "audio device removed?" << std::endl;
 
     // Pass UI the event
     // Note: should move imgui manager to a System...

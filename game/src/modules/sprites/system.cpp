@@ -3,7 +3,7 @@
 
 // my libs
 #include "modules/sprites/helpers.hpp"
-#include "textures.hpp"
+#include "resources/textures.hpp"
 
 // engine
 #include "engine/opengl/texture.hpp"
