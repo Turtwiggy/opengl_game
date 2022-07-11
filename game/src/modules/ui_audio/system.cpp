@@ -1,7 +1,7 @@
 // header
 #include "system.hpp"
 
-#include "modules/audio/components.hpp"
+#include "resources/audio.hpp"
 
 // other lib headers
 #include <imgui.h>

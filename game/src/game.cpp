@@ -70,8 +70,6 @@ init_game_state(entt::registry& registry, engine::Application& app)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_ColoursComponent>(SINGLETON_ColoursComponent());
   registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
-  init_input_system(registry);
-  init_audio_system(registry);
   init_ui_hierarchy_system(registry);
 
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
@@ -117,6 +115,8 @@ game2d::init(entt::registry& registry, engine::Application& app, glm::ivec2 scre
   registry.set<SINGLETON_Textures>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
+  init_input_system(registry);
+  init_audio_system(registry);
   registry.set<Profiler>(Profiler());
   // open_controllers(); // enable controllers
 

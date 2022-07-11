@@ -2,30 +2,63 @@
 #include "system.hpp"
 
 // my lib
-#include "modules/audio/components.hpp"
 #include "modules/events/components.hpp"
+#include "modules/events/helpers/keyboard.hpp"
+#include "modules/events/helpers/mouse.hpp"
+#include "resources/audio.hpp"
 
 // other lib
-#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_log.h>
+#include <SDL2/SDL_mixer.h>
 
 // std lib
 #include <iostream>
 
 namespace game2d {
 
+// https://wiki.libsdl.org/SDL_mixer/CategoryAPI
+// https://wiki.libsdl.org/SDL_AudioSpec
+
 void
 init_audio_system(entt::registry& registry)
 {
   SINGLETON_AudioComponent audio;
 
-  // todo: some fun things
+  if (SDL_WasInit(SDL_INIT_EVERYTHING) & SDL_INIT_AUDIO) {
+    std::cout << "SDL audio is init..." << std::endl;
+  }
+
+  int i, count = SDL_GetNumAudioDevices(0);
+  for (i = 0; i < count; ++i) {
+    SDL_Log("Audio device %d: %s", i, SDL_GetAudioDeviceName(i, 0));
+  }
+
+  int freq = 48000;
+  Uint16 format = AUDIO_F32;
+  int channels = 2;
+  int samples = 4096;
+
+  audio.dev = Mix_OpenAudioDevice(freq, format, channels, samples, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
+  if (audio.dev == -1) {
+    std::cerr << "Failed to open audio: " << SDL_GetError() << std::endl;
+    exit(0);
+  }
+
+  //
+  // Load Sounds and Music
+  //
+
+  audio.sound = Mix_LoadWAV(audio.sound_path.c_str());
+  if (audio.sound == NULL) {
+    std::cerr << "failed to load sound: " << SDL_GetError() << std::endl;
+    exit(0);
+  }
 
   registry.set<SINGLETON_AudioComponent>(audio);
 };
 
-// https://wiki.libsdl.org/CategoryAudio
-// https://wiki.libsdl.org/SDL_AudioSpec
 void
 update_audio_system(entt::registry& registry)
 {
@@ -46,6 +79,13 @@ update_audio_system(entt::registry& registry)
   if (audio_removed != events.sdl_events.end()) {
     const int count = SDL_GetNumAudioDevices(0);
     std::cout << "(audio device removed). Audio devices: " << count << std::endl;
+  }
+
+  // TEMP: REMOVE ME
+  if (get_mouse_rmb_press()) {
+    int success = Mix_PlayChannel(0, audio.sound, 0); // play once and stop
+    // returns the channel used to play, or -1 if could not be played
+    std::cout << "playing sound on channel: " << success;
   }
 };
 
