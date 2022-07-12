@@ -37,6 +37,7 @@
 #include "game_modules/components/objectives.hpp"
 #include "game_modules/components/selectable.hpp"
 #include "game_modules/components/units.hpp"
+#include "game_modules/systems/animated_cursor_click.hpp"
 #include "game_modules/systems/animation_set_by_velocity.hpp"
 #include "game_modules/systems/cursor.hpp"
 #include "game_modules/systems/objectives.hpp"
@@ -182,6 +183,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       // ... systems that always update (when not paused)
       {
         update_cursor_system(registry);
+        update_animated_cursor_click_system(registry);
         update_objectives_system(registry);
         update_pathfinding_system(registry);
         update_animation_set_by_velocity_system(registry);

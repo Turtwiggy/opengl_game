@@ -44,15 +44,21 @@ update_sprite_system(entt::registry& registry, float dt)
     //
     SpriteAnimation current_animation = find_animation(anim.animations, animation.playing_animation_name);
 
+    if (!animation.playing)
+      return;
+
     int frames = current_animation.animation_frames.size();
 
-    animation.frame_dt += dt;
+    animation.frame_dt += dt * animation.speed;
     if (animation.frame_dt >= current_animation.animation_frames_per_second) {
       // next frame!
       animation.frame_dt -= current_animation.animation_frames_per_second;
       animation.frame += 1;
-      animation.frame %= frames;
 
+      if (animation.frame >= frames && !animation.looping)
+        animation.playing = false;
+
+      animation.frame %= frames;
       sprite.x = current_animation.animation_frames[animation.frame].x;
       sprite.y = current_animation.animation_frames[animation.frame].y;
     }

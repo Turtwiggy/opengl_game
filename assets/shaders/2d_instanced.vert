@@ -13,6 +13,8 @@ out float v_tex_unit;
 
 uniform mat4 projection;
 
+uniform float screenshake_trauma;
+
 void
 main()
 {
@@ -23,4 +25,9 @@ main()
   v_tex_unit = tex_unit;
 
   gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+
+  // translational and rotational screenshake
+  // gl_Position.x *= cos(time * 10) * strength; 
+  // gl_Position.y *= cos(time * 10) * strength; 
+  // gl_Position.z *= cos(time * 10) * strength; 
 }

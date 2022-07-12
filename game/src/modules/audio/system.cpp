@@ -43,7 +43,8 @@ init_audio_system(entt::registry& registry)
   audio.dev = Mix_OpenAudioDevice(freq, format, channels, samples, NULL, SDL_AUDIO_ALLOW_ANY_CHANGE);
   if (audio.dev == -1) {
     std::cerr << "Failed to open audio: " << SDL_GetError() << std::endl;
-    exit(0);
+    registry.set<SINGLETON_AudioComponent>(audio);
+    return;
   }
 
   //
@@ -80,6 +81,9 @@ update_audio_system(entt::registry& registry)
     const int count = SDL_GetNumAudioDevices(0);
     std::cout << "(audio device removed). Audio devices: " << count << std::endl;
   }
+
+  if (audio.dev == -1) // Failed to open - TODO: implement retry?
+    return;
 
   // TEMP: REMOVE ME
   if (get_mouse_rmb_press()) {

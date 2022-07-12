@@ -9,19 +9,24 @@
 
 namespace game2d {
 
+// This is the loaded yml sprite information
 struct SpriteAnimation
 {
   std::string name;
   std::vector<glm::ivec2> animation_frames;
-  float animation_frames_per_second = 1;
+  float animation_frames_per_second = 1; // TODO: do something with this
   float animation_angle = 0.0f;
 };
 
 struct SpriteAnimationComponent
 {
-  std::string playing_animation_name = "down_idle";
+  std::string playing_animation_name;
   int frame = 0;
   float frame_dt = 0.0f;
+
+  float speed = 1.0f;
+  bool playing = true;
+  bool looping = true;
 };
 
 struct SpriteComponent

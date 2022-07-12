@@ -18,4 +18,9 @@ struct CursorComponent
   entt::entity backdrop = entt::null;
 };
 
+struct AnimatedCursorClickComponent
+{
+  bool placeholder = true;
+};
+
 } // namespace game2d

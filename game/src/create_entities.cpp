@@ -87,10 +87,10 @@ create_renderable(entt::registry& r,
 void
 create_cursor(entt::registry& r)
 {
+  const auto& slots = r.ctx<SINGLETON_Textures>();
   const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, std::string("cursor_parent"));
 
@@ -106,6 +106,25 @@ create_cursor(entt::registry& r)
   c.line_r = create_renderable(r, e, "line_r", colours.red);
   c.backdrop = create_renderable(r, e, "backdrop", colours.backdrop_red);
   r.emplace<CursorComponent>(e, c);
+
+  // rendering
+  TransformComponent transform;
+  transform.scale.x = SPRITE_SIZE / 2;
+  transform.scale.y = SPRITE_SIZE / 2;
+  r.emplace<TransformComponent>(e, transform);
+  SpriteComponent sprite;
+  sprite.colour = engine::SRGBToLinear(colours.white);
+  sprite.tex_unit = slots.tex_unit_custom;
+  sprite.x = 0;
+  sprite.y = 0;
+  r.emplace<SpriteComponent>(e, sprite);
+  SpriteAnimationComponent animation;
+  animation.playing = false;
+  animation.looping = false;
+  animation.speed = 24.0f;
+  animation.playing_animation_name = std::string("CURSOR_CLICK");
+  r.emplace<SpriteAnimationComponent>(e, animation);
+  r.emplace<AnimatedCursorClickComponent>(e);
 
   // physics
   r.emplace<PhysicsActorComponent>(c.backdrop, GameCollisionLayer::ACTOR_CURSOR);
@@ -187,7 +206,12 @@ create_unit(entt::registry& registry, const std::string& name, const engine::SRG
   sprite.y = 0;
   registry.emplace<SpriteComponent>(e, sprite);
   // animation
-  registry.emplace<SpriteAnimationComponent>(e);
+  SpriteAnimationComponent animation;
+  animation.playing = true;
+  animation.looping = true;
+  animation.speed = 1.0f;
+  animation.playing_animation_name = std::string("down_idle");
+  registry.emplace<SpriteAnimationComponent>(e, animation);
   registry.emplace<AnimationSetByVelocityComponent>(e);
   // physics
   registry.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_U);

@@ -35,7 +35,7 @@ game2d::update_cursor_system(entt::registry& registry)
 
   {
     const auto& view = registry.view<CursorComponent>();
-    view.each([&registry, &input](auto& c) {
+    view.each([&registry, &input](auto entity, auto& c) {
       //
       // Rendering...
       //
