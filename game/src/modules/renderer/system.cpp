@@ -38,6 +38,7 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   const auto& tex = registry.ctx<SINGLETON_Textures>();
   auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
+  // TODO: fix this
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_kenny);
   glActiveTexture(GL_TEXTURE1);
@@ -45,10 +46,12 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   glActiveTexture(GL_TEXTURE2);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_sprout);
   glActiveTexture(GL_TEXTURE3);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_logo);
   glActiveTexture(GL_TEXTURE4);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
   glActiveTexture(GL_TEXTURE5);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
+  glActiveTexture(GL_TEXTURE6);
   glBindTexture(GL_TEXTURE_2D, tex.tex_unit_srgb_main_scene);
 
   glm::mat4 projection = calculate_projection(wh.x, wh.y);
@@ -64,10 +67,15 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   // }
 
   {
-    int textures[3] = { tex.tex_unit_kenny, tex.tex_unit_custom, tex.tex_unit_sprout };
+    int textures[4] = {
+      tex.tex_unit_kenny,
+      tex.tex_unit_custom,
+      tex.tex_unit_sprout,
+      tex.tex_unit_logo,
+    };
     ri.instanced.bind();
     ri.instanced.set_mat4("projection", projection);
-    ri.instanced.set_int_array("textures", textures, 3);
+    ri.instanced.set_int_array("textures", textures, 4);
   }
 
   {
@@ -133,7 +141,7 @@ game2d::update_render_system(entt::registry& registry)
     ri.viewport_size_render_at = ri.viewport_size_current;
     viewport_wh = ri.viewport_size_render_at;
 
-    // update textures
+    // update fbo textures
     {
       bind_tex(tex.tex_id_linear_main_scene);
       update_bound_texture_size(viewport_wh);

@@ -12,8 +12,11 @@ game2d::update_ui_audio_system(entt::registry& registry)
   const auto& audio = registry.ctx<SINGLETON_AudioComponent>();
 
   // Profiler
-  ImGui::Begin("Audio ", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
+  ImGui::Begin("Audio", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   {
+    bool docked = ImGui::IsWindowDocked();
+    ImGui::Text("docked: %i", docked);
+
     ImGui::Button("(todo) Play Sound A");
     ImGui::Button("(todo) Play Sound B");
     ImGui::Button("(todo) Play Music A");

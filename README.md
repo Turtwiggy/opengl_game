@@ -10,7 +10,7 @@ git submodule update --init --recursive
 - c++ compiler (MSVC, gcc, clang)
 - cmake e.g. `choco install cmake`
 - ninja e.g. `choco install ninja`
-- engine: `cd thirdparty\gameengine && thirdparty\vcpkg\vcpkg.exe install @vcpkg_x64-windows.txt && cd ../../`
+- engine: `cmd /c "cd thirdparty\gameengine && thirdparty\vcpkg\vcpkg.exe install @vcpkg_x64-windows.txt && cd ../../" `
 
 ### Building (CMake)
 
@@ -26,10 +26,9 @@ I develop with visual studio code. You can open the .code-workspace using the C/
 
 ### Emscripten
 
-(run once)
-
-```
+```bash
 thirdparty/gameengine/thirdparty/emsdk/emsdk install latest
+thirdparty/gameengine/thirdparty/emsdk/emsdk activate latest
 ```
 
 Look in the [./.vscode/tasks.json](./.vscode/tasks.json) for emscripten build commands

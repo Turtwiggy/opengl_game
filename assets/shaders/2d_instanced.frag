@@ -6,11 +6,12 @@ in vec4 v_colour; // make this linear space
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-uniform sampler2D textures[3];
+uniform sampler2D textures[4];
 
 const int texture_unit_kenny = 0;     // loaded textures in linear
 const int texture_unit_custom = 1;    // loaded textures in linear
 const int texture_unit_sprout = 2;    // loaded textures in linear
+const int texture_unit_logo = 3;    // loaded textures in linear
 // const int texture_lin_main = 3;       // fbo
 // const int texture_lin_lighting = 4;   // fbo 
 // const int texture_srgb_main = 5;      // fbo 
@@ -36,6 +37,7 @@ main()
   int index = int(v_tex_unit);
 
   if (v_sprite_pos.x == 0 && v_sprite_pos.y == 0) { // a whole texture
+    // out_colour = v_colour * texture(textures[index], v_tex);
     out_colour = v_colour;
     return;
   } 
@@ -62,8 +64,13 @@ main()
     out_colour = v_colour * texture(textures[index], sprite_uv);
     return;
   }
+  else if(index == texture_unit_logo)
+  {
+    out_colour = v_colour * texture(textures[index], v_tex);
+    return;
+  }
 
-  out_colour = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+  out_colour = v_colour;
 }
 
 // if (do_lighting) {

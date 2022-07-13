@@ -13,16 +13,6 @@
 #include <imgui.h>
 
 void
-game2d::init_ui_hierarchy_system(entt::registry& registry)
-{
-  // create hierarchy root node
-  auto& hi = registry.ctx<SINGLETON_HierarchyComponent>();
-  hi.root_node = registry.create();
-  registry.emplace<TagComponent>(hi.root_node, "root-node");
-  registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
-};
-
-void
 game2d::update_ui_hierarchy_system(entt::registry& registry)
 {
   auto& d = registry.ctx<SINGLETON_HierarchyComponent>();

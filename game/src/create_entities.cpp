@@ -28,12 +28,12 @@ void
 create_empty(entt::registry& r)
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-  auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
 
   entt::entity e = r.create();
-  h_root.children.push_back(e);
   r.emplace<TagComponent>(e, "empty-entity");
   r.emplace<EntityHierarchyComponent>(e, h.root_node);
+  hc.children.push_back(e);
 }
 
 void
@@ -90,13 +90,12 @@ create_cursor(entt::registry& r)
   const auto& slots = r.ctx<SINGLETON_Textures>();
   const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-  auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
+
   entt::entity e = r.create();
   r.emplace<TagComponent>(e, std::string("cursor_parent"));
-
-  // hierarchy cursor-root
   r.emplace<EntityHierarchyComponent>(e, h.root_node);
-  h_root.children.push_back(e); // cursor parent
+  hc.children.push_back(e); // cursor parent
 
   // cursor
   CursorComponent c;

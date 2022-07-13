@@ -42,7 +42,7 @@ add_executable(game_2d
   ${SRC_FILES}
 
   # add icon to executable
-  ${CMAKE_CURRENT_BINARY_DIR}/assets/textures/resource.rc
+  ${CMAKE_SOURCE_DIR}/assets/textures/resource.rc
 )
 
 # includes
@@ -63,11 +63,6 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
   target_link_libraries(game_2d PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
   target_link_libraries(game_2d PRIVATE yaml-cpp)
 
-  # game networking sockets libs (windows only)
-  # OpenSSL::SSL OpenSSL::Crypto
-  # protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite
-  # GameNetworkingSockets::shared GameNetworkingSockets::static GameNetworkingSockets::GameNetworkingSockets GameNetworkingSockets::GameNetworkingSockets_s
-
   # create symlink assets for build
   set(source "${CMAKE_SOURCE_DIR}/assets")
   set(destination "${CMAKE_CURRENT_BINARY_DIR}/assets")
@@ -77,6 +72,11 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     DEPENDS ${destination}
     COMMENT "symbolic link resources folder from ${source} => ${destination}"
   )
+
+  # game networking sockets libs (windows only)
+  # OpenSSL::SSL OpenSSL::Crypto
+  # protobuf::libprotoc protobuf::libprotobuf protobuf::libprotobuf-lite
+  # GameNetworkingSockets::shared GameNetworkingSockets::static GameNetworkingSockets::GameNetworkingSockets GameNetworkingSockets::GameNetworkingSockets_s
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

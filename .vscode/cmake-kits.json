@@ -1,6 +1,0 @@
-[
-  {
-    "name": "Emscripten",
-    "toolchainFile": "${workspaceFolder}/thirdparty/gameengine/thirdparty/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
-  }
-]

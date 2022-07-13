@@ -73,7 +73,7 @@ main(int argc, char* argv[])
   app.limit_fps = limit_fps;
   app.fps_if_limited = fps_limit;
 
-  game2d::init(registry, app, start_screen_wh);
+  game2d::init(registry, start_screen_wh);
 
   log_time_since("(INFO) End Setup ", app_start);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 // c++ headers
+#include <cstdint>
 #include <map>
 #include <vector>
 
