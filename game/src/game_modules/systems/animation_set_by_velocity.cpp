@@ -6,7 +6,7 @@
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
 
-#include <imgui.h>
+#include "engine/maths/maths.hpp"
 
 namespace game2d {
 
@@ -15,22 +15,32 @@ update_animation_set_by_velocity_system(entt::registry& registry)
 {
   const auto& anims = registry.ctx<SINGLETON_Animations>();
 
-  const auto& view =
-    registry.view<SpriteAnimationComponent, SpriteComponent, AnimationSetByVelocityComponent, VelocityComponent>();
+  const auto& view = registry.view<SpriteAnimationComponent,
+                                   SpriteComponent,
+                                   AnimationSetByVelocityComponent,
+                                   TransformComponent,
+                                   VelocityComponent>();
 
-  view.each([&anims](auto& anim, auto& sprite, const auto& asbv, const auto& vel) {
+  view.each([&anims, &registry](auto& anim, auto& sprite, const auto& asbv, const auto& transform, const auto& vel) {
     std::string animation = "down_idle";
 
-    float EPSILON = 0.05f;
-    if (vel.x > EPSILON && vel.x > vel.y) {
-      animation = "right_walk_cycle";
-    } else if (vel.y > EPSILON && vel.y > vel.x) {
-      animation = "down_walk_cycle";
-    } else if (vel.x < -EPSILON && vel.x < vel.y) {
+    float angle = engine::dir_to_angle_radians({ vel.x, vel.y });
+
+    // debug line
+    entt::entity& line = sprite.debug_line;
+    auto& line_transform = registry.get<TransformComponent>(line);
+    line_transform.position = transform.position;
+    line_transform.rotation.z = angle;
+    line_transform.scale = { 10, 1, 0 };
+
+    if (angle < 0.25f * engine::PI || angle > 1.75f * engine::PI)
       animation = "left_walk_cycle";
-    } else if (vel.y < -EPSILON && vel.y < vel.x) {
+    else if (angle < 0.75f * engine::PI)
       animation = "up_walk_cycle";
-    }
+    else if (angle < 1.25f * engine::PI)
+      animation = "right_walk_cycle";
+    else
+      animation = "down_walk_cycle";
 
     if (animation != anim.playing_animation_name) {
       // immediately play new anim
@@ -43,12 +53,6 @@ update_animation_set_by_velocity_system(entt::registry& registry)
       sprite.x = anim_data.animation_frames[0].x;
       sprite.y = anim_data.animation_frames[0].y;
     }
-
-    ImGui::Begin("Anim", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
-    ImGui::Text("Velocity: %f %f", vel.x, vel.y);
-    ImGui::Text("Anim: %s", animation.c_str());
-    ImGui::Text("Sprite: %i %i", sprite.x, sprite.y);
-    ImGui::End();
   });
 }
 

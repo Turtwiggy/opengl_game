@@ -203,6 +203,8 @@ create_unit(entt::registry& registry, const std::string& name, const engine::SRG
   sprite.tex_unit = slots.tex_unit_sprout;
   sprite.x = 1;
   sprite.y = 0;
+  entt::entity line_entity = create_renderable(registry, e, std::string("debug_line"), colours.white);
+  sprite.debug_line = line_entity;
   registry.emplace<SpriteComponent>(e, sprite);
   // animation
   SpriteAnimationComponent animation;
@@ -220,17 +222,6 @@ create_unit(entt::registry& registry, const std::string& name, const engine::SRG
   registry.emplace<DestinationComponent>(e);
 
   return e;
-}
-
-void
-create_debug_square(entt::registry& registry)
-{
-  auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
-
-  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
-  auto e = create_renderable(registry, h.root_node, std::string("debug_square"), colours.white);
-  // debug square
-  registry.emplace<DebugSquareComponent>(e);
 }
 
 } // namespace game2d

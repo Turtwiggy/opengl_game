@@ -91,7 +91,7 @@ game2d::update_select_objects_move_system(entt::registry& registry)
 
       // convert dir to angle
       const float radius = glm::length(dir);
-      const float angle = atan2(dir.y, dir.x) + engine::PI;
+      const float angle = engine::dir_to_angle_radians(dir);
       const float x = avg_pos.x + (n.x * radius / 2.0f);
       const float y = avg_pos.y + (n.y * radius / 2.0f);
 

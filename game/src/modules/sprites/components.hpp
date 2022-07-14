@@ -2,6 +2,7 @@
 
 #include "engine/colour.hpp"
 
+#include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
 #include <string>
@@ -36,6 +37,8 @@ struct SpriteComponent
   int y = 0;
   int tex_unit = 0; // do not serialize
   float angle = 0.0f;
+
+  entt::entity debug_line;
 };
 
 struct SINGLETON_Animations
