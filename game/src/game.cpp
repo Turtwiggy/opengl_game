@@ -16,8 +16,6 @@
 #include "modules/events/system.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
-#include "modules/ui_audio/system.hpp"
-#include "modules/ui_game/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
 #include "modules/ui_physics/system.hpp"
 #include "modules/ui_profiler/system.hpp"
@@ -33,22 +31,8 @@
 #include "resources/colour.hpp"
 #include "resources/textures.hpp"
 
-// game modules
-#include "game_modules/components/app.hpp"
-#include "game_modules/components/objectives.hpp"
-#include "game_modules/components/selectable.hpp"
-#include "game_modules/components/units.hpp"
-#include "game_modules/systems/animated_cursor_click.hpp"
-#include "game_modules/systems/animation_set_by_velocity.hpp"
-#include "game_modules/systems/cursor.hpp"
-#include "game_modules/systems/objectives.hpp"
-#include "game_modules/systems/pathfinding.hpp"
-#include "game_modules/systems/select_objects.hpp"
-#include "game_modules/systems/select_objects_highlight.hpp"
-#include "game_modules/systems/select_objects_move.hpp"
-#include "game_modules/systems/unit_group_position_units.hpp"
-#include "game_modules/turn_system/components.hpp"
-#include "game_modules/turn_system/system.hpp"
+// engine
+#include "engine/maths/maths.hpp"
 
 // other lib
 #include <glm/glm.hpp>
@@ -58,13 +42,22 @@
 
 namespace game2d {
 
+struct SINGLETON_GamePausedComponent
+{
+  bool paused = false;
+};
+
+struct SINGLETON_ResourceComponent
+{
+  engine::RandomState rnd;
+};
+
 void
 init_splash_screen(entt::registry& registry)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
-  registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
 
   auto& hi = registry.set<SINGLETON_HierarchyComponent>();
   hi.root_node = registry.create();
@@ -80,12 +73,10 @@ init_splash_screen(entt::registry& registry)
   {
     entt::entity e = registry.create();
     registry.emplace<TagComponent>(e, "icon");
-
     // hierarchy
     auto& h_root = registry.get<EntityHierarchyComponent>(hi.root_node);
     h_root.children.push_back(e);
     registry.emplace<EntityHierarchyComponent>(e, hi.root_node);
-
     // rendering
     TransformComponent transform;
     transform.scale = { 200.0f, 50.0f, 1.0f };
@@ -93,7 +84,6 @@ init_splash_screen(entt::registry& registry)
                            ri.viewport_size_render_at.y / 2 - transform.scale.y / 2,
                            0.0f };
     registry.emplace<TransformComponent>(e, transform);
-
     SpriteComponent sprite;
     sprite.colour = engine::SRGBToLinear(colours.white);
     sprite.tex_unit = slots.tex_unit_logo;
@@ -109,31 +99,51 @@ init_game_state(entt::registry& registry)
   registry.each([&registry](auto entity) { registry.destroy(entity); });
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
-  registry.set<SINGLETON_TurnComponent>(SINGLETON_TurnComponent());
+
   auto& hi = registry.set<SINGLETON_HierarchyComponent>();
   hi.root_node = registry.create();
   registry.emplace<TagComponent>(hi.root_node, "root-node");
   registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
-
   create_camera(registry, 0, 0);
   create_cursor(registry);
 
   const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
+  const auto& slots = registry.ctx<SINGLETON_Textures>();
 
-  // army 0
-  {
-    std::string name = { "UNIT GROUP 0" };
-    int x = 100, y = 200, sx = 100, sy = 100;
-    auto u1 = create_unit(registry, "unit 1", colours.player_unit);
-    auto u2 = create_unit(registry, "unit 2", colours.player_unit);
-    auto u3 = create_unit(registry, "unit 3", colours.player_unit);
-    auto u4 = create_unit(registry, "unit 4", colours.player_unit);
-    auto u5 = create_unit(registry, "unit 5", colours.player_unit);
-    auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
-    auto& u = registry.get<UnitGroupComponent>(e).units;
-    u.insert(u.end(), { u1, u2, u3, u4, u5 });
-  }
+  // // army 0
+  // {
+  //   std::string name = { "UNIT GROUP 0" };
+  //   int x = 100, y = 200, sx = 100, sy = 100;
+  //   auto u1 = create_unit(registry, "unit 1", colours.player_unit);
+  //   auto u2 = create_unit(registry, "unit 2", colours.player_unit);
+  //   auto u3 = create_unit(registry, "unit 3", colours.player_unit);
+  //   auto u4 = create_unit(registry, "unit 4", colours.player_unit);
+  //   auto u5 = create_unit(registry, "unit 5", colours.player_unit);
+  //   auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
+  //   auto& u = registry.get<UnitGroupComponent>(e).units;
+  //   u.insert(u.end(), { u1, u2, u3, u4, u5 });
+  // }
+
+  // { //  map sprite
+  //   entt::entity e = registry.create();
+  //   registry.emplace<TagComponent>(e, "map");
+  //   // hierarchy
+  //   auto& h_root = registry.get<EntityHierarchyComponent>(hi.root_node);
+  //   h_root.children.push_back(e);
+  //   registry.emplace<EntityHierarchyComponent>(e, hi.root_node);
+  //   // rendering
+  //   TransformComponent transform;
+  //   transform.scale = { 400.0f * 2.0f, 400.0f * 2.0f, 1.0f };
+  //   transform.position = { 500.0f, 500.0f, 0.0f };
+  //   registry.emplace<TransformComponent>(e, transform);
+  //   SpriteComponent sprite;
+  //   sprite.colour = engine::SRGBToLinear(colours.white);
+  //   sprite.tex_unit = slots.tex_unit_map;
+  //   sprite.x = 1;
+  //   sprite.y = 0;
+  //   registry.emplace<SpriteComponent>(e, sprite);
+  // }
 };
 
 } // namespace game2d
@@ -183,12 +193,12 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
-  if (ri.viewport_size_render_at != ri.viewport_size_current) {
-    // viewport was updated, recenter the camera on the battlefield
-    const auto& main_camera = get_main_camera(registry);
-    auto& transform = registry.get<TransformComponent>(main_camera);
-    transform.position = { 0, 0, 0 };
-  }
+  // if (ri.viewport_size_render_at != ri.viewport_size_current) {
+  //   // viewport was updated, recenter it
+  //   const auto& main_camera = get_main_camera(registry);
+  //   auto& transform = registry.get<TransformComponent>(main_camera);
+  //   transform.position = { 0, 0, 0 };
+  // }
 
   // game logic
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
@@ -214,15 +224,15 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update (when not paused)
       {
-        update_cursor_system(registry);
-        update_animated_cursor_click_system(registry);
-        update_objectives_system(registry);
-        update_pathfinding_system(registry);
-        update_animation_set_by_velocity_system(registry);
-        update_select_objects_system(registry);
-        update_select_objects_highlight_system(registry);
-        update_select_objects_move_system(registry);
-        update_unit_group_position_units_system(registry);
+        // update_cursor_system(registry);
+        // update_animated_cursor_click_system(registry);
+        // update_objectives_system(registry);
+        // update_pathfinding_system(registry);
+        // update_animation_set_by_velocity_system(registry);
+        // update_select_objects_system(registry);
+        // update_select_objects_highlight_system(registry);
+        // update_select_objects_move_system(registry);
+        // update_unit_group_position_units_system(registry);
       }
 
       // ... systems that update if viewport is focused
@@ -247,8 +257,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
-    update_ui_audio_system(registry);
-    update_ui_game_system(registry);
     update_ui_physics_system(registry);
     update_ui_hierarchy_system(registry);
     update_ui_profiler_system(registry);

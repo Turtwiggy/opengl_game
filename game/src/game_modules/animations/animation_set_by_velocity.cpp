@@ -1,6 +1,6 @@
 #include "animation_set_by_velocity.hpp"
 
-#include "game_modules/components/animation.hpp"
+#include "components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"

@@ -53,10 +53,9 @@ game2d::render_texture_to_imgui_viewport(const int& tex_unit)
       ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Left, 0.15f, nullptr, &dock_id_main);
       ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_id_main, ImGuiDir_Right, 0.15f, nullptr, &dock_id_main);
 
-      // hmm this is bad
+      // TODO: fix this
       ImGui::DockBuilderDockWindow("Viewport", dock_id_main);
       ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
-      ImGui::DockBuilderDockWindow("Audio", dock_id_right);
       // ImGui::DockBuilderDockWindow("Properties", dock_id_right);
       // ImGui::DockBuilderDockWindow("Physics", dock_id_right);
       // ImGui::DockBuilderDockWindow("Profiler", dock_id_right);

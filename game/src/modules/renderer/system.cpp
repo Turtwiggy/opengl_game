@@ -48,10 +48,12 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   glActiveTexture(GL_TEXTURE3);
   glBindTexture(GL_TEXTURE_2D, tex.tex_id_logo);
   glActiveTexture(GL_TEXTURE4);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_map);
   glActiveTexture(GL_TEXTURE5);
-  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_main_scene);
   glActiveTexture(GL_TEXTURE6);
+  glBindTexture(GL_TEXTURE_2D, tex.tex_id_linear_lighting);
+  glActiveTexture(GL_TEXTURE7);
   glBindTexture(GL_TEXTURE_2D, tex.tex_unit_srgb_main_scene);
 
   glm::mat4 projection = calculate_projection(wh.x, wh.y);
@@ -67,15 +69,12 @@ rebind(entt::registry& registry, const glm::ivec2& wh)
   // }
 
   {
-    int textures[4] = {
-      tex.tex_unit_kenny,
-      tex.tex_unit_custom,
-      tex.tex_unit_sprout,
-      tex.tex_unit_logo,
+    int textures[5] = {
+      tex.tex_unit_kenny, tex.tex_unit_custom, tex.tex_unit_sprout, tex.tex_unit_logo, tex.tex_unit_map,
     };
     ri.instanced.bind();
     ri.instanced.set_mat4("projection", projection);
-    ri.instanced.set_int_array("textures", textures, 4);
+    ri.instanced.set_int_array("textures", textures, 5);
   }
 
   {

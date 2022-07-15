@@ -1,7 +1,7 @@
 #include "animated_cursor_click.hpp"
 
 // components
-#include "game_modules/components/cursor.hpp"
+#include "components.hpp"
 #include "modules/events/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
@@ -19,8 +19,7 @@ update_animated_cursor_click_system(entt::registry& registry)
 {
   const auto& input = registry.ctx<SINGLETON_InputComponent>();
 
-  const auto& view =
-    registry.view<AnimatedCursorClickComponent, SpriteComponent, SpriteAnimationComponent, TransformComponent>();
+  const auto& view = registry.view<SpriteComponent, SpriteAnimationComponent, TransformComponent>();
 
   view.each([&input](auto entity, const auto& click_component, const auto& sprite, auto& animation, auto& transform) {
     if (get_mouse_lmb_press()) {

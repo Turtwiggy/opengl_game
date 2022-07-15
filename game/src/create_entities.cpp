@@ -1,13 +1,6 @@
 #include "create_entities.hpp"
 
 // my libs
-#include "game_modules/components/animation.hpp"
-#include "game_modules/components/cursor.hpp"
-#include "game_modules/components/debug.hpp"
-#include "game_modules/components/objectives.hpp"
-#include "game_modules/components/pathfinding.hpp"
-#include "game_modules/components/selectable.hpp"
-#include "game_modules/components/units.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"

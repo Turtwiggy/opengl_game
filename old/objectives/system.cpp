@@ -1,12 +1,11 @@
-#include "objectives.hpp"
+#include "system.hpp"
+
+#include "components.hpp"
 
 // my libs
-#include "game_modules/components/objectives.hpp"
 #include "game_modules/components/selectable.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
-
-// std libs
 
 void
 game2d::update_objectives_system(entt::registry& registry)
