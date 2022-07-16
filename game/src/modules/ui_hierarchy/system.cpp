@@ -91,14 +91,6 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
     // }
 
     // if (ImGui::BeginPopup("AddComponent")) {
-    //   if (ImGui::MenuItem("PositionIntComponent")) {
-    //     registry.emplace<PositionIntComponent>(eid);
-    //     ImGui::CloseCurrentPopup();
-    //   }
-    //   if (ImGui::MenuItem("RenderSizeComponent")) {
-    //     registry.emplace<RenderSizeComponent>(eid);
-    //     ImGui::CloseCurrentPopup();
-    //   }
     //   if (ImGui::MenuItem("PhysicsSizeComponent")) {
     //     registry.emplace<PhysicsSizeComponent>(eid);
     //     ImGui::CloseCurrentPopup();

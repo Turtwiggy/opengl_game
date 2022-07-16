@@ -71,7 +71,7 @@ create_player_sprite_component(entt::registry& r)
   comp.tex_unit = slots.tex_unit_kenny;
 
   // search kenny-nl spritesheet
-  const auto anim = find_animation(sprites.animations, "PERSON_0");
+  const auto anim = find_animation(sprites.animations, "PERSON_1");
   comp.x = anim.animation_frames[0].x;
   comp.y = anim.animation_frames[0].y;
 
@@ -95,6 +95,7 @@ create_player(entt::registry& r)
 
   auto e = r.create();
   hc.children.push_back(e);
+  r.emplace<PlayerComponent>(e);
 
   r.emplace<TagComponent>(e, "player");
   r.emplace<EntityHierarchyComponent>(e, h.root_node);
@@ -151,6 +152,7 @@ create_asteroid(entt::registry& r)
 
   auto e = r.create();
   hc.children.push_back(e);
+  r.emplace<AsteroidComponent>(e);
 
   r.emplace<TagComponent>(e, "asteroid-duck");
   r.emplace<EntityHierarchyComponent>(e, h.root_node);

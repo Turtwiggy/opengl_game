@@ -32,8 +32,11 @@
 #include "resources/colour.hpp"
 #include "resources/textures.hpp"
 
-// my lib
-#include "engine/maths/maths.hpp"
+// game systems
+#include "game_modules/components/components.hpp"
+#include "game_modules/systems/asteroid.hpp"
+#include "game_modules/systems/player.hpp"
+#include "game_modules/systems/ui_highscore.hpp"
 
 // other lib
 #include <glm/glm.hpp>
@@ -43,23 +46,14 @@
 
 namespace game2d {
 
-struct SINGLETON_GamePausedComponent
-{
-  bool paused = false;
-};
-
-struct SINGLETON_ResourceComponent
-{
-  engine::RandomState rnd;
-};
-
 void
 init_splash_screen(entt::registry& registry)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
-  registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
-
+  registry.set<SINGLETON_GamePausedComponent>();
+  registry.set<SINGLETON_GameOverComponent>();
+  registry.set<SINGLETON_HierarchyComponent>();
   create_hierarchy_root_node(registry);
   create_camera(registry);
 };
@@ -68,10 +62,10 @@ void
 init_game_state(entt::registry& registry)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
-  registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
+  registry.set<SINGLETON_GamePausedComponent>();
+  registry.set<SINGLETON_GameOverComponent>();
   registry.set<SINGLETON_HierarchyComponent>();
-
   create_hierarchy_root_node(registry);
   create_camera(registry);
 
@@ -81,15 +75,8 @@ init_game_state(entt::registry& registry)
   player_transform.position.y = 400;
 
   int initial_asteroids = 20;
-  for (int i = 0; i < initial_asteroids; i++) {
+  for (int i = 0; i < initial_asteroids; i++)
     auto asteroid = create_asteroid(registry);
-    auto& asteroid_transform = registry.get<TransformComponent>(asteroid);
-    asteroid_transform.position.x = 200;
-    asteroid_transform.position.y = 200;
-    auto& asteroid_velocity = registry.get<VelocityComponent>(asteroid);
-    asteroid_velocity.x = 0;
-    asteroid_velocity.y = 0;
-  }
 };
 
 } // namespace game2d
@@ -136,7 +123,6 @@ void
 game2d::update(entt::registry& registry, engine::Application& app, float dt)
 {
   auto& p = registry.ctx<Profiler>();
-  auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
 
   // game logic
@@ -146,8 +132,11 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
     const auto& input = registry.ctx<SINGLETON_InputComponent>();
     if (ri.viewport_process_events) {
-      if (get_key_down(input, SDL_SCANCODE_P))
-        gp.paused = !gp.paused;
+      {
+        auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
+        if (get_key_down(input, SDL_SCANCODE_P))
+          gp.paused = !gp.paused;
+      }
       if (get_key_down(input, SDL_SCANCODE_T))
         init_splash_screen(registry);
       if (get_key_down(input, SDL_SCANCODE_R))
@@ -155,14 +144,24 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
       if (get_key_down(input, SDL_SCANCODE_F))
         app.window->toggle_fullscreen();
     }
+    {
+      auto& go = registry.ctx<SINGLETON_GameOverComponent>();
+      if (go.over)
+        init_game_state(registry);
+    }
+
     if (get_key_down(input, SDL_SCANCODE_ESCAPE))
       app.shutdown();
 
     update_audio_system(registry);
 
+    auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
     if (!gp.paused) {
       // ... systems that always update (when not paused)
       {
+        update_asteroid_system(registry);
+        update_player_system(registry);
+
         // update_cursor_system(registry);
         // update_animated_cursor_click_system(registry);
         // update_objectives_system(registry);
@@ -197,12 +196,13 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // ui
   {
     // TODO: fix this
-    bool is_release = true;
+    bool is_release = false;
     if (!is_release) {
       update_ui_physics_system(registry);
       update_ui_hierarchy_system(registry);
       update_ui_profiler_system(registry);
     }
+    update_ui_highscore_system(registry);
   };
 
   // end frame
