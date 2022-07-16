@@ -4,6 +4,7 @@
 #include "game_modules/components/components.hpp"
 #include "modules/events/components.hpp"
 #include "modules/events/helpers/keyboard.hpp"
+#include "modules/lifecycle/components.hpp"
 #include "modules/physics/components.hpp"
 
 void
@@ -12,6 +13,7 @@ game2d::update_player_system(entt::registry& r)
   const auto& input = r.ctx<SINGLETON_InputComponent>();
   const auto& p = r.ctx<SINGLETON_PhysicsComponent>();
   auto& gameover = r.ctx<SINGLETON_GameOverComponent>();
+  auto& eb = r.ctx<SINGLETON_EntityBinComponent>();
 
   //
   // Move player(s)
@@ -67,5 +69,6 @@ game2d::update_player_system(entt::registry& r)
   // Player dies
   if (e0_player != entt::null && e1_asteroid != entt::null) {
     gameover.over = true;
+    eb.dead.push_back(e0_player); // kill the player
   }
 };

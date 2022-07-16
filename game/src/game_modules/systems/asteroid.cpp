@@ -3,6 +3,7 @@
 #include "create_entities.hpp"
 #include "game_modules/components/components.hpp"
 #include "glm/glm.hpp"
+#include "modules/lifecycle/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
@@ -18,19 +19,20 @@ void
 game2d::update_asteroid_system(entt::registry& r)
 {
   auto& rnd = r.ctx<SINGLETON_ResourceComponent>();
+  auto& eb = r.ctx<SINGLETON_EntityBinComponent>();
   const auto& ri = r.ctx<SINGLETON_RendererInfo>();
   const float dt = ImGui::GetIO().DeltaTime;
   const auto& view = r.view<AsteroidComponent, VelocityComponent, TransformComponent>();
 
-  view.each([&r, &rnd, &dt, &ri](auto entity, auto& asteroid, auto& vel, auto& transform) {
+  view.each([&eb, &rnd, &dt, &ri](auto entity, auto& asteroid, auto& vel, auto& transform) {
     if (!asteroid.initialized) {
       asteroid.initialized = true;
 
       // Start()
 
       // .. random starting velocity
-      const float rnd_x_vel = engine::rand_det_s(rnd.rnd.rng, -50.0f, 50.0f);
-      const float rnd_y_vel = engine::rand_det_s(rnd.rnd.rng, -50.0f, 50.0f);
+      const float rnd_x_vel = engine::rand_det_s(rnd.rnd.rng, -75.0f, 75.0f);
+      const float rnd_y_vel = engine::rand_det_s(rnd.rnd.rng, -75.0f, 75.0f);
       vel.x = rnd_x_vel;
       vel.y = rnd_y_vel;
 
@@ -56,8 +58,9 @@ game2d::update_asteroid_system(entt::registry& r)
 
     // .. tick the asteroid's life
     asteroid.time_alive += dt;
-    if (asteroid.time_alive > asteroid.max_time_alive)
-      r.destroy(entity);
+    if (asteroid.time_alive > asteroid.max_time_alive) {
+      eb.dead.push_back(entity);
+    }
   });
 
   // Asteroid Spawner
@@ -71,5 +74,8 @@ game2d::update_asteroid_system(entt::registry& r)
     // Make game more difficult
     time_between_asteroids -= 0.01f;
     time_between_asteroids = glm::max(0.0f, time_between_asteroids);
+
+    // Make game even more difficult
+    max_asteroids += 1;
   }
 };

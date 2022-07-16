@@ -14,6 +14,7 @@
 #include "modules/audio/system.hpp"
 #include "modules/camera/system.hpp"
 #include "modules/events/system.hpp"
+#include "modules/lifecycle/components.hpp"
 #include "modules/renderer/system.hpp"
 #include "modules/sprites/system.hpp"
 #include "modules/ui_hierarchy/system.hpp"
@@ -89,6 +90,7 @@ game2d::init(entt::registry& registry, glm::ivec2 screen_wh)
   registry.set<SINGLETON_Textures>();
   registry.set<SINGLETON_ResourceComponent>();
   registry.set<SINGLETON_ColoursComponent>();
+  registry.set<SINGLETON_EntityBinComponent>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   init_input_system(registry);
@@ -159,6 +161,9 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update (when not paused)
       {
+        auto& eb = registry.ctx<SINGLETON_EntityBinComponent>();
+        eb.dead.clear();
+
         update_asteroid_system(registry);
         update_player_system(registry);
 
@@ -171,6 +176,14 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         // update_select_objects_highlight_system(registry);
         // update_select_objects_move_system(registry);
         // update_unit_group_position_units_system(registry);
+
+        for (auto entity : eb.dead) {
+          registry.destroy(entity);
+
+          // TODO: update hroot.children if entity is removed
+          // if (hroot.children.contains(entity)) {
+          // }
+        }
       }
 
       // ... systems that update if viewport is focused
