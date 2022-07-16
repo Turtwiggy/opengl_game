@@ -20,7 +20,7 @@ const int texture_unit_map = 4;       // textures in linear
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
 const float kenny_scale_x = 1.0f / kenny_num_cols;
-const float kenny_scale_y = 1.0f / kenny_num_cols;
+const float kenny_scale_y = 1.0f / kenny_num_rows;
 
 const int custom_cols = 8;
 const int custom_rows = 8;

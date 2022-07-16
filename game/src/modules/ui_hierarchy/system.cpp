@@ -37,8 +37,9 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
 
     // Right click on menu
     if (ImGui::BeginPopupContextWindow(0, 1, false)) {
-      if (ImGui::MenuItem("Create Entity"))
-        create_empty(registry);
+      if (ImGui::MenuItem("A menu item...!")) {
+        //
+      }
       ImGui::EndPopup();
     }
   }

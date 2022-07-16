@@ -22,6 +22,7 @@ struct SINGLETON_ColoursComponent
   const engine::SRGBColour background = black;
   const engine::SRGBColour player_unit = white;
   const engine::SRGBColour enemy_unit = red;
+  const engine::SRGBColour asteroid = red;
 };
 
 } // namespace game2d

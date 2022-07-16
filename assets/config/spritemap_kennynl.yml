@@ -112,6 +112,9 @@ sprites:
     frames:
       - [34, 6]
     angle: -45.0
+  - name: DUCK
+    frames:
+      - [25, 7]
   - name: WEAPON_PISTOL
     frames:
       - [37, 9]

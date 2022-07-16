@@ -27,11 +27,12 @@
 #include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
 
-// resources?
+// resources
+#include "resources/audio.hpp"
 #include "resources/colour.hpp"
 #include "resources/textures.hpp"
 
-// engine
+// my lib
 #include "engine/maths/maths.hpp"
 
 // other lib
@@ -59,38 +60,8 @@ init_splash_screen(entt::registry& registry)
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
 
-  auto& hi = registry.set<SINGLETON_HierarchyComponent>();
-  hi.root_node = registry.create();
-  registry.emplace<TagComponent>(hi.root_node, "root-node");
-  registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
-  create_camera(registry, 0, 0);
-  create_cursor(registry);
-
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
-  const auto& slots = registry.ctx<SINGLETON_Textures>();
-
-  {
-    entt::entity e = registry.create();
-    registry.emplace<TagComponent>(e, "icon");
-    // hierarchy
-    auto& h_root = registry.get<EntityHierarchyComponent>(hi.root_node);
-    h_root.children.push_back(e);
-    registry.emplace<EntityHierarchyComponent>(e, hi.root_node);
-    // rendering
-    TransformComponent transform;
-    transform.scale = { 200.0f, 50.0f, 1.0f };
-    transform.position = { ri.viewport_size_render_at.x / 2 - transform.scale.x / 2,
-                           ri.viewport_size_render_at.y / 2 - transform.scale.y / 2,
-                           0.0f };
-    registry.emplace<TransformComponent>(e, transform);
-    SpriteComponent sprite;
-    sprite.colour = engine::SRGBToLinear(colours.white);
-    sprite.tex_unit = slots.tex_unit_logo;
-    sprite.x = 1;
-    sprite.y = 0;
-    registry.emplace<SpriteComponent>(e, sprite);
-  }
+  create_hierarchy_root_node(registry);
+  create_camera(registry);
 };
 
 void
@@ -99,51 +70,26 @@ init_game_state(entt::registry& registry)
   registry.each([&registry](auto entity) { registry.destroy(entity); });
   registry.set<SINGLETON_GamePausedComponent>(SINGLETON_GamePausedComponent());
   registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
+  registry.set<SINGLETON_HierarchyComponent>();
 
-  auto& hi = registry.set<SINGLETON_HierarchyComponent>();
-  hi.root_node = registry.create();
-  registry.emplace<TagComponent>(hi.root_node, "root-node");
-  registry.emplace<EntityHierarchyComponent>(hi.root_node, hi.root_node);
-  create_camera(registry, 0, 0);
-  create_cursor(registry);
+  create_hierarchy_root_node(registry);
+  create_camera(registry);
 
-  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
-  const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-  const auto& slots = registry.ctx<SINGLETON_Textures>();
+  auto player = create_player(registry);
+  auto& player_transform = registry.get<TransformComponent>(player);
+  player_transform.position.x = 600;
+  player_transform.position.y = 400;
 
-  // // army 0
-  // {
-  //   std::string name = { "UNIT GROUP 0" };
-  //   int x = 100, y = 200, sx = 100, sy = 100;
-  //   auto u1 = create_unit(registry, "unit 1", colours.player_unit);
-  //   auto u2 = create_unit(registry, "unit 2", colours.player_unit);
-  //   auto u3 = create_unit(registry, "unit 3", colours.player_unit);
-  //   auto u4 = create_unit(registry, "unit 4", colours.player_unit);
-  //   auto u5 = create_unit(registry, "unit 5", colours.player_unit);
-  //   auto e = create_unit_group(registry, x, y, sx, sy, name, colours.cyan, colours.dblue);
-  //   auto& u = registry.get<UnitGroupComponent>(e).units;
-  //   u.insert(u.end(), { u1, u2, u3, u4, u5 });
-  // }
-
-  // { //  map sprite
-  //   entt::entity e = registry.create();
-  //   registry.emplace<TagComponent>(e, "map");
-  //   // hierarchy
-  //   auto& h_root = registry.get<EntityHierarchyComponent>(hi.root_node);
-  //   h_root.children.push_back(e);
-  //   registry.emplace<EntityHierarchyComponent>(e, hi.root_node);
-  //   // rendering
-  //   TransformComponent transform;
-  //   transform.scale = { 400.0f * 2.0f, 400.0f * 2.0f, 1.0f };
-  //   transform.position = { 500.0f, 500.0f, 0.0f };
-  //   registry.emplace<TransformComponent>(e, transform);
-  //   SpriteComponent sprite;
-  //   sprite.colour = engine::SRGBToLinear(colours.white);
-  //   sprite.tex_unit = slots.tex_unit_map;
-  //   sprite.x = 1;
-  //   sprite.y = 0;
-  //   registry.emplace<SpriteComponent>(e, sprite);
-  // }
+  int initial_asteroids = 20;
+  for (int i = 0; i < initial_asteroids; i++) {
+    auto asteroid = create_asteroid(registry);
+    auto& asteroid_transform = registry.get<TransformComponent>(asteroid);
+    asteroid_transform.position.x = 200;
+    asteroid_transform.position.y = 200;
+    auto& asteroid_velocity = registry.get<VelocityComponent>(asteroid);
+    asteroid_velocity.x = 0;
+    asteroid_velocity.y = 0;
+  }
 };
 
 } // namespace game2d
@@ -154,12 +100,12 @@ game2d::init(entt::registry& registry, glm::ivec2 screen_wh)
   // init once only
   registry.set<Profiler>();
   registry.set<SINGLETON_Textures>();
+  registry.set<SINGLETON_ResourceComponent>();
+  registry.set<SINGLETON_ColoursComponent>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   init_input_system(registry);
   init_audio_system(registry);
-  registry.set<SINGLETON_ResourceComponent>();
-  registry.set<SINGLETON_ColoursComponent>();
 
   init_game_state(registry);
 };
@@ -192,13 +138,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   auto& p = registry.ctx<Profiler>();
   auto& gp = registry.ctx<SINGLETON_GamePausedComponent>();
   const auto& ri = registry.ctx<SINGLETON_RendererInfo>();
-
-  // if (ri.viewport_size_render_at != ri.viewport_size_current) {
-  //   // viewport was updated, recenter it
-  //   const auto& main_camera = get_main_camera(registry);
-  //   auto& transform = registry.get<TransformComponent>(main_camera);
-  //   transform.position = { 0, 0, 0 };
-  // }
 
   // game logic
   Uint64 start_game_tick = SDL_GetPerformanceCounter();
@@ -257,9 +196,13 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
 
   // ui
   {
-    update_ui_physics_system(registry);
-    update_ui_hierarchy_system(registry);
-    update_ui_profiler_system(registry);
+    // TODO: fix this
+    bool is_release = true;
+    if (!is_release) {
+      update_ui_physics_system(registry);
+      update_ui_hierarchy_system(registry);
+      update_ui_profiler_system(registry);
+    }
   };
 
   // end frame
