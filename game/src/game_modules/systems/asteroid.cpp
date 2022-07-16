@@ -73,7 +73,7 @@ game2d::update_asteroid_system(entt::registry& r)
 
     // Make game more difficult
     time_between_asteroids -= 0.01f;
-    time_between_asteroids = glm::max(0.0f, time_between_asteroids);
+    time_between_asteroids = glm::max(0.1f, time_between_asteroids);
 
     // Make game even more difficult
     max_asteroids += 1;
