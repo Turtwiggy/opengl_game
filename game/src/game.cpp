@@ -34,7 +34,7 @@
 #include "resources/textures.hpp"
 
 // game systems
-#include "game_modules/components/components.hpp"
+#include "game_modules/components/game.hpp"
 #include "game_modules/systems/asteroid.hpp"
 #include "game_modules/systems/player.hpp"
 #include "game_modules/systems/ui_highscore.hpp"
@@ -70,13 +70,16 @@ init_game_state(entt::registry& registry)
   create_hierarchy_root_node(registry);
   create_camera(registry);
 
+  auto& gs = registry.set<SINGLETON_AsteroidGameStateComponent>();
+
   auto player = create_player(registry);
   auto& player_transform = registry.get<TransformComponent>(player);
   player_transform.position.x = 600;
   player_transform.position.y = 400;
+  auto& player_speed = registry.get<PlayerComponent>(player);
+  player_speed.speed = 250.0f;
 
-  int initial_asteroids = 20;
-  for (int i = 0; i < initial_asteroids; i++)
+  for (int i = 0; i < gs.initial_asteroids; i++)
     auto asteroid = create_asteroid(registry);
 };
 
@@ -209,7 +212,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // ui
   {
     // TODO: fix this
-    bool is_release = false;
+    bool is_release = true;
     if (!is_release) {
       update_ui_physics_system(registry);
       update_ui_hierarchy_system(registry);

@@ -1,11 +1,14 @@
 #include "player.hpp"
 
 #include "create_entities.hpp"
-#include "game_modules/components/components.hpp"
+#include "game_modules/components/game.hpp"
 #include "modules/events/components.hpp"
 #include "modules/events/helpers/keyboard.hpp"
 #include "modules/lifecycle/components.hpp"
 #include "modules/physics/components.hpp"
+#include "modules/renderer/components.hpp"
+
+#include "engine/maths/maths.hpp"
 
 void
 game2d::update_player_system(entt::registry& r)
@@ -19,21 +22,29 @@ game2d::update_player_system(entt::registry& r)
   // Move player(s)
   //
 
-  const auto& view = r.view<const PlayerComponent, VelocityComponent>();
-  view.each([&input](auto entity, const auto& player, auto& velocity) {
+  const auto& view = r.view<const PlayerComponent, VelocityComponent, TransformComponent>();
+  view.each([&input](auto entity, const auto& player, auto& vel, auto& transform) {
     if (get_key_held(input, SDL_SCANCODE_W))
-      velocity.y = -1 * player.speed;
+      vel.y = -1 * player.speed;
     if (get_key_held(input, SDL_SCANCODE_S))
-      velocity.y = 1 * player.speed;
+      vel.y = 1 * player.speed;
     if (get_key_held(input, SDL_SCANCODE_A))
-      velocity.x = -1 * player.speed;
+      vel.x = -1 * player.speed;
     if (get_key_held(input, SDL_SCANCODE_D))
-      velocity.x = 1 * player.speed;
+      vel.x = 1 * player.speed;
 
     if (get_key_up(input, SDL_SCANCODE_A) || get_key_up(input, SDL_SCANCODE_D))
-      velocity.x = 0.0f;
+      vel.x = 0.0f;
     if (get_key_up(input, SDL_SCANCODE_W) || get_key_up(input, SDL_SCANCODE_S))
-      velocity.y = 0.0f;
+      vel.y = 0.0f;
+
+    // .. rotate to velocity
+    // .. IMPROVEMENT
+    // Could improve this by not immediately setting rotation.z
+    // and by setting a target angle that is lerped towards over multiple frames
+    // const float EPSILON = 0.005f;
+    // if (glm::abs(vel.x) > EPSILON || glm::abs(vel.y) > EPSILON)
+    //   transform.rotation.z = engine::dir_to_angle_radians({ vel.x, vel.y }) - engine::HALF_PI;
   });
 
   //
@@ -66,7 +77,8 @@ game2d::update_player_system(entt::registry& r)
     }
   }
 
-  // Player dies
+  // Resolve asteroid-player collision
+
   if (e0_player != entt::null && e1_asteroid != entt::null) {
     gameover.over = true;
     eb.dead.push_back(e0_player); // kill the player

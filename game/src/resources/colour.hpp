@@ -20,7 +20,7 @@ struct SINGLETON_ColoursComponent
 
   // game colours
   const engine::SRGBColour background = black;
-  const engine::SRGBColour player_unit = white;
+  const engine::SRGBColour player_unit = dblue;
   const engine::SRGBColour enemy_unit = red;
   const engine::SRGBColour asteroid = red;
 };
