@@ -1,6 +1,6 @@
 #include "animation_set_by_velocity.hpp"
 
-#include "game_modules/components/animation.hpp"
+#include "components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
@@ -27,11 +27,11 @@ update_animation_set_by_velocity_system(entt::registry& registry)
     float angle = engine::dir_to_angle_radians({ vel.x, vel.y });
 
     // debug line
-    entt::entity& line = sprite.debug_line;
-    auto& line_transform = registry.get<TransformComponent>(line);
-    line_transform.position = transform.position;
-    line_transform.rotation.z = angle;
-    line_transform.scale = { 10, 1, 0 };
+    // entt::entity& line = sprite.debug_line;
+    // auto& line_transform = registry.get<TransformComponent>(line);
+    // line_transform.position = transform.position;
+    // line_transform.rotation.z = angle;
+    // line_transform.scale = { 10, 1, 0 };
 
     if (angle < 0.25f * engine::PI || angle > 1.75f * engine::PI)
       animation = "left_walk_cycle";

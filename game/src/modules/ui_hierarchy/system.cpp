@@ -27,8 +27,12 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
     // skip showing the root node, go to children
     const auto& hroot = registry.get<EntityHierarchyComponent>(h.root_node);
     for (const auto& child : hroot.children) {
-      const auto& tag = registry.get<TagComponent>(child).tag;
-      imgui_draw_entity(registry, tag, child, h.selected_entity);
+      // TODO: remove this .valid() check and update the
+      // hierarchy .children when the entity is destroyed
+      if (registry.valid(child)) {
+        const auto& tag = registry.get<TagComponent>(child).tag;
+        imgui_draw_entity(registry, tag, child, h.selected_entity);
+      }
     }
 
     // If select anywhere in the window, make entity unselected
@@ -37,8 +41,9 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
 
     // Right click on menu
     if (ImGui::BeginPopupContextWindow(0, 1, false)) {
-      if (ImGui::MenuItem("Create Entity"))
-        create_empty(registry);
+      if (ImGui::MenuItem("A menu item...!")) {
+        //
+      }
       ImGui::EndPopup();
     }
   }
@@ -50,6 +55,12 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
 
   ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   if (d.selected_entity != entt::null) {
+
+    if (!registry.valid(d.selected_entity)) {
+      ImGui::End();
+      return; // same TODO issue as above
+    }
+
     const auto& eid = d.selected_entity;
 
     if (registry.all_of<TagComponent>(eid)) {
@@ -90,14 +101,6 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
     // }
 
     // if (ImGui::BeginPopup("AddComponent")) {
-    //   if (ImGui::MenuItem("PositionIntComponent")) {
-    //     registry.emplace<PositionIntComponent>(eid);
-    //     ImGui::CloseCurrentPopup();
-    //   }
-    //   if (ImGui::MenuItem("RenderSizeComponent")) {
-    //     registry.emplace<RenderSizeComponent>(eid);
-    //     ImGui::CloseCurrentPopup();
-    //   }
     //   if (ImGui::MenuItem("PhysicsSizeComponent")) {
     //     registry.emplace<PhysicsSizeComponent>(eid);
     //     ImGui::CloseCurrentPopup();

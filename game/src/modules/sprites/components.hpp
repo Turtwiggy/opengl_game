@@ -16,7 +16,7 @@ struct SpriteAnimation
   std::string name;
   std::vector<glm::ivec2> animation_frames;
   float animation_frames_per_second = 1; // TODO: do something with this
-  float animation_angle = 0.0f;
+  float animation_angle_degrees = 0.0f;
 };
 
 struct SpriteAnimationComponent
@@ -36,9 +36,7 @@ struct SpriteComponent
   int x = 0;
   int y = 0;
   int tex_unit = 0; // do not serialize
-  float angle = 0.0f;
-
-  entt::entity debug_line;
+  float angle_radians = 0.0f;
 };
 
 struct SINGLETON_Animations

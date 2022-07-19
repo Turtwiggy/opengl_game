@@ -1,37 +1,35 @@
 #pragma once
 
-// engine
-#include "engine/colour.hpp"
-
-// other libs
 #include <entt/entt.hpp>
-#include <glm/glm.hpp>
-
-// std lib
-#include <string>
 
 namespace game2d {
 
-void
-create_empty(entt::registry& r);
+struct AsteroidComponent
+{
+  bool initialized = false;
+  float time_alive = 0.0f;
+  float max_time_alive = 0.0f;
+  float spin_amount = 0.0f;
+};
 
-void
-create_camera(entt::registry& r, int x, int y);
-
-void
-create_cursor(entt::registry& registry);
-
-entt::entity
-create_unit_group(entt::registry& registry,
-                  int x,
-                  int y,
-                  int size_x,
-                  int size_y,
-                  const std::string& name,
-                  const engine::SRGBColour& start_colour,
-                  const engine::SRGBColour& highlight_colour);
+struct PlayerComponent
+{
+  float speed = 0.0f;
+};
 
 entt::entity
-create_unit(entt::registry& registry, const std::string& name, const engine::SRGBColour& colour);
+create_camera(entt::registry& r);
+
+entt::entity
+create_hierarchy_root_node(entt::registry& r);
+
+entt::entity
+create_player(entt::registry& r);
+
+entt::entity
+create_asteroid(entt::registry& r);
+
+entt::entity
+create_bullet(entt::registry& r);
 
 } // namespace game2d

@@ -2,7 +2,6 @@
 #include "select_objects_move.hpp"
 
 // components
-#include "game_modules/components/debug.hpp"
 #include "game_modules/components/pathfinding.hpp"
 #include "game_modules/components/selectable.hpp"
 #include "modules/camera/components.hpp"
@@ -50,9 +49,9 @@ game2d::update_select_objects_move_system(entt::registry& registry)
   if (get_mouse_rmb_press()) {
 
     const auto& selectable =
-      registry.view<const SelectableComponent, const TransformComponent, VelocityComponent, DestinationComponent>();
-    selectable.each([&registry, &colours, &avg_pos, &mouse_pos, &random_chosen_entity_parent](
-                      const auto entity, const auto& s, const auto& transform, auto& vel, auto& destinationC) {
+      registry.view<const SelectableComponent, TransformComponent, VelocityComponent, DestinationComponent>();
+    selectable.each([&colours, &avg_pos, &mouse_pos, &random_chosen_entity_parent](
+                      const auto entity, const auto& s, auto& transform, auto& vel, auto& destinationC) {
       if (!s.is_selected)
         return;
       random_chosen_entity_parent = entity; // doesn't matter which one
@@ -61,15 +60,17 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       glm::ivec2 offset = { transform.position.x - avg_pos.x, transform.position.y - avg_pos.y };
       glm::ivec2 destination = mouse_pos + offset;
 
-      // set velocity to get to destination
-      glm::ivec2 d = { destination.x - transform.position.x, destination.y - transform.position.y };
-      if (d.x == 0 && d.y == 0) // check same spot not clicked
-        return;
-      glm::vec2 dir = glm::vec2(d.x, d.y);
-      glm::vec2 n = normalize(dir);
-      const float speed = 200.0f;
-      vel.x = n.x * speed;
-      vel.y = n.y * speed;
+      transform.position = { mouse_pos.x, mouse_pos.y, 0.0f };
+
+      // // set velocity to get to destination
+      // glm::ivec2 d = { destination.x - transform.position.x, destination.y - transform.position.y };
+      // if (d.x == 0 && d.y == 0) // check same spot not clicked
+      //   return;
+      // glm::vec2 dir = glm::vec2(d.x, d.y);
+      // glm::vec2 n = normalize(dir);
+      // const float speed = 200.0f;
+      // vel.x = n.x * speed;
+      // vel.y = n.y * speed;
 
       // set destination
       destinationC.xy = destination;
@@ -104,7 +105,6 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       // create line from current position to end position
       entt::entity e = registry.create();
       registry.emplace<TagComponent>(e, "SPAWNED LINE");
-
       TransformComponent transform;
       transform.position.x = x;
       transform.position.y = y;
@@ -112,7 +112,6 @@ game2d::update_select_objects_move_system(entt::registry& registry)
       transform.scale.y = 1;
       transform.rotation.z = angle;
       registry.emplace<TransformComponent>(e, transform);
-
       SpriteComponent sprite;
       sprite.colour = engine::SRGBToLinear(colours.red);
       sprite.x = 0;

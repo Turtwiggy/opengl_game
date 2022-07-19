@@ -112,6 +112,9 @@ sprites:
     frames:
       - [34, 6]
     angle: -45.0
+  - name: DUCK
+    frames:
+      - [25, 7]
   - name: WEAPON_PISTOL
     frames:
       - [37, 9]
@@ -190,6 +193,9 @@ sprites:
   - name: BOAT
     frames:
       - [10, 19]
+  - name: ARROW_UP
+    frames:
+      - [23, 20]
   - name: SPACE_VEHICLE_1
     frames:
       - [12, 21]

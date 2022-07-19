@@ -1,11 +1,10 @@
 #pragma once
 
-// other lib headers
 #include <entt/entt.hpp>
 
 namespace game2d {
 
 void
-update_ui_audio_system(entt::registry& registry);
+update_ui_highscore_system(entt::registry& r);
 
 } // namespace game2d

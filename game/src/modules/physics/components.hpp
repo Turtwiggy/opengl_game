@@ -7,44 +7,15 @@
 
 namespace game2d {
 
-// enum class BodyType
-// {
-//   Static = 0,
-//   Dynamic,
-//   Kinematic
-// };
-
-// struct Rigidbody2DComponent
-// {
-//   BodyType Type = BodyType::Static;
-//   bool fixed_rotation = false;
-//   void* runtime_body = nullptr;
-// };
-
-// struct BoxCollider2DComponent
-// {
-//   glm::vec2 offset = { 0.0f, 0.0f };
-//   glm::vec2 size = { 0.5f, 0.5f };
-
-//   float density = 1.0f;
-//   float friction = 0.5f;
-//   float restitution = 0.0f;
-//   float restitution_threshold = 0.5f;
-
-//   void* runtime_fixture = nullptr;
-// };
-
 // Note; for no collision, don't attach a CollidableComponent
 enum class GameCollisionLayer
 {
-  ACTOR_UNIT_GROUP = 1,
-  ACTOR_U = 2,
-  ACTOR_OBJECTIVE = 3,
-  ACTOR_CURSOR = 4,
-  ACTOR_PROJECTILE = 5,
-  SOLID_WALL = 6,
+  ACTOR_PLAYER = 1,
+  ACTOR_ASTEROID = 2,
+  ACTOR_BULLET = 3,
+  SOLID_WALL = 4,
 
-  COUNT = 7,
+  COUNT = 4,
 };
 
 struct PhysicsActorComponent

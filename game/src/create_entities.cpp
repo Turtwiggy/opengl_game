@@ -1,226 +1,227 @@
 #include "create_entities.hpp"
 
 // my libs
-#include "game_modules/components/animation.hpp"
-#include "game_modules/components/cursor.hpp"
-#include "game_modules/components/debug.hpp"
-#include "game_modules/components/objectives.hpp"
-#include "game_modules/components/pathfinding.hpp"
-#include "game_modules/components/selectable.hpp"
-#include "game_modules/components/units.hpp"
 #include "modules/camera/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
 #include "modules/sprites/helpers.hpp"
 #include "modules/ui_hierarchy/components.hpp"
+
+// resources
 #include "resources/colour.hpp"
 #include "resources/textures.hpp"
+
+// engine
+#include "engine/maths/maths.hpp"
 
 // std libs
 #include <string>
 
 namespace game2d {
 
-const int SPRITE_SIZE = 32; // 16 is native
+static constexpr int SPRITE_SIZE = 16 * 2;
 
-void
-create_empty(entt::registry& r)
-{
-  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
-
-  entt::entity e = r.create();
-  r.emplace<TagComponent>(e, "empty-entity");
-  r.emplace<EntityHierarchyComponent>(e, h.root_node);
-  hc.children.push_back(e);
-}
-
-void
-create_camera(entt::registry& r, int x, int y)
+entt::entity
+create_camera(entt::registry& r)
 {
   auto& h = r.ctx<SINGLETON_HierarchyComponent>();
 
   entt::entity e = r.create();
+
   r.emplace<TagComponent>(e, "camera");
   r.emplace<EntityHierarchyComponent>(e, h.root_node);
-
-  // rendering
-  TransformComponent transform;
-  transform.position.x = x;
-  transform.position.y = y;
-  r.emplace<TransformComponent>(e, transform);
+  r.emplace<TransformComponent>(e);
   r.emplace<CameraComponent>(e);
-}
-
-entt::entity
-create_renderable(entt::registry& r,
-                  const entt::entity& parent,
-                  const std::string& name,
-                  const engine::SRGBColour& colour)
-{
-  const auto& slots = r.ctx<SINGLETON_Textures>();
-
-  entt::entity e = r.create();
-  r.emplace<TagComponent>(e, name);
-
-  // hierarchy
-  auto& parent_hierarchy = r.get<EntityHierarchyComponent>(parent);
-  parent_hierarchy.children.push_back(e);
-  r.emplace<EntityHierarchyComponent>(e, parent);
-
-  TransformComponent transform;
-  transform.scale.x = SPRITE_SIZE;
-  transform.scale.y = SPRITE_SIZE;
-  r.emplace<TransformComponent>(e, transform);
-
-  SpriteComponent sprite;
-  sprite.colour = engine::SRGBToLinear(colour);
-  sprite.tex_unit = slots.tex_unit_kenny;
-  sprite.x = 0;
-  sprite.y = 0;
-  r.emplace<SpriteComponent>(e, sprite);
 
   return e;
 }
 
-void
-create_cursor(entt::registry& r)
+entt::entity
+game2d::create_hierarchy_root_node(entt::registry& r)
+{
+  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+
+  h.root_node = r.create();
+
+  r.emplace<TagComponent>(h.root_node, "root-node");
+  r.emplace<EntityHierarchyComponent>(h.root_node, h.root_node);
+
+  return h.root_node;
+};
+
+PhysicsSizeComponent
+create_player_physics_size_component(entt::registry& r)
+{
+  PhysicsSizeComponent comp;
+  comp.h = SPRITE_SIZE;
+  comp.w = SPRITE_SIZE;
+  return comp;
+}
+
+SpriteComponent
+create_player_sprite_component(entt::registry& r)
 {
   const auto& slots = r.ctx<SINGLETON_Textures>();
   const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
-  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+  const auto& sprites = r.ctx<SINGLETON_Animations>();
+
+  SpriteComponent comp;
+  comp.colour = engine::SRGBToLinear(colours.player_unit);
+  comp.tex_unit = slots.tex_unit_kenny;
+
+  // search kenny-nl spritesheet
+  const auto anim = find_animation(sprites.animations, "EMPTY");
+  comp.x = anim.animation_frames[0].x;
+  comp.y = anim.animation_frames[0].y;
+
+  return comp;
+}
+
+TransformComponent
+create_player_transform_component(entt::registry& r)
+{
+  TransformComponent comp;
+  comp.scale.x = SPRITE_SIZE;
+  comp.scale.y = SPRITE_SIZE;
+  return comp;
+}
+
+entt::entity
+create_player(entt::registry& r)
+{
+  const auto& h = r.ctx<SINGLETON_HierarchyComponent>();
   auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
 
-  entt::entity e = r.create();
-  r.emplace<TagComponent>(e, std::string("cursor_parent"));
+  auto e = r.create();
+  hc.children.push_back(e);
+  r.emplace<PlayerComponent>(e);
+
+  r.emplace<TagComponent>(e, "player");
   r.emplace<EntityHierarchyComponent>(e, h.root_node);
-  hc.children.push_back(e); // cursor parent
-
-  // cursor
-  CursorComponent c;
-  c.line_u = create_renderable(r, e, "line_u", colours.red);
-  c.line_d = create_renderable(r, e, "line_d", colours.red);
-  c.line_l = create_renderable(r, e, "line_l", colours.red);
-  c.line_r = create_renderable(r, e, "line_r", colours.red);
-  c.backdrop = create_renderable(r, e, "backdrop", colours.backdrop_red);
-  r.emplace<CursorComponent>(e, c);
-
-  // rendering
-  TransformComponent transform;
-  transform.scale.x = SPRITE_SIZE / 2;
-  transform.scale.y = SPRITE_SIZE / 2;
-  r.emplace<TransformComponent>(e, transform);
-  SpriteComponent sprite;
-  sprite.colour = engine::SRGBToLinear(colours.white);
-  sprite.tex_unit = slots.tex_unit_custom;
-  sprite.x = 0;
-  sprite.y = 0;
-  r.emplace<SpriteComponent>(e, sprite);
-  SpriteAnimationComponent animation;
-  animation.playing = false;
-  animation.looping = false;
-  animation.speed = 24.0f;
-  animation.playing_animation_name = std::string("CURSOR_CLICK");
-  r.emplace<SpriteAnimationComponent>(e, animation);
-  r.emplace<AnimatedCursorClickComponent>(e);
-
-  // physics
-  r.emplace<PhysicsActorComponent>(c.backdrop, GameCollisionLayer::ACTOR_CURSOR);
-  r.emplace<PhysicsSizeComponent>(c.backdrop, SPRITE_SIZE, SPRITE_SIZE);
-  r.emplace<VelocityComponent>(c.backdrop);
-};
-
-entt::entity
-create_unit_group(entt::registry& r,
-                  int x,
-                  int y,
-                  int size_x,
-                  int size_y,
-                  const std::string& name,
-                  const engine::SRGBColour& start_colour,
-                  const engine::SRGBColour& highlight_colour)
-{
-  auto& h = r.ctx<SINGLETON_HierarchyComponent>();
-  auto& h_root = r.get<EntityHierarchyComponent>(h.root_node);
-  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
-
-  entt::entity e = r.create();
-  h_root.children.push_back(e);
-  r.emplace<TagComponent>(e, name);
-  r.emplace<EntityHierarchyComponent>(e, h.root_node);
-
-  // rendering
-  TransformComponent transform;
-  transform.position.x = x;
-  transform.position.y = y;
-  transform.scale.x = size_x / 2;
-  transform.scale.y = size_y / 2;
-  transform.rotation.z = 0.0f;
-  r.emplace<TransformComponent>(e, transform);
-  SpriteComponent sprite;
-  sprite.colour = engine::SRGBToLinear(colours.red);
-  sprite.x = 0;
-  sprite.y = 0;
-  r.emplace<SpriteComponent>(e, sprite);
-  // physics
-  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_UNIT_GROUP);
-  r.emplace<PhysicsSizeComponent>(e, size_x, size_y);
+  r.emplace<SpriteComponent>(e, create_player_sprite_component(r));
+  r.emplace<TransformComponent>(e, create_player_transform_component(r));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_PLAYER);
+  r.emplace<PhysicsSizeComponent>(e, create_player_physics_size_component(r));
   r.emplace<VelocityComponent>(e);
-  // gameplay
-  r.emplace<SelectableComponent>(e);
-  // r.emplace<HighlightComponent>(e, start_colour, highlight_colour);
-  r.emplace<DestinationComponent>(e);
-  r.emplace<UnitGroupComponent>(e);
-
   return e;
-};
+}
+
+//
+
+PhysicsSizeComponent
+create_asteroid_physics_size_component(entt::registry& r)
+{
+  PhysicsSizeComponent comp;
+  comp.h = SPRITE_SIZE;
+  comp.w = SPRITE_SIZE;
+  return comp;
+}
+
+SpriteComponent
+create_asteroid_sprite_component(entt::registry& r)
+{
+  const auto& slots = r.ctx<SINGLETON_Textures>();
+  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
+  const auto& sprites = r.ctx<SINGLETON_Animations>();
+
+  SpriteComponent comp;
+  comp.colour = engine::SRGBToLinear(colours.asteroid);
+  comp.tex_unit = slots.tex_unit_kenny;
+
+  // search kenny-nl spritesheet
+  const auto anim = find_animation(sprites.animations, "EMPTY");
+  comp.x = anim.animation_frames[0].x;
+  comp.y = anim.animation_frames[0].y;
+
+  return comp;
+}
+
+TransformComponent
+create_asteroid_transform_component(entt::registry& r)
+{
+  TransformComponent comp;
+  comp.scale.x = SPRITE_SIZE;
+  comp.scale.y = SPRITE_SIZE;
+  return comp;
+}
 
 entt::entity
-create_unit(entt::registry& registry, const std::string& name, const engine::SRGBColour& colour)
+create_asteroid(entt::registry& r)
 {
-  const auto& colours = registry.ctx<SINGLETON_ColoursComponent>();
-  const auto& slots = registry.ctx<SINGLETON_Textures>();
+  const auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
 
-  // entity
-  entt::entity e = registry.create();
-  registry.emplace<TagComponent>(e, name);
-  // hierarchy
-  auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
-  auto& h_root = registry.get<EntityHierarchyComponent>(h.root_node);
-  h_root.children.push_back(e);
-  registry.emplace<EntityHierarchyComponent>(e, h.root_node);
-  // auto& parent_hierarchy = registry.get<EntityHierarchyComponent>(parent);
-  // parent_hierarchy.children.push_back(e);
-  // registry.emplace<EntityHierarchyComponent>(e, parent);
-  // rendering
-  TransformComponent transform;
-  transform.scale.x = SPRITE_SIZE;
-  transform.scale.y = SPRITE_SIZE;
-  registry.emplace<TransformComponent>(e, transform);
-  SpriteComponent sprite;
-  sprite.colour = engine::SRGBToLinear(colour);
-  sprite.tex_unit = slots.tex_unit_sprout;
-  sprite.x = 1;
-  sprite.y = 0;
-  entt::entity line_entity = create_renderable(registry, e, std::string("debug_line"), colours.white);
-  sprite.debug_line = line_entity;
-  registry.emplace<SpriteComponent>(e, sprite);
-  // animation
-  SpriteAnimationComponent animation;
-  animation.playing = true;
-  animation.looping = true;
-  animation.speed = 1.0f;
-  animation.playing_animation_name = std::string("down_idle");
-  registry.emplace<SpriteAnimationComponent>(e, animation);
-  registry.emplace<AnimationSetByVelocityComponent>(e);
-  // physics
-  registry.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_U);
-  registry.emplace<PhysicsSizeComponent>(e, SPRITE_SIZE, SPRITE_SIZE);
-  registry.emplace<VelocityComponent>(e);
-  // gameplay
-  registry.emplace<DestinationComponent>(e);
+  auto e = r.create();
+  hc.children.push_back(e);
+  r.emplace<AsteroidComponent>(e);
 
+  r.emplace<TagComponent>(e, "asteroid-duck");
+  r.emplace<EntityHierarchyComponent>(e, h.root_node);
+  r.emplace<SpriteComponent>(e, create_asteroid_sprite_component(r));
+  r.emplace<TransformComponent>(e, create_asteroid_transform_component(r));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_ASTEROID);
+  r.emplace<PhysicsSizeComponent>(e, create_asteroid_physics_size_component(r));
+  r.emplace<VelocityComponent>(e);
+  return e;
+}
+
+//
+
+PhysicsSizeComponent
+create_bullet_physics_size_component(entt::registry& r)
+{
+  PhysicsSizeComponent comp;
+  comp.h = SPRITE_SIZE;
+  comp.w = SPRITE_SIZE;
+  return comp;
+}
+
+SpriteComponent
+create_bullet_sprite_component(entt::registry& r)
+{
+  const auto& slots = r.ctx<SINGLETON_Textures>();
+  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
+  const auto& sprites = r.ctx<SINGLETON_Animations>();
+
+  SpriteComponent comp;
+  comp.colour = engine::SRGBToLinear(colours.bullet);
+  comp.tex_unit = slots.tex_unit_kenny;
+
+  // search kenny-nl spritesheet
+  const auto anim = find_animation(sprites.animations, "WEAPON_ARROW_1");
+  comp.x = anim.animation_frames[0].x;
+  comp.y = anim.animation_frames[0].y;
+  comp.angle_radians = anim.animation_angle_degrees * engine::PI / 180.0f;
+
+  return comp;
+}
+
+TransformComponent
+create_bullet_transform_component(entt::registry& r)
+{
+  TransformComponent comp;
+  comp.scale.x = SPRITE_SIZE;
+  comp.scale.y = SPRITE_SIZE;
+  return comp;
+}
+
+entt::entity
+create_bullet(entt::registry& r)
+{
+  const auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
+
+  auto e = r.create();
+  hc.children.push_back(e);
+
+  r.emplace<TagComponent>(e, "bullet");
+  r.emplace<EntityHierarchyComponent>(e, h.root_node);
+  r.emplace<SpriteComponent>(e, create_bullet_sprite_component(r));
+  r.emplace<TransformComponent>(e, create_bullet_transform_component(r));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_BULLET);
+  r.emplace<PhysicsSizeComponent>(e, create_bullet_physics_size_component(r));
+  r.emplace<VelocityComponent>(e);
   return e;
 }
 

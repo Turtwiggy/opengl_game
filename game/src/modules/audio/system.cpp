@@ -86,11 +86,11 @@ update_audio_system(entt::registry& registry)
     return;
 
   // TEMP: REMOVE ME
-  if (get_mouse_rmb_press()) {
-    int success = Mix_PlayChannel(0, audio.sound, 0); // play once and stop
-    // returns the channel used to play, or -1 if could not be played
-    std::cout << "playing sound on channel: " << success;
-  }
+  // if (get_mouse_rmb_press()) {
+  //   int success = Mix_PlayChannel(0, audio.sound, 0); // play once and stop
+  //   // returns the channel used to play, or -1 if could not be played
+  //   std::cout << "playing sound on channel: " << success;
+  // }
 };
 
 } // namespace game2d

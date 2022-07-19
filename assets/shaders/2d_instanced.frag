@@ -6,12 +6,13 @@ in vec4 v_colour; // make this linear space
 in vec2 v_sprite_pos;
 in float v_tex_unit;
 
-uniform sampler2D textures[4];
+uniform sampler2D textures[5];
 
-const int texture_unit_kenny = 0;     // loaded textures in linear
-const int texture_unit_custom = 1;    // loaded textures in linear
-const int texture_unit_sprout = 2;    // loaded textures in linear
-const int texture_unit_logo = 3;    // loaded textures in linear
+const int texture_unit_kenny = 0;     // textures in linear
+const int texture_unit_custom = 1;    // textures in linear
+const int texture_unit_sprout = 2;    // textures in linear
+const int texture_unit_logo = 3;      // textures in linear
+const int texture_unit_map = 4;       // textures in linear
 // const int texture_lin_main = 3;       // fbo
 // const int texture_lin_lighting = 4;   // fbo 
 // const int texture_srgb_main = 5;      // fbo 
@@ -19,7 +20,7 @@ const int texture_unit_logo = 3;    // loaded textures in linear
 const int kenny_num_cols = 48;
 const int kenny_num_rows = 22;
 const float kenny_scale_x = 1.0f / kenny_num_cols;
-const float kenny_scale_y = 1.0f / kenny_num_cols;
+const float kenny_scale_y = 1.0f / kenny_num_rows;
 
 const int custom_cols = 8;
 const int custom_rows = 8;
@@ -64,13 +65,11 @@ main()
     out_colour = v_colour * texture(textures[index], sprite_uv);
     return;
   }
-  else if(index == texture_unit_logo)
-  {
-    out_colour = v_colour * texture(textures[index], v_tex);
-    return;
-  }
+  
+  // out_colour = v_colour;
 
-  out_colour = v_colour;
+  // all other textures
+  out_colour = v_colour * texture(textures[index], v_tex);
 }
 
 // if (do_lighting) {
