@@ -10,21 +10,9 @@
 #include <iostream>
 #include <vector>
 
-namespace game2d {
-
-void
-CALLBACK_do_nothing(entt::registry& registry){
-  // nothing
-};
-
-} // namespace game2d
-
 void
 game2d::update_move_objects_system(entt::registry& registry, engine::Application& app, float dt)
 {
-  std::function<void(entt::registry&)> actor_hit_solid_callback = CALLBACK_do_nothing;
-  std::function<void(entt::registry&)> actor_being_squish_callback = CALLBACK_do_nothing;
-
   // actors and solids never overlap,
   // and solids dont overlap with solids
 

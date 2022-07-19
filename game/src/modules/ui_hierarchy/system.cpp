@@ -55,6 +55,12 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
 
   ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   if (d.selected_entity != entt::null) {
+
+    if (!registry.valid(d.selected_entity)) {
+      ImGui::End();
+      return; // same TODO issue as above
+    }
+
     const auto& eid = d.selected_entity;
 
     if (registry.all_of<TagComponent>(eid)) {

@@ -107,6 +107,8 @@ create_player(entt::registry& r)
   return e;
 }
 
+//
+
 PhysicsSizeComponent
 create_asteroid_physics_size_component(entt::registry& r)
 {
@@ -160,6 +162,65 @@ create_asteroid(entt::registry& r)
   r.emplace<TransformComponent>(e, create_asteroid_transform_component(r));
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_ASTEROID);
   r.emplace<PhysicsSizeComponent>(e, create_asteroid_physics_size_component(r));
+  r.emplace<VelocityComponent>(e);
+  return e;
+}
+
+//
+
+PhysicsSizeComponent
+create_bullet_physics_size_component(entt::registry& r)
+{
+  PhysicsSizeComponent comp;
+  comp.h = SPRITE_SIZE;
+  comp.w = SPRITE_SIZE;
+  return comp;
+}
+
+SpriteComponent
+create_bullet_sprite_component(entt::registry& r)
+{
+  const auto& slots = r.ctx<SINGLETON_Textures>();
+  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
+  const auto& sprites = r.ctx<SINGLETON_Animations>();
+
+  SpriteComponent comp;
+  comp.colour = engine::SRGBToLinear(colours.bullet);
+  comp.tex_unit = slots.tex_unit_kenny;
+
+  // search kenny-nl spritesheet
+  const auto anim = find_animation(sprites.animations, "WEAPON_ARROW_1");
+  comp.x = anim.animation_frames[0].x;
+  comp.y = anim.animation_frames[0].y;
+  comp.angle_radians = anim.animation_angle_degrees * engine::PI / 180.0f;
+
+  return comp;
+}
+
+TransformComponent
+create_bullet_transform_component(entt::registry& r)
+{
+  TransformComponent comp;
+  comp.scale.x = SPRITE_SIZE;
+  comp.scale.y = SPRITE_SIZE;
+  return comp;
+}
+
+entt::entity
+create_bullet(entt::registry& r)
+{
+  const auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
+
+  auto e = r.create();
+  hc.children.push_back(e);
+
+  r.emplace<TagComponent>(e, "bullet");
+  r.emplace<EntityHierarchyComponent>(e, h.root_node);
+  r.emplace<SpriteComponent>(e, create_bullet_sprite_component(r));
+  r.emplace<TransformComponent>(e, create_bullet_transform_component(r));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_BULLET);
+  r.emplace<PhysicsSizeComponent>(e, create_bullet_physics_size_component(r));
   r.emplace<VelocityComponent>(e);
   return e;
 }

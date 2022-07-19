@@ -12,9 +12,10 @@ enum class GameCollisionLayer
 {
   ACTOR_PLAYER = 1,
   ACTOR_ASTEROID = 2,
-  SOLID_WALL = 3,
+  ACTOR_BULLET = 3,
+  SOLID_WALL = 4,
 
-  COUNT = 3,
+  COUNT = 4,
 };
 
 struct PhysicsActorComponent

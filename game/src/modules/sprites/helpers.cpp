@@ -37,7 +37,7 @@ load_sprite_yml(std::vector<SpriteAnimation>& sprites, const std::string path)
     }
 
     if (node["angle"])
-      s.animation_angle = node["angle"].as<float>();
+      s.animation_angle_degrees = node["angle"].as<float>();
 
     sprites.push_back(s);
   }

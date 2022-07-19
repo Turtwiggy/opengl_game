@@ -6,6 +6,7 @@
 #include "resources/textures.hpp"
 
 // engine
+#include "engine/maths/maths.hpp"
 #include "engine/opengl/texture.hpp"
 
 namespace game2d {
@@ -65,6 +66,7 @@ update_sprite_system(entt::registry& registry, float dt)
       animation.frame %= frames;
       sprite.x = current_animation.animation_frames[animation.frame].x;
       sprite.y = current_animation.animation_frames[animation.frame].y;
+      sprite.angle_radians = current_animation.animation_angle_degrees * engine::PI / 180.0f;
     }
   });
 };

@@ -51,10 +51,11 @@ void
 init_splash_screen(entt::registry& registry)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
-  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
+  registry.set<SINGLETON_PhysicsComponent>();
   registry.set<SINGLETON_GamePausedComponent>();
   registry.set<SINGLETON_GameOverComponent>();
   registry.set<SINGLETON_HierarchyComponent>();
+  registry.set<SINGLETON_EntityBinComponent>();
   create_hierarchy_root_node(registry);
   create_camera(registry);
 };
@@ -63,16 +64,17 @@ void
 init_game_state(entt::registry& registry)
 {
   registry.each([&registry](auto entity) { registry.destroy(entity); });
-  registry.set<SINGLETON_PhysicsComponent>(SINGLETON_PhysicsComponent());
+  registry.set<SINGLETON_PhysicsComponent>();
   registry.set<SINGLETON_GamePausedComponent>();
   registry.set<SINGLETON_GameOverComponent>();
   registry.set<SINGLETON_HierarchyComponent>();
+  registry.set<SINGLETON_EntityBinComponent>();
   create_hierarchy_root_node(registry);
   create_camera(registry);
 
   auto& gs = registry.set<SINGLETON_AsteroidGameStateComponent>();
-
   auto player = create_player(registry);
+
   auto& player_transform = registry.get<TransformComponent>(player);
   player_transform.position.x = 600;
   player_transform.position.y = 400;
@@ -93,7 +95,6 @@ game2d::init(entt::registry& registry, glm::ivec2 screen_wh)
   registry.set<SINGLETON_Textures>();
   registry.set<SINGLETON_ResourceComponent>();
   registry.set<SINGLETON_ColoursComponent>();
-  registry.set<SINGLETON_EntityBinComponent>();
   init_sprite_system(registry);
   init_render_system(registry, screen_wh);
   init_input_system(registry);
@@ -112,12 +113,19 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   Uint64 start_physics = SDL_GetPerformanceCounter();
   {
     if (!gp.paused) {
+
+      // process destroyed objects from last frame
+      auto& eb = registry.ctx<SINGLETON_EntityBinComponent>();
+      for (auto entity : eb.dead)
+        registry.destroy(entity);
+      eb.dead.clear();
+      // TODO: update hroot.children if entity is removed
+
       // move objects, checking collisions along way
       update_move_objects_system(registry, app, fixed_dt);
+
       // generate all collisions between actor-actor objects
       update_actor_actor_system(registry, app);
-      // process actor-actor collisions
-      // update_actor_actor_collision_system(registry, app, fixed_dt);
     }
   }
   Uint64 end_physics = SDL_GetPerformanceCounter();
@@ -164,13 +172,10 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     if (!gp.paused) {
       // ... systems that always update (when not paused)
       {
-        auto& eb = registry.ctx<SINGLETON_EntityBinComponent>();
-        eb.dead.clear();
-
+        // update_cursor_system(registry);
         update_asteroid_system(registry);
         update_player_system(registry);
 
-        // update_cursor_system(registry);
         // update_animated_cursor_click_system(registry);
         // update_objectives_system(registry);
         // update_pathfinding_system(registry);
@@ -179,14 +184,6 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         // update_select_objects_highlight_system(registry);
         // update_select_objects_move_system(registry);
         // update_unit_group_position_units_system(registry);
-
-        for (auto entity : eb.dead) {
-          registry.destroy(entity);
-
-          // TODO: update hroot.children if entity is removed
-          // if (hroot.children.contains(entity)) {
-          // }
-        }
       }
 
       // ... systems that update if viewport is focused
@@ -212,7 +209,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
   // ui
   {
     // TODO: fix this
-    bool is_release = true;
+    bool is_release = false;
     if (!is_release) {
       update_ui_physics_system(registry);
       update_ui_hierarchy_system(registry);

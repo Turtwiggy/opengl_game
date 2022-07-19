@@ -2,13 +2,21 @@
 
 #include <entt/entt.hpp>
 
-#include <vector>
+#include <unordered_set>
 
 namespace game2d {
 
+struct EntityTimedLifecycle
+{
+  float time_alive = 0.0f;
+  float time_alive_max = 0.0f;
+};
+
+// SINGLETONS
+
 struct SINGLETON_EntityBinComponent
 {
-  std::vector<entt::entity> dead;
+  std::unordered_set<entt::entity> dead;
 };
 
 };

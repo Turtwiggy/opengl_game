@@ -74,13 +74,16 @@ game2d::update_asteroid_system(entt::registry& r)
 
     // Update()
 
+    // .. asteroid is off screen
+    // if (transform.position.x >)
+
     // .. spin the asteroid
     // transform.rotation.z += asteroid.spin_amount * dt;
 
     // .. tick the asteroid's life
     asteroid.time_alive += dt;
     if (asteroid.time_alive > asteroid.max_time_alive) {
-      eb.dead.push_back(entity);
+      eb.dead.emplace(entity);
     }
   });
 

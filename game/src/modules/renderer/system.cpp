@@ -183,7 +183,7 @@ game2d::update_render_system(entt::registry& registry)
       // desc.pos_tl = camera_transform.position + transform.position - transform.scale / 2;
       desc.pos_tl = transform.position - transform.scale / 2;
       desc.size = transform.scale;
-      desc.angle_radians = sc.angle + transform.rotation.z;
+      desc.angle_radians = sc.angle_radians + transform.rotation.z;
       desc.colour = sc.colour;
       desc.tex_unit = sc.tex_unit;
       desc.sprite_offset = { sc.x, sc.y };

@@ -29,4 +29,7 @@ create_player(entt::registry& r);
 entt::entity
 create_asteroid(entt::registry& r);
 
+entt::entity
+create_bullet(entt::registry& r);
+
 } // namespace game2d
