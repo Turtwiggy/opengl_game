@@ -24,7 +24,7 @@ game2d::update_player_system(entt::registry& r)
   //
 
   const auto& view = r.view<const PlayerComponent, VelocityComponent, TransformComponent>();
-  view.each([&input, &r](auto entity, const auto& player, auto& vel, auto& transform) {
+  view.each([&input, &r](const auto& player, auto& vel, auto& transform) {
     if (get_key_held(input, SDL_SCANCODE_W))
       vel.y = -1 * player.speed;
     if (get_key_held(input, SDL_SCANCODE_S))
@@ -67,7 +67,7 @@ game2d::update_player_system(entt::registry& r)
   });
 
   //
-  // Resolve any player collisions
+  // Resolve player-asteroid collisions
   //
   {
     entt::entity e0_player = entt::null;
@@ -87,25 +87,24 @@ game2d::update_player_system(entt::registry& r)
       if (e0_layer_id == GameCollisionLayer::ACTOR_PLAYER && e1_layer_id == GameCollisionLayer::ACTOR_ASTEROID) {
         e0_player = e0_id;
         e1_asteroid = e1_id;
-        break;
+
+        // resolve...
+        gameover.over = true;       // end the game
+        eb.dead.emplace(e0_player); // destroy the player
       }
       if (e0_layer_id == GameCollisionLayer::ACTOR_ASTEROID && e1_layer_id == GameCollisionLayer::ACTOR_PLAYER) {
         e0_player = e1_id;
         e1_asteroid = e0_id;
-        break;
+
+        // resolve...
+        gameover.over = true;       // end the game
+        eb.dead.emplace(e0_player); // destroy the player
       }
-    }
-
-    // Resolve asteroid-player collision
-
-    if (e0_player != entt::null && e1_asteroid != entt::null) {
-      gameover.over = true;
-      eb.dead.emplace(e0_player); // kill the player
     }
   }
 
   //
-  // Resolve any bullet-asteroid collisions
+  // Resolve bullet-asteroid collisions
   //
   {
     entt::entity e0_bullet = entt::null;
@@ -125,20 +124,19 @@ game2d::update_player_system(entt::registry& r)
       if (e0_layer_id == GameCollisionLayer::ACTOR_BULLET && e1_layer_id == GameCollisionLayer::ACTOR_ASTEROID) {
         e0_bullet = e0_id;
         e1_asteroid = e1_id;
-        break;
+
+        // resolve...
+        eb.dead.emplace(e0_bullet);   // destroy the bullet
+        eb.dead.emplace(e1_asteroid); // destroy the asteroid
       }
       if (e0_layer_id == GameCollisionLayer::ACTOR_ASTEROID && e1_layer_id == GameCollisionLayer::ACTOR_BULLET) {
         e0_bullet = e1_id;
         e1_asteroid = e0_id;
-        break;
+
+        // resolve...
+        eb.dead.emplace(e0_bullet);   // destroy the bullet
+        eb.dead.emplace(e1_asteroid); // destroy the asteroid
       }
-    }
-
-    // Resolve asteroid-bullet collision
-
-    if (e0_bullet != entt::null && e1_asteroid != entt::null) {
-      eb.dead.emplace(e0_bullet);   // destroy the bullet
-      eb.dead.emplace(e1_asteroid); // destroy the asteroid
     }
   }
 };

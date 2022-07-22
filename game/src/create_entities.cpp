@@ -2,6 +2,7 @@
 
 // my libs
 #include "modules/camera/components.hpp"
+#include "modules/lifecycle/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 #include "modules/sprites/components.hpp"
@@ -163,6 +164,7 @@ create_asteroid(entt::registry& r)
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_ASTEROID);
   r.emplace<PhysicsSizeComponent>(e, create_asteroid_physics_size_component(r));
   r.emplace<VelocityComponent>(e);
+  r.emplace<EntityTimedLifecycle>(e);
   return e;
 }
 
@@ -172,8 +174,8 @@ PhysicsSizeComponent
 create_bullet_physics_size_component(entt::registry& r)
 {
   PhysicsSizeComponent comp;
-  comp.h = SPRITE_SIZE;
-  comp.w = SPRITE_SIZE;
+  comp.h = SPRITE_SIZE / 2;
+  comp.w = SPRITE_SIZE / 2;
   return comp;
 }
 
@@ -189,7 +191,7 @@ create_bullet_sprite_component(entt::registry& r)
   comp.tex_unit = slots.tex_unit_kenny;
 
   // search kenny-nl spritesheet
-  const auto anim = find_animation(sprites.animations, "WEAPON_ARROW_1");
+  const auto anim = find_animation(sprites.animations, "ARROW_UP");
   comp.x = anim.animation_frames[0].x;
   comp.y = anim.animation_frames[0].y;
   comp.angle_radians = anim.animation_angle_degrees * engine::PI / 180.0f;
@@ -201,8 +203,8 @@ TransformComponent
 create_bullet_transform_component(entt::registry& r)
 {
   TransformComponent comp;
-  comp.scale.x = SPRITE_SIZE;
-  comp.scale.y = SPRITE_SIZE;
+  comp.scale.x = SPRITE_SIZE / 2;
+  comp.scale.y = SPRITE_SIZE / 2;
   return comp;
 }
 
@@ -222,6 +224,67 @@ create_bullet(entt::registry& r)
   r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_BULLET);
   r.emplace<PhysicsSizeComponent>(e, create_bullet_physics_size_component(r));
   r.emplace<VelocityComponent>(e);
+  r.emplace<EntityTimedLifecycle>(e, 2.0f); // bullet time alive
+  return e;
+}
+
+//
+
+PhysicsSizeComponent
+create_turret_physics_size_component(entt::registry& r)
+{
+  PhysicsSizeComponent comp;
+  comp.h = SPRITE_SIZE;
+  comp.w = SPRITE_SIZE;
+  return comp;
+}
+
+SpriteComponent
+create_turret_sprite_component(entt::registry& r)
+{
+  const auto& slots = r.ctx<SINGLETON_Textures>();
+  const auto& colours = r.ctx<SINGLETON_ColoursComponent>();
+  const auto& sprites = r.ctx<SINGLETON_Animations>();
+
+  SpriteComponent comp;
+  comp.colour = engine::SRGBToLinear(colours.turret);
+  comp.tex_unit = slots.tex_unit_kenny;
+
+  // search kenny-nl spritesheet
+  const auto anim = find_animation(sprites.animations, "ARROW_UP");
+  comp.x = anim.animation_frames[0].x;
+  comp.y = anim.animation_frames[0].y;
+  comp.angle_radians = anim.animation_angle_degrees * engine::PI / 180.0f;
+
+  return comp;
+}
+
+TransformComponent
+create_turret_transform_component(entt::registry& r)
+{
+  TransformComponent comp;
+  comp.scale.x = SPRITE_SIZE;
+  comp.scale.y = SPRITE_SIZE;
+  return comp;
+}
+
+entt::entity
+create_turret(entt::registry& r)
+{
+  const auto& h = r.ctx<SINGLETON_HierarchyComponent>();
+  auto& hc = r.get<EntityHierarchyComponent>(h.root_node);
+
+  auto e = r.create();
+  hc.children.push_back(e);
+
+  r.emplace<TagComponent>(e, "turret");
+  r.emplace<EntityHierarchyComponent>(e, h.root_node);
+  r.emplace<SpriteComponent>(e, create_turret_sprite_component(r));
+  r.emplace<TransformComponent>(e, create_turret_transform_component(r));
+  r.emplace<PhysicsActorComponent>(e, GameCollisionLayer::ACTOR_PLAYER_PET);
+  r.emplace<PhysicsSizeComponent>(e, create_turret_physics_size_component(r));
+  r.emplace<VelocityComponent>(e);
+  r.emplace<TurretComponent>(e);
   return e;
 }
 

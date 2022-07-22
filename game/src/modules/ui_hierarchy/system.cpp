@@ -15,29 +15,26 @@
 void
 game2d::update_ui_hierarchy_system(entt::registry& registry)
 {
-  auto& d = registry.ctx<SINGLETON_HierarchyComponent>();
+  auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
+  const auto& hroot = registry.get<EntityHierarchyComponent>(h.root_node);
+  size_t root_entity_count = hroot.children.size();
 
   ImGui::Begin("Hierarchy", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
   {
-    auto& h = registry.ctx<SINGLETON_HierarchyComponent>();
+    ImGui::Text("Entity Count: %i", root_entity_count);
 
     // let root hierarchy entity be dropped on
     drop_accept_entity(registry, h.root_node);
 
     // skip showing the root node, go to children
-    const auto& hroot = registry.get<EntityHierarchyComponent>(h.root_node);
     for (const auto& child : hroot.children) {
-      // TODO: remove this .valid() check and update the
-      // hierarchy .children when the entity is destroyed
-      if (registry.valid(child)) {
-        const auto& tag = registry.get<TagComponent>(child).tag;
-        imgui_draw_entity(registry, tag, child, h.selected_entity);
-      }
+      const auto& tag = registry.get<TagComponent>(child).tag;
+      imgui_draw_entity(registry, tag, child, h.selected_entity);
     }
 
     // If select anywhere in the window, make entity unselected
     if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-      d.selected_entity = entt::null;
+      h.selected_entity = entt::null;
 
     // Right click on menu
     if (ImGui::BeginPopupContextWindow(0, 1, false)) {
@@ -54,14 +51,14 @@ game2d::update_ui_hierarchy_system(entt::registry& registry)
   //
 
   ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoFocusOnAppearing);
-  if (d.selected_entity != entt::null) {
+  if (h.selected_entity != entt::null) {
 
-    if (!registry.valid(d.selected_entity)) {
+    if (!registry.valid(h.selected_entity)) {
       ImGui::End();
-      return; // same TODO issue as above
+      return; // make sure selected entity is valid
     }
 
-    const auto& eid = d.selected_entity;
+    const auto& eid = h.selected_entity;
 
     if (registry.all_of<TagComponent>(eid)) {
       TagComponent& t = registry.get<TagComponent>(eid);

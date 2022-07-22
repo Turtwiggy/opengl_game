@@ -1,32 +1,29 @@
 // your header
 #include "game.hpp"
 
-// components
-#include "modules/camera/components.hpp"
-#include "modules/events/components.hpp"
-#include "modules/physics/components.hpp"
-#include "modules/renderer/components.hpp"
-#include "modules/sprites/components.hpp"
-#include "modules/ui_hierarchy/components.hpp"
-#include "modules/ui_profiler/components.hpp"
-
-// systems
+// systems&components&helpers
+#include "create_entities.hpp"
 #include "modules/audio/system.hpp"
+#include "modules/camera/components.hpp"
+#include "modules/camera/helpers.hpp"
 #include "modules/camera/system.hpp"
+#include "modules/events/components.hpp"
+#include "modules/events/helpers/keyboard.hpp"
 #include "modules/events/system.hpp"
 #include "modules/lifecycle/components.hpp"
-#include "modules/renderer/system.hpp"
-#include "modules/sprites/system.hpp"
-#include "modules/ui_hierarchy/system.hpp"
-#include "modules/ui_physics/system.hpp"
-#include "modules/ui_profiler/system.hpp"
-
-// helpers
-#include "create_entities.hpp"
-#include "modules/camera/helpers.hpp"
-#include "modules/events/helpers/keyboard.hpp"
+#include "modules/lifecycle/system.hpp"
+#include "modules/physics/components.hpp"
 #include "modules/physics/process_actor_actor.hpp"
 #include "modules/physics/process_move_objects.hpp"
+#include "modules/renderer/components.hpp"
+#include "modules/renderer/system.hpp"
+#include "modules/sprites/components.hpp"
+#include "modules/sprites/system.hpp"
+#include "modules/ui_hierarchy/components.hpp"
+#include "modules/ui_hierarchy/system.hpp"
+#include "modules/ui_physics/system.hpp"
+#include "modules/ui_profiler/components.hpp"
+#include "modules/ui_profiler/system.hpp"
 
 // resources
 #include "resources/audio.hpp"
@@ -37,7 +34,9 @@
 #include "game_modules/components/game.hpp"
 #include "game_modules/systems/asteroid.hpp"
 #include "game_modules/systems/player.hpp"
+#include "game_modules/systems/turret.hpp"
 #include "game_modules/systems/ui_highscore.hpp"
+#include "game_modules/systems/ui_place_entity.hpp"
 
 // other lib
 #include <glm/glm.hpp>
@@ -114,11 +113,7 @@ game2d::fixed_update(entt::registry& registry, engine::Application& app, float f
   {
     if (!gp.paused) {
 
-      // process destroyed objects from last frame
-      auto& eb = registry.ctx<SINGLETON_EntityBinComponent>();
-      for (auto entity : eb.dead)
-        registry.destroy(entity);
-      eb.dead.clear();
+      update_lifecycle_system(registry, fixed_dt);
       // TODO: update hroot.children if entity is removed
 
       // move objects, checking collisions along way
@@ -175,15 +170,7 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
         // update_cursor_system(registry);
         update_asteroid_system(registry);
         update_player_system(registry);
-
-        // update_animated_cursor_click_system(registry);
-        // update_objectives_system(registry);
-        // update_pathfinding_system(registry);
-        // update_animation_set_by_velocity_system(registry);
-        // update_select_objects_system(registry);
-        // update_select_objects_highlight_system(registry);
-        // update_select_objects_move_system(registry);
-        // update_unit_group_position_units_system(registry);
+        update_turret_system(registry);
       }
 
       // ... systems that update if viewport is focused
@@ -211,9 +198,11 @@ game2d::update(entt::registry& registry, engine::Application& app, float dt)
     // TODO: fix this
     bool is_release = false;
     if (!is_release) {
+      // editor
       update_ui_physics_system(registry);
       update_ui_hierarchy_system(registry);
       update_ui_profiler_system(registry);
+      update_ui_place_entity_system(registry);
     }
     update_ui_highscore_system(registry);
   };

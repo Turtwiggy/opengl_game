@@ -1,14 +1,13 @@
 #include "asteroid.hpp"
 
 #include "create_entities.hpp"
+#include "engine/maths/maths.hpp"
 #include "game_modules/components/game.hpp"
-#include "glm/glm.hpp"
 #include "modules/lifecycle/components.hpp"
 #include "modules/physics/components.hpp"
 #include "modules/renderer/components.hpp"
 
-#include "engine/maths/maths.hpp"
-
+#include "glm/glm.hpp"
 #include <imgui.h>
 
 void
@@ -19,9 +18,9 @@ game2d::update_asteroid_system(entt::registry& r)
   auto& eb = r.ctx<SINGLETON_EntityBinComponent>();
   const auto& ri = r.ctx<SINGLETON_RendererInfo>();
   const float dt = ImGui::GetIO().DeltaTime;
-  const auto& view = r.view<AsteroidComponent, VelocityComponent, TransformComponent>();
+  const auto& view = r.view<AsteroidComponent, VelocityComponent, TransformComponent, EntityTimedLifecycle>();
 
-  view.each([&gs, &eb, &rnd, &dt, &ri](auto entity, auto& asteroid, auto& vel, auto& transform) {
+  view.each([&gs, &eb, &rnd, &dt, &ri](auto entity, auto& asteroid, auto& vel, auto& transform, auto& lifecycle) {
     if (!asteroid.initialized) {
       asteroid.initialized = true;
 
@@ -66,7 +65,7 @@ game2d::update_asteroid_system(entt::registry& r)
       vel.y = spawn_y_vel;
 
       const float rnd_time_alive = engine::rand_det_s(rnd.rnd.rng, 5.0f, 20.0f);
-      asteroid.max_time_alive = rnd_time_alive;
+      lifecycle.time_alive_max = rnd_time_alive;
 
       const float rnd_spin_amount = engine::rand_det_s(rnd.rnd.rng, 0.0f, engine::HALF_PI);
       asteroid.spin_amount = rnd_spin_amount;
@@ -79,12 +78,6 @@ game2d::update_asteroid_system(entt::registry& r)
 
     // .. spin the asteroid
     // transform.rotation.z += asteroid.spin_amount * dt;
-
-    // .. tick the asteroid's life
-    asteroid.time_alive += dt;
-    if (asteroid.time_alive > asteroid.max_time_alive) {
-      eb.dead.emplace(entity);
-    }
   });
 
   // Asteroid Spawner

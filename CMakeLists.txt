@@ -4,7 +4,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # set(CMAKE_VERBOSE_MAKEFILE on)
 if(EMSCRIPTEN)
-# message("Compiling for emscripten")
+  message("Compiling for emscripten")
+
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s USE_SDL=2 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_SDL=2 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
 # # add_definitions(-s USE_SDL=2)

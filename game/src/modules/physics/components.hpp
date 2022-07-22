@@ -11,11 +11,12 @@ namespace game2d {
 enum class GameCollisionLayer
 {
   ACTOR_PLAYER = 1,
-  ACTOR_ASTEROID = 2,
-  ACTOR_BULLET = 3,
-  SOLID_WALL = 4,
+  ACTOR_PLAYER_PET = 2,
+  ACTOR_ASTEROID = 3,
+  ACTOR_BULLET = 4,
+  SOLID_WALL = 5,
 
-  COUNT = 4,
+  COUNT = 5,
 };
 
 struct PhysicsActorComponent

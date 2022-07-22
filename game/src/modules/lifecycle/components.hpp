@@ -8,8 +8,8 @@ namespace game2d {
 
 struct EntityTimedLifecycle
 {
-  float time_alive = 0.0f;
   float time_alive_max = 0.0f;
+  float time_alive = 0.0f;
 };
 
 // SINGLETONS
